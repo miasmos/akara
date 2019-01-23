@@ -1,9 +1,10 @@
 import { Engine } from './Engine';
-import { Logger, Debug, Environment } from './util';
+import { Debug, Environment } from './util';
+import { Input } from './Input';
 import * as mobx from 'mobx';
 
 const engine: Engine = new Engine();
 engine.start();
 
-Logger.log('test');
-Logger.log(Debug.isDebug, Environment.isProduction());
+Debug.log('test');
+Debug.log(Debug.isDebug, Environment.isProduction());

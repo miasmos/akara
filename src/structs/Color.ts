@@ -5,25 +5,25 @@ export class Color {
     private hex: string;
 
     @computed
-    get r(): string {
+    public get r(): string {
         return this.hex.substring(0, 2);
     }
 
     @computed
-    get g(): string {
+    public get g(): string {
         return this.hex.substring(2, 4);
     }
 
     @computed
-    get b(): string {
+    public get b(): string {
         return this.hex.substring(4);
     }
 
-    constructor(hex: string = '') {
+    public constructor(hex: string = '') {
         this.set(hex);
     }
 
-    set(hex: string): boolean {
+    public set(hex: string): boolean {
         if (this.isHex(hex)) {
             if (hex.length === 3) {
                 hex = hex.split('').reduce((char, previous) => previous + char + char, '');
@@ -34,15 +34,15 @@ export class Color {
         return false;
     }
 
-    get() {
+    public get(): string {
         return this.hex;
     }
 
-    toString(): string {
+    public toString(): string {
         return '#' + this.hex;
     }
 
-    equals(color: Color) {
+    public equals(color: Color): boolean {
         return this.hex === color.hex;
     }
 

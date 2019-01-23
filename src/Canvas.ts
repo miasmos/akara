@@ -1,6 +1,6 @@
 import { computed, observable } from 'mobx';
-import { Logger } from './util';
-import { Color } from './Color';
+import { Debug } from './util';
+import { Color } from './structs';
 import { ErrorMessage, HexCode } from './enum';
 
 export class Canvas {
@@ -24,10 +24,10 @@ export class Canvas {
         return !!this.context;
     }
 
-    private mount() {
+    private mount(): void {
         let targetElement: HTMLElement | null = document.getElementById(this.id);
         if (!targetElement) {
-            Logger.error(ErrorMessage.ElementNotFound);
+            Debug.error(ErrorMessage.ElementNotFound);
             const elements: HTMLCollectionOf<HTMLElement> = document.getElementsByTagName('body');
             targetElement = elements[0];
         }
@@ -41,7 +41,7 @@ export class Canvas {
         if (!!context) {
             this.context = context;
         } else {
-            Logger.error(ErrorMessage.CanvasInstantiationError);
+            Debug.error(ErrorMessage.CanvasInstantiationError);
         }
     }
 
@@ -54,23 +54,23 @@ export class Canvas {
         this.context.fillStyle = color.toString();
     }
 
-    public clear() {
+    public clear(): void {
         this.context.clearRect(0, 0, this.element.width, this.element.height);
     }
 
-    public drawImage(image: CanvasImageSource, x: number, y: number, w: number, h: number) {
+    public drawImage(image: CanvasImageSource, x: number, y: number, w: number, h: number): void {
         this.context.drawImage(image, x, y, w, h);
     }
 
-    public drawBuffer(data: ImageData, x: number, y: number) {
+    public drawBuffer(data: ImageData, x: number, y: number): void {
         this.context.putImageData(data, x, y);
     }
 
-    public drawText(text: string, x: number, y: number) {
+    public drawText(text: string, x: number, y: number): void {
         this.context.fillText(text, x, y);
     }
 
-    public drawBox(x: number, y: number, w: number, h: number) {
+    public drawBox(x: number, y: number, w: number, h: number): void {
         this.context.fillRect(x, y, w, h);
     }
 }

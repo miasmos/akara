@@ -5,12 +5,19 @@
         "strictNullChecks": true,
         "module": "es6",
         "moduleResolution": "node",
-        "lib": ["es5", "es6", "dom"],
+        "lib": ["es5", "es2018", "dom"],
         "target": "es5",
         "allowJs": false,
         "experimentalDecorators": true
     },
+    "awesomeTypescriptLoaderOptions": {
+        "useWebpackText": true,
+        "useTranspileModule": true,
+        "useCache": false,
+        "doTypeCheck": true,
+        "forkChecker": true
+    },
     "include": ["./src/"],
     "exclude": ["node_modules"],
-    "compileOnSave": false
+    "compileOnSave": true
 }

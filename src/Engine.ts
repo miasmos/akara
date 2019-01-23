@@ -1,5 +1,5 @@
 import { Entity } from './entities';
-import { Time } from './Time';
+import { Time } from './structs';
 
 export class Engine {
     public readonly fps: number = 60;
