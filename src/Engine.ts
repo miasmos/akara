@@ -12,7 +12,7 @@ export class Engine {
         frame: undefined as number | undefined
     };
 
-    public Engine(fps: number = 60): void {
+    public constructor(fps: number = 60) {
         this.frameTime = 1 / fps;
     }
 

@@ -1,10 +1,9 @@
 export class Time {
     private static instance: Time;
-
     public deltaTime: number = 0;
     public last: number = Date.now();
 
-    private Time(): void {}
+    private constructor() {}
 
     public static get Instance(): Time {
         return this.instance || (this.instance = new this());
