@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "strictNullChecks": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "lib": ["es5", "es6", "dom"],
+        "target": "es5",
+        "allowJs": true,
+        "experimentalDecorators": true
+    },
+    "include": ["./src/"],
+    "exclude": ["node_modules"],
+    "compileOnSave": false
+}

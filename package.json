@@ -4,7 +4,7 @@
     "description": "A simple js game engine using the power of MobX.",
     "main": "app/index.ts",
     "scripts": {
-        "test": "mocha --require ts-node/register test/**/*.spec.ts",
+        "test": "cross-env TS_NODE_COMPILER_OPTIONS=\"{\\\"module\\\": \\\"commonjs\\\"}\" mocha --require ts-node/register test/**/*.spec.ts",
         "start": "webpack --mode=production",
         "lint": "eslint src/index.ts",
         "dev": "webpack -w --mode=development"
@@ -38,6 +38,7 @@
         "chai": "^4.2.0",
         "cross-env": "^5.2.0",
         "eslint": "^5.12.1",
+        "eslint-loader": "^2.1.1",
         "mocha": "^5.2.0",
         "source-map": "^0.7.3",
         "source-map-loader": "^0.2.4",

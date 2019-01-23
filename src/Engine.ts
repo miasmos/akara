@@ -4,21 +4,21 @@ import { Time } from './Time';
 export class Engine {
     public readonly fps: number = 60;
     public started: boolean = false;
-    private entities: Array<Entity> = [];
+    private entities: Entity[] = [];
     private time: Time = Time.Instance;
 
     private frameTime: number = 0;
     private intervals = {
-        frame: <number | undefined>undefined
+        frame: undefined as number | undefined
     };
 
-    public Engine(fps: number = 60, debug: boolean = false): void {
-        this.frameTime = 1 / this.fps;
+    public Engine(fps: number = 60): void {
+        this.frameTime = 1 / fps;
     }
 
     public start(): void {
         if (!this.started) {
-            this.intervals.frame = setInterval(this.frame.bind(this), this.fps);
+            this.intervals.frame = window.setInterval(this.frame.bind(this), this.fps);
             this.started = true;
         }
     }
