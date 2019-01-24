@@ -1,5 +1,3 @@
-import { Component } from "./Component";
+import { Component } from './Component';
 
-export class Transform implements Component {
-    
-}
+export class Transform extends Component {}

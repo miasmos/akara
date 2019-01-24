@@ -2,7 +2,7 @@ import { observable, computed } from 'mobx';
 
 export class Color {
     @observable
-    private hex: string;
+    private hex: string = '';
 
     @computed
     public get r(): string {
@@ -19,7 +19,7 @@ export class Color {
         return this.hex.substring(4);
     }
 
-    public constructor(hex: string = '') {
+    public constructor(hex: string) {
         this.set(hex);
     }
 

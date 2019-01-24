@@ -1,16 +1,16 @@
-import * as Enum from '../enum';
+import { Environment as EnvironmentEnum } from '../enum/Environment';
 const env: string | undefined = process.env.NODE_ENV;
 
 export class Environment {
     public static isDevelopment(): boolean {
-        return env === Enum.Environment.Development;
+        return env === EnvironmentEnum.Development;
     }
 
     public static isProduction(): boolean {
-        return env === Enum.Environment.Production;
+        return env === EnvironmentEnum.Production;
     }
 
-    public static is(environment: Enum.Environment): boolean {
+    public static is(environment: EnvironmentEnum): boolean {
         return environment === env;
     }
 }

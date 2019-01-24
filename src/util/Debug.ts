@@ -1,4 +1,4 @@
-import { Environment } from './';
+import { Environment } from './Environment';
 
 export class Debug {
     public static isDebug: boolean = Environment.isDevelopment();

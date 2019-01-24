@@ -1,22 +1,26 @@
 class Subject {
-    constructor(public readonly fn: Function) {}
+    public readonly fn: Function;
+    public constructor(fn: Function) {
+        this.fn = fn;
+    }
 }
 interface Subjects {
-    [key: string]: Array<Subject>;
+    [key: string]: Subject[];
 }
 
 export class Observer {
     private subjects: Subjects = {};
 
-    public on(event: string, fn: Function): void {
+    public on(event: string | number, fn: Function): void {
+        event = event.toString();
         if (!(event in this.subjects)) {
-            const namespace: Subject[] = [];
-            this.subjects[event] = new Array<Subject>(0);
+            this.subjects[event] = [];
         }
         this.subjects[event].push(new Subject(fn));
     }
 
-    public emit(event: string, ...params: any[]): void {
+    public emit(event: string | number, ...params: any[]): void {
+        event = event.toString();
         if (event in this.subjects) {
             const namespace = Object.values(this.subjects[event]);
             for (let subject of namespace) {
@@ -25,7 +29,8 @@ export class Observer {
         }
     }
 
-    public off(event: string, fn?: Function): void {
+    public off(event: string | number, fn?: Function): void {
+        event = event.toString();
         if (!(event in this.subjects)) {
             return;
         }

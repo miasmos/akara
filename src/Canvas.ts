@@ -1,33 +1,35 @@
-import { computed, observable } from 'mobx';
-import { Debug } from './util';
-import { Color } from './structs';
-import { ErrorMessage, HexCode } from './enum';
+import { observable } from 'mobx';
+import { Debug } from './util/Debug';
+import { Color } from './structs/Color';
+import { ErrorMessage } from './enum/ErrorMessage';
+import { HexCode } from './enum/HexCode';
 
 export class Canvas {
     private _color: Color = new Color(HexCode.Black);
-    private element: HTMLCanvasElement;
-    private id: string;
+    public mounted: boolean = false;
 
     @observable
-    private context: CanvasRenderingContext2D;
+    private context: CanvasRenderingContext2D | undefined;
 
-    public constructor(id: string, color?: Color) {
-        this.id = id;
+    @observable
+    private element: HTMLCanvasElement | undefined;
+
+    public constructor(color?: Color) {
         if (!!color) {
             this.color = color;
         }
-        this.mount();
     }
 
-    @computed
-    public get ready(): boolean {
-        return !!this.context;
-    }
+    public mount(id?: string): CanvasRenderingContext2D | undefined {
+        if (typeof id === 'undefined') {
+            id = '';
+        }
 
-    private mount(): void {
-        let targetElement: HTMLElement | null = document.getElementById(this.id);
+        let targetElement: HTMLElement | null = document.getElementById(id);
         if (!targetElement) {
-            Debug.error(ErrorMessage.ElementNotFound);
+            if (id !== '') {
+                Debug.error(ErrorMessage.ElementNotFound);
+            }
             const elements: HTMLCollectionOf<HTMLElement> = document.getElementsByTagName('body');
             targetElement = elements[0];
         }
@@ -40,9 +42,13 @@ export class Canvas {
         const context: CanvasRenderingContext2D | null = element.getContext('2d', { alpha: false });
         if (!!context) {
             this.context = context;
+            this.mounted = true;
+            return context;
         } else {
             Debug.error(ErrorMessage.CanvasInstantiationError);
         }
+
+        return undefined;
     }
 
     public get color(): Color {
@@ -51,26 +57,38 @@ export class Canvas {
 
     public set color(color: Color) {
         this._color = color;
-        this.context.fillStyle = color.toString();
+        if (!!this.context) {
+            this.context.fillStyle = color.toString();
+        }
     }
 
     public clear(): void {
-        this.context.clearRect(0, 0, this.element.width, this.element.height);
+        if (!!this.context && !!this.element) {
+            this.context.clearRect(0, 0, this.element.width, this.element.height);
+        }
     }
 
     public drawImage(image: CanvasImageSource, x: number, y: number, w: number, h: number): void {
-        this.context.drawImage(image, x, y, w, h);
+        if (!!this.context) {
+            this.context.drawImage(image, x, y, w, h);
+        }
     }
 
     public drawBuffer(data: ImageData, x: number, y: number): void {
-        this.context.putImageData(data, x, y);
+        if (!!this.context) {
+            this.context.putImageData(data, x, y);
+        }
     }
 
     public drawText(text: string, x: number, y: number): void {
-        this.context.fillText(text, x, y);
+        if (!!this.context) {
+            this.context.fillText(text, x, y);
+        }
     }
 
     public drawBox(x: number, y: number, w: number, h: number): void {
-        this.context.fillRect(x, y, w, h);
+        if (!!this.context) {
+            this.context.fillRect(x, y, w, h);
+        }
     }
 }
