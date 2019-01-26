@@ -3,6 +3,7 @@
     "plugins": ["@typescript-eslint", "jsdoc"],
     "extends": ["plugin:@typescript-eslint/recommended"],
     "rules": {
+        "@typescript-eslint/interface-name-prefix": 0,
         "jsdoc/check-examples": 1,
         "jsdoc/check-param-names": 1,
         "jsdoc/check-tag-names": 1,

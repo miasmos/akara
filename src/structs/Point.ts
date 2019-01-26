@@ -1,10 +1,10 @@
-import { observable } from 'mobx';
+// import { observable } from 'mobx';
 
 export class Point {
-    @observable
+    // @observable
     public x: number = 0;
 
-    @observable
+    // @observable
     public y: number = 0;
 
     public constructor(x?: number, y?: number) {

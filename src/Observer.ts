@@ -4,12 +4,12 @@ class Subject {
         this.fn = fn;
     }
 }
-interface Subjects {
+interface ISubjects {
     [key: string]: Subject[];
 }
 
 export class Observer {
-    private subjects: Subjects = {};
+    private subjects: ISubjects = {};
 
     public on(event: string | number, fn: Function): void {
         event = event.toString();
@@ -19,7 +19,7 @@ export class Observer {
         this.subjects[event].push(new Subject(fn));
     }
 
-    public emit(event: string | number, ...params: any[]): void {
+    public emit<T>(event: string | number, ...params: T[]): void {
         event = event.toString();
         if (event in this.subjects) {
             const namespace = Object.values(this.subjects[event]);

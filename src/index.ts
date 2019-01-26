@@ -1,18 +1,16 @@
-import { Engine } from './Engine';
+import { Game } from './entities/Game';
 import { Environment } from './util/Environment';
 import { Debug } from './util/Debug';
-import { Input } from './Input';
-import * as mobx from 'mobx';
-import { Loader, LoaderEvents, Asset } from './Loader';
+import { LoaderEvents } from './loader/Loader';
+import { Asset } from './loader/assets/Asset';
 
-const engine: Engine = new Engine();
-engine.start();
+const game: Game = new Game({});
+game.start();
 
 Debug.log('test');
 Debug.log(Debug.isDebug, Environment.isProduction());
-const load: Loader = new Loader();
-load.image('assets/realestate.jpg');
-load.on(LoaderEvents.Load, (asset: Asset) => {
+game.load.image('assets/realestate.jpg');
+game.load.sound('assets/test.mp3');
+game.load.on(LoaderEvents.Load, (asset: Asset) => {
     console.log(asset);
 });
-load.start();

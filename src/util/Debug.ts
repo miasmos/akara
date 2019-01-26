@@ -3,19 +3,19 @@ import { Environment } from './Environment';
 export class Debug {
     public static isDebug: boolean = Environment.isDevelopment();
 
-    public static log(...args: any[]): void {
+    public static log<T>(...args: T[]): void {
         if (true || Debug.isDebug) {
             window.console.log(...args);
         }
     }
 
-    public static warn(...args: any[]): void {
+    public static warn<T>(...args: T[]): void {
         if (Debug.isDebug) {
             window.console.warn(...args);
         }
     }
 
-    public static error(...args: any[]): void {
+    public static error<T>(...args: T[]): void {
         if (Debug.isDebug) {
             window.console.error(...args);
         }

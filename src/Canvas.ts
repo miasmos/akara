@@ -1,4 +1,3 @@
-import { observable } from 'mobx';
 import { Debug } from './util/Debug';
 import { Color } from './structs/Color';
 import { ErrorMessage } from './enum/ErrorMessage';
@@ -7,11 +6,7 @@ import { HexCode } from './enum/HexCode';
 export class Canvas {
     private _color: Color = new Color(HexCode.Black);
     public mounted: boolean = false;
-
-    @observable
     private context: CanvasRenderingContext2D | undefined;
-
-    @observable
     private element: HTMLCanvasElement | undefined;
 
     public constructor(color?: Color) {

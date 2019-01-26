@@ -1,37 +1,37 @@
-import { observable, computed } from 'mobx';
-
 export class Color {
-    @observable
-    private hex: string = '';
-
-    @computed
-    public get r(): string {
-        return this.hex.substring(0, 2);
-    }
-
-    @computed
-    public get g(): string {
-        return this.hex.substring(2, 4);
-    }
-
-    @computed
-    public get b(): string {
-        return this.hex.substring(4);
-    }
+    private _hex: string = '';
 
     public constructor(hex: string) {
         this.set(hex);
     }
 
-    public set(hex: string): boolean {
-        if (this.isHex(hex)) {
-            if (hex.length === 3) {
-                hex = hex.split('').reduce((char, previous) => previous + char + char, '');
+    public get r(): string {
+        return this.hex.substring(0, 2);
+    }
+
+    public get g(): string {
+        return this.hex.substring(2, 4);
+    }
+
+    public get b(): string {
+        return this.hex.substring(4);
+    }
+
+    public set hex(value: string) {
+        if (this.isHex(value)) {
+            if (value.length === 3) {
+                value = value.split('').reduce((char, previous) => previous + char + char, '');
             }
-            this.hex = hex;
-            return true;
+            this._hex = value;
         }
-        return false;
+    }
+
+    public get hex(): string {
+        return this._hex;
+    }
+
+    public set(hex: string): void {
+        this.hex = hex;
     }
 
     public get(): string {

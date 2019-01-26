@@ -1,66 +1,23 @@
-import { Observer } from './Observer';
-import { Asset as AssetEnum } from './enum/Asset';
-import { Random } from './util/Random';
+import { Observer } from '../Observer';
+import { Random } from '../util/Random';
+import { AudioAsset } from './assets/AudioAsset';
+import { ImageAsset } from './assets/ImageAsset';
+import { Asset } from './assets/Asset';
 
 export enum LoaderEvents {
     Load,
     Complete
 }
 
-export abstract class Asset extends Observer {
-    public readonly type: AssetEnum;
-    public loaded: boolean = false;
-    protected ref: HTMLImageElement | HTMLAudioElement;
-    public id: string;
-    public path: string;
-    public event: string;
-
-    public constructor(id: string, path: string, event: string) {
-        super();
-        this.id = id;
-        this.path = path;
-        this.event = event;
-    }
-    public abstract getLoader(): HTMLImageElement | HTMLAudioElement;
-    public load(): void {
-        this.ref = this.getLoader();
-        this.ref.src = this.path;
-        this.ref.addEventListener(this.event, this.onLoaded.bind(this));
-    }
-    private onLoaded(): void {
-        this.emit(LoaderEvents.Load, this);
-    }
+interface IAssets {
+    [key: number]: IAssetCategory;
 }
-
-class ImageAsset extends Asset {
-    public constructor(id: string, path: string) {
-        super(id, path, 'load');
-    }
-    public readonly type: AssetEnum = AssetEnum.Image;
-    public getLoader(): HTMLImageElement {
-        return new Image();
-    }
-}
-
-class AudioAsset extends Asset {
-    public constructor(id: string, path: string) {
-        super(id, path, 'canplaythrough');
-    }
-    public readonly type: AssetEnum = AssetEnum.Audio;
-    public getLoader(): HTMLAudioElement {
-        return new Audio();
-    }
-}
-
-interface Assets {
-    [key: number]: AssetCategory;
-}
-interface AssetCategory {
+interface IAssetCategory {
     [key: string]: Asset;
 }
 
 export class Loader extends Observer {
-    private assets: Assets = {};
+    private assets: IAssets = {};
     public count: number = 0;
     private assetsLoaded: number = 0;
 
