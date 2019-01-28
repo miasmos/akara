@@ -19,7 +19,7 @@ export class Observer {
         this.subjects[event].push(new Subject(fn));
     }
 
-    public emit<T>(event: string | number, ...params: T[]): void {
+    public emit(event: string | number, ...params: any[]): void {
         event = event.toString();
         if (event in this.subjects) {
             const namespace = Object.values(this.subjects[event]);

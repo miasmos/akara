@@ -1,59 +1,63 @@
 import { Observer } from '../Observer';
 import { Game } from './Game';
-import { Transform } from '../structs/Transform';
-import { Array as ArrayUtil, SortOrder } from '../util/Array';
+import { Transform, TransformEvent } from '../structs/Transform';
+import { Random } from '../util/Random';
+import {
+    IEntity,
+    EntityType,
+    IEntityConfig,
+    EntityEvents as EntityEvent,
+    Direction
+} from './IEntity';
+import { SuperGroup } from './SuperGroup';
+import { Debug } from '../util/Debug';
 
-export enum EntityEvents {
-    Rendered
-}
-
-export enum EntityTypes {
-    Sprite,
-    Text,
-    Box
-}
-
-interface IChildren {
-    [key: string]: Entity;
-}
-
-export interface IEntityConfig {
-    x?: number;
-    y?: number;
-    width?: number;
-    height?: number;
-    scale?: number;
-}
-
-export class Entity extends Observer {
+export class Entity extends Observer implements IEntity {
     public id: string = '';
     public moveable: boolean = true;
     public collidable: boolean = true;
     public world: Transform = new Transform();
-    private transform: Transform = new Transform();
+    public readonly type: EntityType;
+    protected transform: Transform = new Transform();
+    private _tag: string = '';
+    private _layer: number = 1;
 
-    public parent: Entity | undefined;
-    public children: Entity[];
-    public layer: number = 0;
+    public parent: SuperGroup | undefined;
     public game: Game;
-    private _renderable = true;
-    private childrenById: IChildren = {};
+    protected _visible = true;
 
-    public constructor(
-        game: Game | undefined,
-        { x = 0, y = 0, width = 0, height = 0, scale = 1 }: IEntityConfig
-    ) {
+    public constructor({
+        type = EntityType.Entity,
+        x = 0,
+        y = 0,
+        width = 0,
+        height = 0,
+        scale = 1,
+        layer = 1
+    }: IEntityConfig) {
         super();
-        if (!!game) {
-            this.game = game;
-        }
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.scale = scale;
+        this.id = Random.id(12);
+        this.type = type;
+        this.layer = layer;
+
+        this.transform.on(TransformEvent.X, this.onTransformChange.bind(this, TransformEvent.X));
+        this.transform.on(TransformEvent.Y, this.onTransformChange.bind(this, TransformEvent.Y));
+        this.transform.on(
+            TransformEvent.Width,
+            this.onTransformChange.bind(this, TransformEvent.Width)
+        );
+        this.transform.on(
+            TransformEvent.Height,
+            this.onTransformChange.bind(this, TransformEvent.Height)
+        );
     }
 
+    //#region properties
     public get x(): number {
         return this.transform.x;
     }
@@ -66,7 +70,7 @@ export class Entity extends Observer {
     }
 
     public get y(): number {
-        return this.transform.x;
+        return this.transform.y;
     }
 
     public set y(value: number) {
@@ -77,7 +81,7 @@ export class Entity extends Observer {
     }
 
     public get width(): number {
-        return this.transform.x;
+        return this.transform.width;
     }
 
     public set width(value: number) {
@@ -109,68 +113,88 @@ export class Entity extends Observer {
         }
     }
 
-    public get renderable(): boolean {
-        return this._renderable;
+    public get visible(): boolean {
+        return this._visible;
     }
 
-    public set renderable(value: boolean) {
-        if (value !== this._renderable) {
-            this._renderable = value;
+    public set visible(value: boolean) {
+        if (value !== this._visible) {
+            this._visible = value;
             this.onRenderedChange();
         }
     }
 
-    public start(): void {}
-    public preupdate(): void {}
-    public update(): void {}
-    public postupdate(): void {}
-    public draw(): void {}
-    public destroy(): void {}
-
-    public add(entity: Entity): boolean {
-        if (!!entity.parent) {
-            entity.parent.remove(entity);
-        }
-        this.children.push(entity);
-        this.children = ArrayUtil.sortByKey(this.children, 'layer', SortOrder.Desc);
-        this.childrenById[entity.id] = entity;
-        entity.parent = this;
-
-        this.game.engine.add(entity);
-        return true;
+    public get layer(): number {
+        return this._layer;
     }
 
-    public remove(entity: Entity): boolean {
-        if (entity.id in this.childrenById) {
-            delete this.childrenById[entity.id];
-            this.children.splice(this.children.indexOf(entity), 1);
-            entity.parent = undefined;
-            this.game.engine.remove(entity);
-            return true;
-        }
-        return false;
-    }
-
-    public reconcile(x: number, y: number, width: number, height: number): void {
-        this.world.x = x + this.x;
-        this.world.y = y + this.y;
-        this.world.width = width + this.width;
-        this.world.height = height + this.height;
-
-        for (let entity of this.children) {
-            entity.reconcile(this.x, this.y, this.width, this.height);
+    public set layer(value: number) {
+        if (this._layer !== value) {
+            const previous = this._layer;
+            this._layer = value;
+            this.onLayerChange(previous);
         }
     }
 
-    private onTransformChange(): void {
-        if (!!this.parent) {
-            this.reconcile(this.parent.x, this.parent.y, this.parent.width, this.parent.height);
+    public get tag(): string {
+        return this._tag;
+    }
+
+    public set tag(value: string) {
+        if (value !== this._tag && value.length > 0) {
+            let previous: string = this._tag;
+            this._tag = value;
+            this.onTagChange(previous);
+        }
+    }
+
+    public get renderable(): boolean {
+        const game = this.game;
+        const { x, y, width, height } = this.world;
+        if (!!game) {
+            return x > game.width || x + width < game.x || y > game.height || y + height < game.y;
         } else {
-            this.reconcile(0, 0, 0, 0);
+            return false;
+        }
+    }
+    //#endregion
+
+    public reconcile(
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        origin: Entity,
+        direction: Direction = Direction.Up
+    ): void {
+        if (origin !== this) {
+            this.world.x = x + this.x;
+            this.world.y = y + this.y;
+            this.world.width = width + this.width;
+            this.world.height = height + this.height;
+        }
+
+        if (!!this.parent && direction === Direction.Up) {
+            this.parent.reconcile(this.x, this.y, this.width, this.height, this, Direction.Up);
         }
     }
 
-    private onRenderedChange(): void {
-        this.emit(EntityEvents.Rendered, this);
+    //#region events
+    protected onTransformChange(): void {
+        this.reconcile(this.x, this.y, this.width, this.height, this, Direction.Up);
     }
+
+    protected onRenderedChange(): void {
+        this.emit(EntityEvent.Rendered, this);
+    }
+
+    protected onTagChange(previous: string): void {
+        this.emit(EntityEvent.Tag, this, previous);
+    }
+
+    protected onLayerChange(previous: number): void {
+        Debug.log(this.id, previous.toString(), this.layer.toString());
+        this.emit(EntityEvent.Layer, this, previous);
+    }
+    //#endregion
 }

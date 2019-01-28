@@ -1,19 +1,60 @@
 import { Debug } from './util/Debug';
 import { Color } from './structs/Color';
 import { ErrorMessage } from './enum/ErrorMessage';
+import { Transform } from './structs/Transform';
 import { HexCode } from './enum/HexCode';
 
+export interface ICanvasConfig {
+    width?: number;
+    height?: number;
+    backgroundColor?: string | Color;
+}
+
 export class Canvas {
-    private _color: Color = new Color(HexCode.Black);
+    public backgroundColor: Color = new Color();
     public mounted: boolean = false;
     private context: CanvasRenderingContext2D | undefined;
     private element: HTMLCanvasElement | undefined;
+    private transform: Transform = new Transform();
 
-    public constructor(color?: Color) {
-        if (!!color) {
-            this.color = color;
+    public constructor({
+        width = 400,
+        height = 400,
+        backgroundColor = HexCode.Black
+    }: ICanvasConfig) {
+        this.width = width;
+        this.height = height;
+        this.backgroundColor =
+            typeof backgroundColor === 'string' ? new Color(backgroundColor) : backgroundColor;
+    }
+
+    //#region properties
+    public get width(): number {
+        return this.transform.width;
+    }
+
+    public set width(value: number) {
+        if (value !== this.transform.width) {
+            this.transform.width = value;
+            if (!!this.element) {
+                this.element.width = value;
+            }
         }
     }
+
+    public get height(): number {
+        return this.transform.height;
+    }
+
+    public set height(value: number) {
+        if (value !== this.transform.height) {
+            this.transform.height = value;
+            if (!!this.element) {
+                this.element.height = value;
+            }
+        }
+    }
+    //#endregion
 
     public mount(id?: string): CanvasRenderingContext2D | undefined {
         if (typeof id === 'undefined') {
@@ -29,6 +70,9 @@ export class Canvas {
             targetElement = elements[0];
         }
 
+        if (!targetElement) {
+            return undefined;
+        }
         const element: HTMLCanvasElement = targetElement.appendChild(
             document.createElement('canvas')
         );
@@ -38,6 +82,8 @@ export class Canvas {
         if (!!context) {
             this.context = context;
             this.mounted = true;
+            this.element.width = this.width;
+            this.element.height = this.height;
             return context;
         } else {
             Debug.error(ErrorMessage.CanvasInstantiationError);
@@ -46,15 +92,9 @@ export class Canvas {
         return undefined;
     }
 
-    public get color(): Color {
-        return this._color;
-    }
-
-    public set color(color: Color) {
-        this._color = color;
-        if (!!this.context) {
-            this.context.fillStyle = color.toString();
-        }
+    public resize(width: number, height: number): void {
+        this.width = width;
+        this.height = height;
     }
 
     public clear(): void {
@@ -63,9 +103,15 @@ export class Canvas {
         }
     }
 
-    public drawImage(image: CanvasImageSource, x: number, y: number, w: number, h: number): void {
+    public drawImage(
+        image: CanvasImageSource,
+        x: number,
+        y: number,
+        width: number,
+        height: number
+    ): void {
         if (!!this.context) {
-            this.context.drawImage(image, x, y, w, h);
+            this.context.drawImage(image, x, y, width, height);
         }
     }
 
@@ -75,15 +121,17 @@ export class Canvas {
         }
     }
 
-    public drawText(text: string, x: number, y: number): void {
+    public drawText(text: string, color: Color, x: number, y: number): void {
         if (!!this.context) {
+            this.context.fillStyle = color.toString();
             this.context.fillText(text, x, y);
         }
     }
 
-    public drawBox(x: number, y: number, w: number, h: number): void {
+    public drawBox(color: Color, x: number, y: number, width: number, height: number): void {
         if (!!this.context) {
-            this.context.fillRect(x, y, w, h);
+            this.context.fillStyle = color.toString();
+            this.context.fillRect(x, y, width, height);
         }
     }
 }

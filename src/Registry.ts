@@ -1,7 +1,6 @@
 import { Entity } from './entities/Entity';
 import { IEntities } from './EntityManager';
-import { EntityEvents } from './entities/Entity';
-import { Engine, EngineEvents } from './Engine';
+import { Engine, EngineEvent } from './Engine';
 
 interface IRegisters {
     [key: string]: string[];
@@ -13,22 +12,21 @@ export class Registry {
     private entities: IEntities = {};
 
     public constructor(engine: Engine) {
-        this.initialize();
         this.engine = engine;
+        this.initialize();
     }
 
     private initialize(): void {
-        for (let key in EngineEvents) {
-            const method: string = EngineEvents[key];
+        for (let key in EngineEvent) {
+            const method: string = EngineEvent[key];
             this.addRegister(method);
         }
 
-        this.engine.on(EngineEvents.Start, this.onStart.bind(this));
-        this.engine.on(EngineEvents.Preupdate, this.onPreupdate.bind(this));
-        this.engine.on(EngineEvents.Update, this.onUpdate.bind(this));
-        this.engine.on(EngineEvents.Postupdate, this.onPostupdate.bind(this));
-        this.engine.on(EngineEvents.Draw, this.onDraw.bind(this));
-        this.engine.on(EngineEvents.Destroy, this.onDestroy.bind(this));
+        this.engine.on(EngineEvent.Start, this.onStart.bind(this));
+        this.engine.on(EngineEvent.Preupdate, this.onPreupdate.bind(this));
+        this.engine.on(EngineEvent.Update, this.onUpdate.bind(this));
+        this.engine.on(EngineEvent.Postupdate, this.onPostupdate.bind(this));
+        this.engine.on(EngineEvent.Destroy, this.onDestroy.bind(this));
     }
 
     public add(entity: Entity): boolean {
@@ -38,24 +36,9 @@ export class Registry {
             return false;
         }
 
-        entity.on(EntityEvents.Rendered, this.onRenderedChange.bind(this));
-
         for (let method in this.registers) {
             if (method in entity && typeof entity[method] === 'function') {
-                let shouldRegister = false;
-
-                switch (method) {
-                    case 'draw':
-                        shouldRegister = entity.renderable;
-                        break;
-                    default:
-                        shouldRegister = true;
-                        break;
-                }
-
-                if (shouldRegister) {
-                    this.addEntityToRegister(entity, method);
-                }
+                this.addEntityToRegister(entity, method);
             }
         }
 
@@ -69,8 +52,6 @@ export class Registry {
             delete this.entities[entity.id];
         }
 
-        entity.off(EntityEvents.Rendered, this.onRenderedChange.bind(this));
-
         for (let method in this.registers) {
             if (method in entity) {
                 this.removeEntityFromRegister(entity, method);
@@ -80,16 +61,17 @@ export class Registry {
         return true;
     }
 
-    public getRegister(method: EngineEvents): string[] | undefined {
+    public getRegister(method: EngineEvent): string[] | undefined {
         if (method in this.registers) {
             return this.registers[method];
         }
         return undefined;
     }
 
-    public call(method: EngineEvents): void {
+    public call(method: EngineEvent): void {
         if (method in this.registers) {
-            for (let id in this.registers[method]) {
+            for (let key in this.registers[method]) {
+                const id = this.registers[method][key];
                 const entity = this.entities[id];
 
                 if (method in entity && typeof entity[method] === 'function') {
@@ -128,36 +110,24 @@ export class Registry {
     }
 
     //#region events
-    private onRenderedChange(entity: Entity): void {
-        if (!entity.renderable) {
-            this.removeEntityFromRegister(entity, EngineEvents.Draw);
-        } else {
-            this.addEntityToRegister(entity, EngineEvents.Draw);
-        }
-    }
-
     private onStart(): void {
-        this.call(EngineEvents.Start);
+        this.call(EngineEvent.Start);
     }
 
     private onPreupdate(): void {
-        this.call(EngineEvents.Preupdate);
+        this.call(EngineEvent.Preupdate);
     }
 
     private onUpdate(): void {
-        this.call(EngineEvents.Update);
+        this.call(EngineEvent.Update);
     }
 
     private onPostupdate(): void {
-        this.call(EngineEvents.Postupdate);
-    }
-
-    private onDraw(): void {
-        this.call(EngineEvents.Draw);
+        this.call(EngineEvent.Postupdate);
     }
 
     private onDestroy(): void {
-        this.call(EngineEvents.Destroy);
+        this.call(EngineEvent.Destroy);
     }
     //#endregion events
 }

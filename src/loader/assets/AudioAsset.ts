@@ -15,9 +15,8 @@ export class AudioAsset extends Asset {
 
     public getRef(): HTMLAudioElement {
         if (!this.ref) {
-            return this.getLoader();
-        } else {
-            return this.ref;
+            this.ref = this.getLoader();
         }
+        return this.ref;
     }
 }

@@ -1,47 +1,57 @@
-import { Entity } from './Entity';
 import { Engine } from '../Engine';
 import { Loader } from '../loader/Loader';
-import { HexCode } from '../enum/HexCode';
 import { Color } from '../structs/Color';
 import { Input } from '../Input';
 import { SoundManager } from '../SoundManager';
+import { IGroupConfig } from './SuperGroup';
+import { SuperGroup } from './SuperGroup';
+import { HexCode } from '../enum/HexCode';
 
-export interface IGameConfig {
-    color?: string;
-    x?: number;
-    y?: number;
-    width?: number;
-    height?: number;
-    scale?: number;
+export interface IGameConfig extends IGroupConfig {
+    backgroundColor?: Color | string;
+    fps?: number;
 }
 
-export class Game extends Entity {
-    public engine: Engine = new Engine();
+export class Game extends SuperGroup {
+    public engine: Engine;
     public load: Loader = new Loader();
     public input: Input = new Input();
     public sound: SoundManager = new SoundManager();
 
     public constructor({
-        color = HexCode.Black,
+        backgroundColor = HexCode.Black,
         x = 0,
         y = 0,
-        width = 0,
-        height = 0,
-        scale = 1
+        width = 400,
+        height = 400,
+        scale = 1,
+        fps = 60
     }: IGameConfig) {
-        super(undefined, {
+        super({
             x,
             y,
             width,
             height,
             scale
         });
-        this.engine.canvas.color = new Color(color);
-        this.engine.game = this;
+
+        this.moveable = false;
+        this.collidable = false;
         this.game = this;
+        this.engine = new Engine({
+            game: this,
+            width,
+            height,
+            backgroundColor,
+            fps
+        });
     }
 
     public start(): void {
         this.engine.start();
+    }
+
+    public stop(): void {
+        this.engine.stop();
     }
 }

@@ -1,5 +1,6 @@
 import { Asset as AssetEnum } from '../../enum/Asset';
 import { Asset } from './Asset';
+
 export class ImageAsset extends Asset {
     protected ref: HTMLImageElement;
     public readonly type: AssetEnum = AssetEnum.Image;
@@ -14,9 +15,8 @@ export class ImageAsset extends Asset {
 
     public getRef(): HTMLImageElement {
         if (!this.ref) {
-            return this.getLoader();
-        } else {
-            return this.ref;
+            this.ref = this.getLoader();
         }
+        return this.ref;
     }
 }

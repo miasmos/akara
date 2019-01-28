@@ -1,7 +1,9 @@
+import { HexCode } from '../enum/HexCode';
+
 export class Color {
     private _hex: string = '';
 
-    public constructor(hex: string) {
+    public constructor(hex: string = HexCode.Black) {
         this.set(hex);
     }
 
@@ -18,9 +20,13 @@ export class Color {
     }
 
     public set hex(value: string) {
+        value = value.toLowerCase();
         if (this.isHex(value)) {
             if (value.length === 3) {
-                value = value.split('').reduce((char, previous) => previous + char + char, '');
+                value = value.split('').reduce((previous, char) => previous + char + char, '');
+            }
+            if (value.length !== 6) {
+                return;
             }
             this._hex = value;
         }
@@ -48,13 +54,16 @@ export class Color {
 
     private isHex(hex: string): boolean {
         if (hex.length === 6 || hex.length === 3) {
+            hex = hex.toLowerCase();
             for (let char of hex) {
                 const cast: string = parseInt(char, 16).toString(16);
 
-                if (cast !== hex) {
+                if (cast !== char) {
                     return false;
                 }
             }
+        } else {
+            return false;
         }
 
         return true;
