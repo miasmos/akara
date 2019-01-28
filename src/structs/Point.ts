@@ -1,38 +1,45 @@
-// import { observable } from 'mobx';
-
 export class Point {
-    // @observable
     public x: number = 0;
-
-    // @observable
     public y: number = 0;
+    public z: number = 0;
 
-    public constructor(x?: number, y?: number) {
-        this.set(x, y);
+    public constructor(x?: number, y?: number, z?: number) {
+        this.set(x, y, z);
     }
 
-    public set(x?: number, y?: number): void {
+    public set(x?: number, y?: number, z?: number): void {
         if (typeof x !== 'undefined') {
             this.x = x;
         }
         if (typeof y !== 'undefined') {
             this.y = y;
         }
-    }
-
-    public equals(point: Point): boolean {
-        return this.x === point.x && this.y === point.y;
+        if (typeof z !== 'undefined') {
+            this.z = z;
+        }
     }
 
     public add(point: Point): Point {
-        return new Point(this.x + point.x, this.y + point.y);
+        return Point.add(this, point);
+    }
+
+    public static add(a: Point, b: Point): Point {
+        return new Point(a.x + b.x, a.y + b.y, a.z + b.z);
     }
 
     public subtract(point: Point): Point {
-        return new Point(this.x - point.x, this.y - point.y);
+        return Point.subtract(this, point);
     }
 
-    public static distance(a: Point, b: Point): Point {
-        return new Point(a.x - b.x, a.y - b.y);
+    public static subtract(a: Point, b: Point): Point {
+        return new Point(a.x - b.x, a.y - b.y, a.z - b.z);
+    }
+
+    public equals(point: Point): boolean {
+        return Point.equals(this, point);
+    }
+
+    public static equals(a: Point, b: Point): boolean {
+        return a.x === b.x && a.y === b.y && a.z === b.z;
     }
 }

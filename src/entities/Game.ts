@@ -22,16 +22,20 @@ export class Game extends SuperGroup {
         backgroundColor = HexCode.Black,
         x = 0,
         y = 0,
+        z = 0,
         width = 400,
         height = 400,
+        depth = 0,
         scale = 1,
         fps = 60
     }: IGameConfig) {
         super({
             x,
             y,
+            z,
             width,
             height,
+            depth,
             scale
         });
 

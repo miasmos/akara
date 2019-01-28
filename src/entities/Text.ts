@@ -18,11 +18,12 @@ export class Text extends Entity {
         {
             x = 0,
             y = 0,
+            z = 0,
             width = 0,
             height = 0,
+            depth = 0,
             scale = 1,
             text = '',
-            layer = 1,
             color = new Color()
         }: ITextConfig
     ) {
@@ -30,10 +31,11 @@ export class Text extends Entity {
             type: EntityType.Text,
             x,
             y,
+            z,
             width,
             height,
-            scale,
-            layer
+            depth,
+            scale
         });
         this.game = game;
         this.text = text;

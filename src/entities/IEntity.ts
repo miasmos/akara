@@ -6,7 +6,7 @@ import { Transform } from '../structs/Transform';
 export enum EntityEvents {
     Rendered,
     Tag,
-    Layer
+    Transform
 }
 
 export enum EntityType {
@@ -22,10 +22,11 @@ export interface IEntityConfig {
     type: EntityType;
     x?: number;
     y?: number;
+    z?: number;
     width?: number;
     height?: number;
+    depth?: number;
     scale?: number;
-    layer?: number;
 }
 
 export enum Direction {
@@ -40,14 +41,15 @@ export interface IEntity {
     world: Transform;
     readonly type: EntityType;
     parent: SuperGroup | undefined;
-    layer: number;
     game: Game;
     tag: string | undefined;
 
     x: number;
     y: number;
+    z: number;
     width: number;
     height: number;
+    depth: number;
     scale: number;
     visible: boolean;
     renderable: boolean;
@@ -57,12 +59,5 @@ export interface IEntity {
     update?(): void;
     postupdate?(): void;
     destroy?(): void;
-    reconcile(
-        x: number,
-        y: number,
-        width: number,
-        height: number,
-        origin: Entity,
-        direction?: Direction
-    ): void;
+    reconcile(transform: Transform, origin: Entity, last: Entity, direction?: Direction): void;
 }

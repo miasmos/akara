@@ -17,10 +17,10 @@ export class Box extends Entity {
         {
             x = 0,
             y = 0,
+            z = 0,
             width = 0,
             height = 0,
             scale = 1,
-            layer = 1,
             backgroundColor = HexCode.White
         }: IBoxConfig
     ) {
@@ -28,10 +28,10 @@ export class Box extends Entity {
             type: EntityType.Box,
             x,
             y,
+            z,
             width,
             height,
-            scale,
-            layer
+            scale
         });
         this.game = game;
         this.backgroundColor =

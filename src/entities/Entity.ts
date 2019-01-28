@@ -10,17 +10,15 @@ import {
     Direction
 } from './IEntity';
 import { SuperGroup } from './SuperGroup';
-import { Debug } from '../util/Debug';
 
 export class Entity extends Observer implements IEntity {
     public id: string = '';
     public moveable: boolean = true;
     public collidable: boolean = true;
-    public world: Transform = new Transform();
+    public world: Transform = new Transform({});
     public readonly type: EntityType;
-    protected transform: Transform = new Transform();
+    protected transform: Transform = new Transform({});
     private _tag: string = '';
-    private _layer: number = 1;
 
     public parent: SuperGroup | undefined;
     public game: Game;
@@ -30,30 +28,41 @@ export class Entity extends Observer implements IEntity {
         type = EntityType.Entity,
         x = 0,
         y = 0,
+        z = 0,
         width = 0,
         height = 0,
-        scale = 1,
-        layer = 1
+        scale = 1
     }: IEntityConfig) {
         super();
         this.x = x;
         this.y = y;
+        this.z = z;
         this.width = width;
         this.height = height;
         this.scale = scale;
         this.id = Random.id(12);
         this.type = type;
-        this.layer = layer;
 
-        this.transform.on(TransformEvent.X, this.onTransformChange.bind(this, TransformEvent.X));
-        this.transform.on(TransformEvent.Y, this.onTransformChange.bind(this, TransformEvent.Y));
-        this.transform.on(
-            TransformEvent.Width,
-            this.onTransformChange.bind(this, TransformEvent.Width)
+        this.transform.on(TransformEvent.X, (previous: number) =>
+            this.onTransformChange(previous, TransformEvent.X)
         );
-        this.transform.on(
-            TransformEvent.Height,
-            this.onTransformChange.bind(this, TransformEvent.Height)
+        this.transform.on(TransformEvent.Y, (previous: number) =>
+            this.onTransformChange(previous, TransformEvent.Y)
+        );
+        this.transform.on(TransformEvent.Z, (previous: number) =>
+            this.onTransformChange(previous, TransformEvent.Z)
+        );
+        this.transform.on(TransformEvent.Width, (previous: number) =>
+            this.onTransformChange(previous, TransformEvent.Width)
+        );
+        this.transform.on(TransformEvent.Height, (previous: number) =>
+            this.onTransformChange(previous, TransformEvent.Height)
+        );
+        this.transform.on(TransformEvent.Depth, (previous: number) =>
+            this.onTransformChange(previous, TransformEvent.Depth)
+        );
+        this.transform.on(TransformEvent.Scale, (previous: number) =>
+            this.onTransformChange(previous, TransformEvent.Scale)
         );
     }
 
@@ -65,7 +74,6 @@ export class Entity extends Observer implements IEntity {
     public set x(value: number) {
         if (value !== this.transform.x) {
             this.transform.x = value;
-            this.onTransformChange();
         }
     }
 
@@ -76,7 +84,16 @@ export class Entity extends Observer implements IEntity {
     public set y(value: number) {
         if (value !== this.transform.y) {
             this.transform.y = value;
-            this.onTransformChange();
+        }
+    }
+
+    public get z(): number {
+        return this.transform.z;
+    }
+
+    public set z(value: number) {
+        if (value !== this.transform.z) {
+            this.transform.z = value;
         }
     }
 
@@ -87,7 +104,6 @@ export class Entity extends Observer implements IEntity {
     public set width(value: number) {
         if (value !== this.transform.width) {
             this.transform.width = value;
-            this.onTransformChange();
         }
     }
 
@@ -98,7 +114,16 @@ export class Entity extends Observer implements IEntity {
     public set height(value: number) {
         if (value !== this.transform.height) {
             this.transform.height = value;
-            this.onTransformChange();
+        }
+    }
+
+    public get depth(): number {
+        return this.transform.depth;
+    }
+
+    public set depth(value: number) {
+        if (value !== this.transform.depth) {
+            this.transform.depth = value;
         }
     }
 
@@ -109,7 +134,6 @@ export class Entity extends Observer implements IEntity {
     public set scale(value: number) {
         if (value !== this.transform.scale) {
             this.transform.scale = value;
-            this.onTransformChange();
         }
     }
 
@@ -119,20 +143,9 @@ export class Entity extends Observer implements IEntity {
 
     public set visible(value: boolean) {
         if (value !== this._visible) {
+            const previous = this._visible;
             this._visible = value;
-            this.onRenderedChange();
-        }
-    }
-
-    public get layer(): number {
-        return this._layer;
-    }
-
-    public set layer(value: number) {
-        if (this._layer !== value) {
-            const previous = this._layer;
-            this._layer = value;
-            this.onLayerChange(previous);
+            this.onRenderedChange(previous);
         }
     }
 
@@ -160,41 +173,32 @@ export class Entity extends Observer implements IEntity {
     //#endregion
 
     public reconcile(
-        x: number,
-        y: number,
-        width: number,
-        height: number,
+        transform: Transform,
         origin: Entity,
+        last: Entity,
         direction: Direction = Direction.Up
     ): void {
         if (origin !== this) {
-            this.world.x = x + this.x;
-            this.world.y = y + this.y;
-            this.world.width = width + this.width;
-            this.world.height = height + this.height;
+            this.world = Transform.add(this.transform, transform);
         }
 
         if (!!this.parent && direction === Direction.Up) {
-            this.parent.reconcile(this.x, this.y, this.width, this.height, this, Direction.Up);
+            this.parent.reconcile(this.transform, origin, this, Direction.Up);
         }
     }
 
     //#region events
-    protected onTransformChange(): void {
-        this.reconcile(this.x, this.y, this.width, this.height, this, Direction.Up);
+    protected onTransformChange(previous: number, changed: TransformEvent): void {
+        this.reconcile(this.transform, this, this, Direction.Up);
+        this.emit(EntityEvent.Transform, this, previous, changed);
     }
 
-    protected onRenderedChange(): void {
-        this.emit(EntityEvent.Rendered, this);
+    protected onRenderedChange(previous: boolean): void {
+        this.emit(EntityEvent.Rendered, this, previous);
     }
 
     protected onTagChange(previous: string): void {
         this.emit(EntityEvent.Tag, this, previous);
-    }
-
-    protected onLayerChange(previous: number): void {
-        Debug.log(this.id, previous.toString(), this.layer.toString());
-        this.emit(EntityEvent.Layer, this, previous);
     }
     //#endregion
 }

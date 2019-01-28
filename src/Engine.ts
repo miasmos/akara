@@ -60,7 +60,7 @@ export class Engine extends Observer {
         });
         this.fps = fps;
         this.registry = new Registry(this);
-        this.add(this.game);
+        this.add(this.game as Entity);
     }
 
     public start(): void {
@@ -107,12 +107,17 @@ export class Engine extends Observer {
     }
 
     public remove(entity: Entity): boolean {
-        const wasRemovedFromEntityManager = this.entities.remove(entity);
-        const wasRemovedFromRegistry = this.registry.remove(entity);
-        const removed = wasRemovedFromEntityManager && wasRemovedFromRegistry;
-
-        if (!removed) {
+        if (!this.has(entity)) {
             return false;
+        }
+
+        this.entities.remove(entity);
+        this.registry.remove(entity);
+
+        if (entity.type === EntityType.Group) {
+            for (let child of (entity as SuperGroup).children) {
+                this.remove(child);
+            }
         }
 
         if (EngineEvent.Destroy in entity) {
@@ -130,7 +135,6 @@ export class Engine extends Observer {
         this.preupdate();
         this.update();
         this.postupdate();
-        console.log(this.time.deltaTime / 1000);
     }
 
     private preupdate(): void {

@@ -11,16 +11,17 @@ export class Sprite extends Entity {
 
     public constructor(
         game: Game,
-        { x = 0, y = 0, width = 0, height = 0, scale = 1, layer = 1 }: ISpriteConfig
+        { x = 0, y = 0, z = 0, width = 0, height = 0, depth = 0, scale = 1 }: ISpriteConfig
     ) {
         super({
             type: EntityType.Sprite,
             x,
             y,
+            z,
             width,
             height,
-            scale,
-            layer
+            depth,
+            scale
         });
 
         this.game = game;

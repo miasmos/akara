@@ -15,7 +15,7 @@ export class Canvas {
     public mounted: boolean = false;
     private context: CanvasRenderingContext2D | undefined;
     private element: HTMLCanvasElement | undefined;
-    private transform: Transform = new Transform();
+    private transform: Transform = new Transform({});
 
     public constructor({
         width = 400,
