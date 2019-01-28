@@ -1,31 +1,43 @@
 import { Observer } from '../../Observer';
-import { Asset as AssetEnum } from '../../enum/Asset';
 import { LoaderEvents } from '../Loader';
+
+export enum AssetType {
+    Image,
+    Audio,
+    Empty
+}
+
 export abstract class Asset extends Observer {
-    public readonly type: AssetEnum;
+    public readonly type: AssetType;
     public loaded: boolean = false;
-    protected abstract ref: HTMLImageElement | HTMLAudioElement;
-    public id: string;
+    protected abstract ref: HTMLImageElement | HTMLAudioElement | undefined;
+    public name: string;
     public path: string;
     public event: string;
 
-    public constructor(id: string, path: string, event: string) {
+    public constructor(name: string, path: string, event: string) {
         super();
-        this.id = id;
+        this.name = name;
         this.path = path;
         this.event = event;
     }
-    protected abstract getLoader(): HTMLImageElement | HTMLAudioElement;
+    protected abstract getLoader(): HTMLImageElement | HTMLAudioElement | undefined;
 
     public load(): void {
         this.ref = this.getLoader();
-        this.ref.src = this.path;
-        this.ref.addEventListener(this.event, this.onLoaded.bind(this));
+        if (!!this.ref) {
+            this.ref.src = this.path;
+            this.ref.addEventListener(this.event, this.onLoaded.bind(this));
+        }
     }
 
-    private onLoaded(): void {
+    public equals(asset: Asset): boolean {
+        return this.name === asset.name && this.type === asset.type;
+    }
+
+    protected onLoaded(): void {
         this.emit(LoaderEvents.Load, this);
     }
 
-    public abstract getRef(): HTMLImageElement | HTMLAudioElement
+    public abstract getRef(): HTMLImageElement | HTMLAudioElement | undefined;
 }

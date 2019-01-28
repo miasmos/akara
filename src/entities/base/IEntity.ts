@@ -1,12 +1,13 @@
 import { Entity } from './Entity';
-import { Game } from './Game';
-import { SuperGroup } from './SuperGroup';
-import { Transform } from '../structs/Transform';
+import { Game } from '../Game';
+import { SuperGroup } from '../SuperGroup';
+import { Transform } from '../../structs/Transform';
 
 export enum EntityEvents {
     Rendered,
     Tag,
-    Transform
+    Transform,
+    Loaded
 }
 
 export enum EntityType {
@@ -15,6 +16,7 @@ export enum EntityType {
     Text,
     Box,
     Group,
+    Sound,
     Scene
 }
 

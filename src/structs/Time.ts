@@ -1,13 +1,6 @@
-export class Time {
-    private static instance: Time;
+export class TimeClass {
     public deltaTime: number = 0;
     public last: number = Date.now();
-
-    private constructor() {}
-
-    public static get Instance(): Time {
-        return this.instance || (this.instance = new this());
-    }
 
     public next(timestamp: number = Date.now()): number {
         this.deltaTime = timestamp - this.last;
@@ -15,3 +8,5 @@ export class Time {
         return timestamp;
     }
 }
+
+export const Time = new TimeClass();

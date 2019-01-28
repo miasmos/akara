@@ -1,12 +1,11 @@
-import { Asset as AssetEnum } from '../../enum/Asset';
-import { Asset } from './Asset';
+import { Asset, AssetType } from './Asset';
 
 export class ImageAsset extends Asset {
     protected ref: HTMLImageElement;
-    public readonly type: AssetEnum = AssetEnum.Image;
+    public readonly type: AssetType = AssetType.Image;
 
-    public constructor(id: string, path: string) {
-        super(id, path, 'load');
+    public constructor(name: string, path: string) {
+        super(name, path, 'load');
     }
 
     protected getLoader(): HTMLImageElement {

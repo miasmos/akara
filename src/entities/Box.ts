@@ -1,6 +1,6 @@
-import { Entity } from './Entity';
+import { Entity } from './base/Entity';
 import { Color } from '../structs/Color';
-import { EntityType } from './IEntity';
+import { EntityType } from './base/IEntity';
 import { IGroupConfig } from './SuperGroup';
 import { Game } from './Game';
 import { HexCode } from '../enum/HexCode';

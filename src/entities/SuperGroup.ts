@@ -1,6 +1,6 @@
 import { Array as ArrayUtil, SortOrder } from '../util/Array';
-import { EntityType, Direction, EntityEvents } from './IEntity';
-import { Entity } from './Entity';
+import { EntityType, Direction, EntityEvents } from './base/IEntity';
+import { Entity } from './base/Entity';
 import { TransformEvent, Transform } from '../structs/Transform';
 
 interface IChildren {
@@ -15,7 +15,7 @@ export interface IGroupConfig {
     height?: number;
     depth?: number;
     scale?: number;
-    frame?: number;
+    type?: EntityType;
 }
 
 // private group, consumed by game.ts, contains all group logic
@@ -30,10 +30,11 @@ export class SuperGroup extends Entity {
         width = 0,
         height = 0,
         depth = 0,
-        scale = 1
+        scale = 1,
+        type = EntityType.Group
     }: IGroupConfig) {
         super({
-            type: EntityType.Group,
+            type,
             x,
             y,
             z,
@@ -44,7 +45,18 @@ export class SuperGroup extends Entity {
         });
     }
 
-    public add(entity: Entity, addToGame: boolean = true): boolean {
+    public add(entity: Entity | Entity[], addToGame: boolean = true): boolean {
+        if (Array.isArray(entity)) {
+            let result = true;
+            for (let entity1 of entity) {
+                const result1 = this.add(entity1, addToGame);
+                if (!result1) {
+                    result = false;
+                }
+            }
+            return result;
+        }
+
         if (!!entity.parent) {
             entity.parent.remove(entity);
         }
@@ -54,13 +66,24 @@ export class SuperGroup extends Entity {
         this.childrenById[entity.id] = entity;
         entity.parent = this;
 
-        if (!!this.game && addToGame) {
+        if (!!this.game && !!this.parent && addToGame) {
             this.game.engine.add(entity);
         }
         return true;
     }
 
-    public remove(entity: Entity): boolean {
+    public remove(entity: Entity | Entity[]): boolean {
+        if (Array.isArray(entity)) {
+            let result = true;
+            for (let entity1 of entity) {
+                const result1 = this.remove(entity1);
+                if (!result1) {
+                    result = false;
+                }
+            }
+            return result;
+        }
+
         if (entity.id in this.childrenById) {
             delete this.childrenById[entity.id];
             entity.off(EntityEvents.Transform, this.onChildTransformChange.bind(this));
@@ -73,6 +96,12 @@ export class SuperGroup extends Entity {
             return true;
         }
         return false;
+    }
+
+    public clear(): void {
+        for (let entity of this.children) {
+            this.remove(entity);
+        }
     }
 
     public reconcile(

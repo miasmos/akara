@@ -1,7 +1,7 @@
-import { Observer } from '../Observer';
-import { Game } from './Game';
-import { Transform, TransformEvent } from '../structs/Transform';
-import { Random } from '../util/Random';
+import { Observer } from '../../Observer';
+import { Game } from '../Game';
+import { Transform, TransformEvent } from '../../structs/Transform';
+import { Random } from '../../util/Random';
 import {
     IEntity,
     EntityType,
@@ -9,7 +9,7 @@ import {
     EntityEvents as EntityEvent,
     Direction
 } from './IEntity';
-import { SuperGroup } from './SuperGroup';
+import { SuperGroup } from '../SuperGroup';
 
 export class Entity extends Observer implements IEntity {
     public id: string = '';

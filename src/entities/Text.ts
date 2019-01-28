@@ -1,5 +1,5 @@
-import { Entity } from './Entity';
-import { EntityType } from './IEntity';
+import { Entity } from './base/Entity';
+import { EntityType } from './base/IEntity';
 import { Game } from './Game';
 import { Color } from '../structs/Color';
 import { IGroupConfig } from './SuperGroup';

@@ -1,8 +1,8 @@
-import { Entity } from './entities/Entity';
+import { Entity } from './entities/base/Entity';
 import { Text } from './entities/Text';
 import { Box } from './entities/Box';
 import { Sprite } from './entities/Sprite';
-import { EntityType } from './entities/IEntity';
+import { EntityType } from './entities/base/IEntity';
 import { Time } from './structs/Time';
 import { Canvas } from './Canvas';
 import { Observer } from './Observer';
@@ -35,7 +35,6 @@ export class Engine extends Observer {
     public readonly fps: number = 60;
     public started: boolean = false;
     public canvas: Canvas;
-    private time: Time = Time.Instance;
     private entities: EntityManager = new EntityManager();
     private registry: Registry;
     public game: Game;
@@ -60,7 +59,6 @@ export class Engine extends Observer {
         });
         this.fps = fps;
         this.registry = new Registry(this);
-        this.add(this.game as Entity);
     }
 
     public start(): void {
@@ -126,12 +124,16 @@ export class Engine extends Observer {
         return true;
     }
 
+    public clear(): void {
+        this.entities.clear();
+    }
+
     public has(entity: Entity): boolean {
         return !!this.entities.get(entity.id);
     }
 
     private frame(): void {
-        this.time.next();
+        Time.next();
         this.preupdate();
         this.update();
         this.postupdate();
@@ -152,8 +154,12 @@ export class Engine extends Observer {
 
     private draw(): void {
         this.canvas.clear();
-        for (let entity of this.game.children) {
-            this.render(entity);
+        const scene = this.game.scene.active;
+
+        if (!!scene) {
+            for (let entity of scene.children) {
+                this.render(entity);
+            }
         }
     }
 

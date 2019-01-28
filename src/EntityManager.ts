@@ -1,5 +1,5 @@
-import { Entity } from './entities/Entity';
-import { EntityEvents, EntityType } from './entities/IEntity';
+import { Entity } from './entities/base/Entity';
+import { EntityEvents, EntityType } from './entities/base/IEntity';
 
 export interface IEntities {
     [key: string]: Entity;
@@ -36,6 +36,13 @@ export class EntityManager {
         }
 
         return false;
+    }
+
+    public clear(): void {
+        for (let key in this.entities) {
+            const entity = this.entities[key];
+            this.remove(entity);
+        }
     }
 
     public get(id: string): Entity | undefined {

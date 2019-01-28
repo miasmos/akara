@@ -1,12 +1,11 @@
-import { Asset as AssetEnum } from '../../enum/Asset';
-import { Asset } from './Asset';
+import { Asset, AssetType } from './Asset';
 
 export class AudioAsset extends Asset {
     protected ref: HTMLAudioElement;
-    public readonly type: AssetEnum = AssetEnum.Audio;
+    public readonly type: AssetType = AssetType.Audio;
 
-    public constructor(id: string, path: string) {
-        super(id, path, 'canplaythrough');
+    public constructor(name: string, path: string) {
+        super(name, path, 'canplaythrough');
     }
 
     protected getLoader(): HTMLAudioElement {

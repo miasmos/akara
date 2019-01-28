@@ -7,6 +7,8 @@ import { Box } from './entities/Box';
 import { HexCode } from './enum/HexCode';
 import { Time } from './structs/Time';
 import { Random } from './util/Random';
+import { Sprite } from './entities/Sprite';
+import { Group } from './entities/Group';
 
 class Test extends Box {
     private direction: number = 1;
@@ -17,30 +19,30 @@ class Test extends Box {
         } else if (this.x + this.width < this.game.x) {
             this.direction = 1;
         }
-        this.x += 1 * Time.Instance.deltaTime * this.direction;
+        this.x += 1 * Time.deltaTime * this.direction;
     }
 }
 
 const game: Game = new Game({});
-for (let index = 0; index < 2000; index++) {
-    game.add(
-        new Test(game, {
-            x: Random.range(-400, 800),
-            y: Random.range(-400, 800),
-            width: 50,
-            height: 50,
-            backgroundColor: HexCode.Blue
-        })
-    );
-}
-
-Debug.log('test');
-Debug.log(Debug.isDebug, Environment.isProduction());
-game.load.image('assets/realestate.jpg');
-game.load.sound('assets/test.mp3');
-game.load.on(LoaderEvents.Load, (asset: Asset) => {
-    console.log(asset);
+game.load.image('assets/gradient.jpg', 'gradient');
+const gradient = new Sprite(game, {
+    asset: 'gradient',
+    x: 20,
+    y: 20
 });
+const group = new Group(game, {
+    x: 50,
+    y: 50,
+    z: 2
+});
+const group1 = new Group(game, {
+    x: 60,
+    y: 60,
+    z: 1
+});
+group.add(gradient);
+group1.add(new Test(game, {}));
+game.add([group, group1]);
 console.log(game);
 
 game.start();

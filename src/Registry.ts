@@ -1,4 +1,4 @@
-import { Entity } from './entities/Entity';
+import { Entity } from './entities/base/Entity';
 import { IEntities } from './EntityManager';
 import { Engine, EngineEvent } from './Engine';
 

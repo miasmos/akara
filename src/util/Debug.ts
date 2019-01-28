@@ -20,4 +20,10 @@ export class Debug {
             window.console.error(...args);
         }
     }
+
+    public static throw(...args: (string | undefined)[]): void {
+        if (Debug.isDebug) {
+            throw new Error(...args);
+        }
+    }
 }
