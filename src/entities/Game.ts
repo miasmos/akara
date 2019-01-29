@@ -2,25 +2,28 @@ import { Engine } from '../Engine';
 import { Loader } from '../loader/Loader';
 import { Color } from '../structs/Color';
 import { Input } from '../Input';
-import { IGroupConfig, SuperGroup } from './SuperGroup';
 import { HexCode } from '../enum/HexCode';
 import { SceneManager, SceneName, SceneManagerEvent } from '../SceneManager';
 import { Debug } from '../util/Debug';
 import { ErrorMessage } from '../enum/ErrorMessage';
 import { Entity } from './base/Entity';
 import { Scene } from './Scene';
+import { EntityType } from './base/IEntity';
+import { IGroupConfig } from './SuperGroup';
 
 export interface IGameConfig extends IGroupConfig {
     backgroundColor?: Color | string;
     fps?: number;
+    outlines?: boolean;
 }
 
-export class Game extends SuperGroup {
+export class Game extends Entity {
     public engine: Engine;
     public load: Loader = new Loader();
     public input: Input = new Input();
     public scene: SceneManager;
     public started: boolean = false;
+    public outlines: boolean = false;
 
     public constructor({
         backgroundColor = HexCode.Black,
@@ -31,9 +34,11 @@ export class Game extends SuperGroup {
         height = 400,
         depth = 0,
         scale = 1,
-        fps = 60
+        fps = 60,
+        outlines = false
     }: IGameConfig) {
         super({
+            type: EntityType.Game,
             x,
             y,
             z,
@@ -45,6 +50,7 @@ export class Game extends SuperGroup {
 
         this.moveable = false;
         this.collidable = false;
+        this.outlines = outlines;
         this.game = this;
         this.scene = new SceneManager(this);
         this.engine = new Engine({
@@ -60,6 +66,14 @@ export class Game extends SuperGroup {
 
     public get loaded(): boolean {
         return this.scene.loaded;
+    }
+
+    public get children(): Entity[] {
+        if (!!this.scene.active) {
+            return this.scene.active.children;
+        } else {
+            return [];
+        }
     }
 
     public add(entity: Entity | Entity[]): boolean {
@@ -113,15 +127,18 @@ export class Game extends SuperGroup {
     }
 
     public start(): void {
-        this.started = true;
+        if (!this.started) {
+            this.started = true;
+            this.load.start();
 
-        if (!this.scene.active) {
-            Debug.warn(ErrorMessage.NoActiveScene);
-        } else {
-            if (this.scene.loaded) {
-                this.startEngine();
+            if (!this.scene.active) {
+                Debug.warn(ErrorMessage.NoActiveScene);
             } else {
-                this.scene.on(SceneManagerEvent.Loaded, this.onSceneManagerLoaded.bind(this));
+                if (this.scene.loaded) {
+                    this.startEngine();
+                } else {
+                    this.scene.on(SceneManagerEvent.Loaded, this.onSceneManagerLoaded.bind(this));
+                }
             }
         }
     }
@@ -141,7 +158,7 @@ export class Game extends SuperGroup {
     }
 
     //#region events
-    private onSceneManagerLoaded(scene: Scene): void {
+    private onSceneManagerLoaded(): void {
         if (this.started) {
             this.startEngine();
         }

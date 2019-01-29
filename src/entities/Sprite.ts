@@ -3,7 +3,7 @@ import { EntityType } from './base/IEntity';
 import { IGroupConfig } from './SuperGroup';
 import { Game } from './Game';
 import { ImageAsset } from '../loader/assets/ImageAsset';
-import { AssetType } from '../loader/assets/Asset';
+import { AssetType, Asset } from '../loader/assets/Asset';
 
 export interface ISpriteConfig extends IGroupConfig {
     asset: string;
@@ -41,4 +41,12 @@ export class Sprite extends AssetEntity {
     public get image(): HTMLImageElement {
         return (this.asset as ImageAsset).getRef();
     }
+
+    //#region events
+    protected onAssetLoaded(asset: Asset): void {
+        this.local.width = this.image.width;
+        this.local.height = this.image.height;
+        super.onAssetLoaded(asset);
+    }
+    //#endregion
 }

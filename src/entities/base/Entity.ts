@@ -15,14 +15,13 @@ export class Entity extends Observer implements IEntity {
     public id: string = '';
     public moveable: boolean = true;
     public collidable: boolean = true;
-    public world: Transform = new Transform({});
     public readonly type: EntityType;
-    protected transform: Transform = new Transform({});
-    private _tag: string = '';
-
+    public world: Transform = new Transform({});
+    public local: Transform = new Transform({});
     public parent: SuperGroup | undefined;
     public game: Game;
     protected _visible = true;
+    protected _tag: string = '';
 
     public constructor({
         type = EntityType.Entity,
@@ -40,100 +39,101 @@ export class Entity extends Observer implements IEntity {
         this.width = width;
         this.height = height;
         this.scale = scale;
+        this.world = Transform.add(this.local, this.world);
         this.id = Random.id(12);
         this.type = type;
 
-        this.transform.on(TransformEvent.X, (previous: number) =>
+        this.local.on(TransformEvent.X, (previous: number) =>
             this.onTransformChange(previous, TransformEvent.X)
         );
-        this.transform.on(TransformEvent.Y, (previous: number) =>
+        this.local.on(TransformEvent.Y, (previous: number) =>
             this.onTransformChange(previous, TransformEvent.Y)
         );
-        this.transform.on(TransformEvent.Z, (previous: number) =>
+        this.local.on(TransformEvent.Z, (previous: number) =>
             this.onTransformChange(previous, TransformEvent.Z)
         );
-        this.transform.on(TransformEvent.Width, (previous: number) =>
+        this.local.on(TransformEvent.Width, (previous: number) =>
             this.onTransformChange(previous, TransformEvent.Width)
         );
-        this.transform.on(TransformEvent.Height, (previous: number) =>
+        this.local.on(TransformEvent.Height, (previous: number) =>
             this.onTransformChange(previous, TransformEvent.Height)
         );
-        this.transform.on(TransformEvent.Depth, (previous: number) =>
+        this.local.on(TransformEvent.Depth, (previous: number) =>
             this.onTransformChange(previous, TransformEvent.Depth)
         );
-        this.transform.on(TransformEvent.Scale, (previous: number) =>
+        this.local.on(TransformEvent.Scale, (previous: number) =>
             this.onTransformChange(previous, TransformEvent.Scale)
         );
     }
 
     //#region properties
     public get x(): number {
-        return this.transform.x;
+        return this.local.x;
     }
 
     public set x(value: number) {
-        if (value !== this.transform.x) {
-            this.transform.x = value;
+        if (value !== this.local.x) {
+            this.local.x = value;
         }
     }
 
     public get y(): number {
-        return this.transform.y;
+        return this.local.y;
     }
 
     public set y(value: number) {
-        if (value !== this.transform.y) {
-            this.transform.y = value;
+        if (value !== this.local.y) {
+            this.local.y = value;
         }
     }
 
     public get z(): number {
-        return this.transform.z;
+        return this.local.z;
     }
 
     public set z(value: number) {
-        if (value !== this.transform.z) {
-            this.transform.z = value;
+        if (value !== this.local.z) {
+            this.local.z = value;
         }
     }
 
     public get width(): number {
-        return this.transform.width;
+        return this.local.width;
     }
 
     public set width(value: number) {
-        if (value !== this.transform.width) {
-            this.transform.width = value;
+        if (value !== this.local.width) {
+            this.local.width = value;
         }
     }
 
     public get height(): number {
-        return this.transform.height;
+        return this.local.height;
     }
 
     public set height(value: number) {
-        if (value !== this.transform.height) {
-            this.transform.height = value;
+        if (value !== this.local.height) {
+            this.local.height = value;
         }
     }
 
     public get depth(): number {
-        return this.transform.depth;
+        return this.local.depth;
     }
 
     public set depth(value: number) {
-        if (value !== this.transform.depth) {
-            this.transform.depth = value;
+        if (value !== this.local.depth) {
+            this.local.depth = value;
         }
     }
 
     public get scale(): number {
-        return this.transform.scale;
+        return this.local.scale;
     }
 
     public set scale(value: number) {
-        if (value !== this.transform.scale) {
-            this.transform.scale = value;
+        if (value !== this.local.scale) {
+            this.local.scale = value;
         }
     }
 
@@ -164,32 +164,91 @@ export class Entity extends Observer implements IEntity {
     public get renderable(): boolean {
         const game = this.game;
         const { x, y, width, height } = this.world;
+
         if (!!game) {
-            return x > game.width || x + width < game.x || y > game.height || y + height < game.y;
+            return !(
+                x > game.width ||
+                x + width < game.x ||
+                y > game.height ||
+                y + height < game.y
+            );
         } else {
             return false;
         }
     }
     //#endregion
 
+    protected get isGroup(): boolean {
+        return this.type === EntityType.Group || this.type === EntityType.Scene;
+    }
+
+    protected get shouldReconcile(): boolean {
+        return !(this.type === EntityType.Scene || this.type === EntityType.Game);
+    }
+
     public reconcile(
         transform: Transform,
         origin: Entity,
+        changed: TransformEvent,
         last: Entity,
-        direction: Direction = Direction.Up
+        direction: Direction = Direction.Up,
+        id: string
     ): void {
-        if (origin !== this) {
-            this.world = Transform.add(this.transform, transform);
+        if (!this.shouldReconcile) {
+            return;
         }
 
-        if (!!this.parent && direction === Direction.Up) {
-            this.parent.reconcile(this.transform, origin, this, Direction.Up);
+        console.log(
+            'reconcile',
+            origin.id,
+            id,
+            this.id,
+            TransformEvent[changed],
+            Direction[direction]
+        );
+        if (direction === Direction.Down) {
+            switch (changed) {
+                case TransformEvent.X:
+                    this.world.x = transform.x + this.local.x;
+                    break;
+                case TransformEvent.Y:
+                    this.world.y = transform.y + this.local.y;
+                    break;
+                case TransformEvent.Z:
+                    this.world.z = transform.z + this.local.z;
+                    break;
+            }
+        } else {
+            if (!!this.parent) {
+                this.parent.reconcile(this.local, origin, changed, this, Direction.Up, id);
+            }
         }
     }
 
     //#region events
     protected onTransformChange(previous: number, changed: TransformEvent): void {
-        this.reconcile(this.transform, this, this, Direction.Up);
+        switch (changed) {
+            case TransformEvent.Width:
+                this.world.width = this.local.width;
+                break;
+            case TransformEvent.Height:
+                this.world.height = this.local.height;
+                break;
+            case TransformEvent.Depth:
+                this.world.depth = this.local.depth;
+                break;
+        }
+
+        switch (changed) {
+            case TransformEvent.X:
+            case TransformEvent.Y:
+            case TransformEvent.Z:
+                this.reconcile(this.local, this, changed, this, Direction.Down, Random.id(12));
+            case TransformEvent.Width:
+            case TransformEvent.Height:
+            case TransformEvent.Depth:
+                this.reconcile(this.local, this, changed, this, Direction.Up, Random.id(12));
+        }
         this.emit(EntityEvent.Transform, this, previous, changed);
     }
 

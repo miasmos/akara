@@ -27,9 +27,17 @@ export class SceneManager extends Observer {
     public constructor(game: Game) {
         super();
         this.game = game;
-        const added = this.add(
+
+        const { x, y, z, width, height, depth } = game;
+        this.add(
             new Scene(game, {
-                name: SceneName.Default
+                name: SceneName.Default,
+                x,
+                y,
+                z,
+                width,
+                height,
+                depth
             })
         );
     }
@@ -44,8 +52,14 @@ export class SceneManager extends Observer {
             const scene = this.get(name);
             if (!!scene) {
                 this.active = scene;
-                this.game.engine.add(scene);
                 scene.on(SceneEvent.Loaded, this.onSceneLoaded.bind(this));
+                this.game.engine.add(scene);
+
+                if (scene.loaded) {
+                    this.emit(SceneManagerEvent.Loaded, scene);
+                } else {
+                    scene.off(SceneEvent.Loaded, this.onSceneLoaded.bind(this));
+                }
                 return true;
             }
         } else {

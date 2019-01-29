@@ -1,7 +1,7 @@
 import { Entity } from './Entity';
 import { Game } from '../Game';
 import { SuperGroup } from '../SuperGroup';
-import { Transform } from '../../structs/Transform';
+import { Transform, TransformEvent } from '../../structs/Transform';
 
 export enum EntityEvents {
     Rendered,
@@ -17,7 +17,8 @@ export enum EntityType {
     Box,
     Group,
     Sound,
-    Scene
+    Scene,
+    Game
 }
 
 export interface IEntityConfig {
@@ -61,5 +62,12 @@ export interface IEntity {
     update?(): void;
     postupdate?(): void;
     destroy?(): void;
-    reconcile(transform: Transform, origin: Entity, last: Entity, direction?: Direction): void;
+    reconcile(
+        transform: Transform,
+        origin: Entity,
+        changed: TransformEvent,
+        last: Entity,
+        direction?: Direction,
+        id?: string
+    ): void;
 }

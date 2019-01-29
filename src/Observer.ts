@@ -10,6 +10,7 @@ interface ISubjects {
 
 export class Observer {
     private subjects: ISubjects = {};
+    public suppress: boolean = false;
 
     public on(event: string | number, fn: Function): void {
         event = event.toString();
@@ -20,6 +21,9 @@ export class Observer {
     }
 
     public emit(event: string | number, ...params: any[]): void {
+        if (this.suppress) {
+            return;
+        }
         event = event.toString();
         if (event in this.subjects) {
             const namespace = Object.values(this.subjects[event]);

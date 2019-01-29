@@ -47,10 +47,18 @@ export class AssetEntity extends Entity {
     private initialize(): void {
         const loader = this.game.load;
         const asset = loader.get(this.assetType, this.assetName);
+        const engine = this.game.engine;
+
         if (!!asset) {
             this.asset = asset;
-            if (!asset.loaded) {
+            if (asset.loaded) {
+                this.emit(EntityEvents.Loaded, this);
+            } else {
                 loader.on(LoaderEvents.Load, this.onAssetLoaded.bind(this));
+
+                if (engine.started) {
+                    this.asset.load();
+                }
             }
         } else {
             this.asset = new EmptyAsset();

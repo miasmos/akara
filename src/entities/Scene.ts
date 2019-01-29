@@ -3,6 +3,7 @@ import { Game } from './Game';
 import { IGroupConfig, SuperGroup } from './SuperGroup';
 import { AssetEntity } from './base/AssetEntity';
 import { Entity } from './base/Entity';
+import { Group } from './Group';
 
 export enum SceneEvent {
     Loaded
@@ -37,14 +38,7 @@ export class Scene extends SuperGroup {
     }
 
     public add(entity: Entity): boolean {
-        if (entity instanceof AssetEntity) {
-            this.assetCount++;
-            if (entity.loaded) {
-                this.assetsLoaded++;
-            } else {
-                entity.on(EntityEvents.Loaded, this.onEntityLoaded.bind(this));
-            }
-        }
+        this.initialize(entity);
         return super.add(entity);
     }
 
@@ -59,11 +53,26 @@ export class Scene extends SuperGroup {
         return super.remove(entity);
     }
 
+    private initialize(entity: Entity): void {
+        if (entity instanceof Group) {
+            for (let child of entity.children) {
+                this.initialize(child);
+            }
+        } else if (entity instanceof AssetEntity) {
+            this.assetCount++;
+            if (entity.loaded) {
+                this.assetsLoaded++;
+            } else {
+                entity.on(EntityEvents.Loaded, this.onEntityLoaded.bind(this));
+            }
+        }
+    }
+
     //#region events
     protected onEntityLoaded(entity: AssetEntity): void {
         entity.off(EntityEvents.Loaded, this.onEntityLoaded.bind(this));
         this.assetsLoaded++;
-        if (this.assetsLoaded > this.assetCount) {
+        if (this.assetsLoaded >= this.assetCount) {
             if (!this.loaded) {
                 this.loaded = true;
                 this.emit(SceneEvent.Loaded, this);

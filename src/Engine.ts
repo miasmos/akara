@@ -59,12 +59,12 @@ export class Engine extends Observer {
         });
         this.fps = fps;
         this.registry = new Registry(this);
+        this.canvas.mount();
     }
 
     public start(): void {
         if (!this.started) {
             this.started = true;
-            this.canvas.mount();
 
             if (this.canvas.mounted) {
                 this.intervals.frame = window.setInterval(this.frame.bind(this), 1000 / this.fps);
@@ -164,11 +164,11 @@ export class Engine extends Observer {
     }
 
     private render(entity: Entity): void {
-        // if (!entity.visible || !entity.renderable) {
-        //     return;
-        // }
+        if (!entity.visible || !entity.renderable) {
+            return;
+        }
 
-        const { x, y, width, height } = entity;
+        const { x, y, width, height } = entity.world;
         switch (entity.type) {
             case EntityType.Group:
                 const groupEntity = entity as SuperGroup;
@@ -186,6 +186,15 @@ export class Engine extends Observer {
             case EntityType.Sprite:
                 this.canvas.drawImage((entity as Sprite).image, x, y, width, height);
                 break;
+        }
+
+        const outlines = this.game.outlines;
+        if (outlines) {
+            const backgroundColor =
+                entity.type === EntityType.Box
+                    ? (entity as Box).backgroundColor
+                    : this.canvas.backgroundColor;
+            this.canvas.drawOutline(backgroundColor, new Color(HexCode.Green), x, y, width, height);
         }
     }
 }

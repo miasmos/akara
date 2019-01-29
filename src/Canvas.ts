@@ -134,4 +134,20 @@ export class Canvas {
             this.context.fillRect(x, y, width, height);
         }
     }
+
+    public drawOutline(
+        color: Color,
+        outline: Color,
+        x: number,
+        y: number,
+        width: number,
+        height: number
+    ): void {
+        if (!!this.context) {
+            this.context.fillStyle = color.toString();
+            this.context.strokeStyle = outline.toString();
+            this.context.lineWidth = 1;
+            this.context.strokeRect(x, y, width, height);
+        }
+    }
 }

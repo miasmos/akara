@@ -111,7 +111,6 @@ export class Loader extends Observer {
 
     private onAssetLoaded(asset: Asset): void {
         this.assetsLoaded++;
-        asset.loaded = true;
         this.emit(LoaderEvents.Load, asset);
     }
 }

@@ -10,6 +10,7 @@ export enum AssetType {
 export abstract class Asset extends Observer {
     public readonly type: AssetType;
     public loaded: boolean = false;
+    public loading: boolean = false;
     protected abstract ref: HTMLImageElement | HTMLAudioElement | undefined;
     public name: string;
     public path: string;
@@ -24,10 +25,13 @@ export abstract class Asset extends Observer {
     protected abstract getLoader(): HTMLImageElement | HTMLAudioElement | undefined;
 
     public load(): void {
-        this.ref = this.getLoader();
-        if (!!this.ref) {
-            this.ref.src = this.path;
-            this.ref.addEventListener(this.event, this.onLoaded.bind(this));
+        if (!this.ref) {
+            this.ref = this.getLoader();
+            if (!!this.ref) {
+                this.ref.src = this.path;
+                this.loading = true;
+                this.ref.addEventListener(this.event, this.onLoaded.bind(this));
+            }
         }
     }
 
@@ -36,6 +40,8 @@ export abstract class Asset extends Observer {
     }
 
     protected onLoaded(): void {
+        this.loaded = true;
+        this.loading = false;
         this.emit(LoaderEvents.Load, this);
     }
 
