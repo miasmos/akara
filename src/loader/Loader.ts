@@ -1,5 +1,5 @@
 import { Observer } from '../Observer';
-import { Random } from '../util/Random';
+import { Random } from '../util/Util';
 import { AudioAsset } from './assets/AudioAsset';
 import { ImageAsset } from './assets/ImageAsset';
 import { Asset, AssetType } from './assets/Asset';

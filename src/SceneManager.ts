@@ -2,7 +2,7 @@ import { Observer } from './Observer';
 import { Scene, SceneEvent } from './entities/Scene';
 import { IGroupConfig } from './entities/SuperGroup';
 import { Game } from './entities/Game';
-import { Debug } from './util/Debug';
+import { Debug } from './util/Util';
 import { ErrorMessage } from './enum/ErrorMessage';
 import { Entity } from './entities/base/Entity';
 

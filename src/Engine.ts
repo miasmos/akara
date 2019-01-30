@@ -10,7 +10,7 @@ import { EntityManager } from './EntityManager';
 import { Registry } from './Registry';
 import { Game } from './entities/Game';
 import { SuperGroup } from './entities/SuperGroup';
-import { Debug } from './util/Debug';
+import { Debug } from './util/Util';
 import { ErrorMessage } from './enum/ErrorMessage';
 import { Color } from './structs/Color';
 import { HexCode } from './enum/HexCode';

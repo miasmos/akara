@@ -1,7 +1,4 @@
-export enum SortOrder {
-    Asc,
-    Desc
-}
+import { SortOrder } from '../enum/SortOrder';
 
 export class Array {
     public static sortByKey<T>(arr: T[], key: string, sortOrder: SortOrder = SortOrder.Asc): T[] {

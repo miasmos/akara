@@ -1,4 +1,4 @@
-export class Point {
+export class Point3 {
     public x: number = 0;
     public y: number = 0;
     public z: number = 0;
@@ -19,27 +19,27 @@ export class Point {
         }
     }
 
-    public add(point: Point): Point {
-        return Point.add(this, point);
+    public add(point: Point3): Point3 {
+        return Point3.add(this, point);
     }
 
-    public static add(a: Point, b: Point): Point {
-        return new Point(a.x + b.x, a.y + b.y, a.z + b.z);
+    public static add(a: Point3, b: Point3): Point3 {
+        return new Point3(a.x + b.x, a.y + b.y, a.z + b.z);
     }
 
-    public subtract(point: Point): Point {
-        return Point.subtract(this, point);
+    public subtract(point: Point3): Point3 {
+        return Point3.subtract(this, point);
     }
 
-    public static subtract(a: Point, b: Point): Point {
-        return new Point(a.x - b.x, a.y - b.y, a.z - b.z);
+    public static subtract(a: Point3, b: Point3): Point3 {
+        return new Point3(a.x - b.x, a.y - b.y, a.z - b.z);
     }
 
-    public equals(point: Point): boolean {
-        return Point.equals(this, point);
+    public equals(point: Point3): boolean {
+        return Point3.equals(this, point);
     }
 
-    public static equals(a: Point, b: Point): boolean {
+    public static equals(a: Point3, b: Point3): boolean {
         return a.x === b.x && a.y === b.y && a.z === b.z;
     }
 }

@@ -1,11 +1,23 @@
-import { Array as ArrayUtil, SortOrder } from '../util/Array';
+import * as Util from '../util/Util';
 import { EntityType, EntityEvents, Direction } from './base/IEntity';
 import { Entity } from './base/Entity';
 import { TransformEvent, Transform } from '../structs/Transform';
+import { SortOrder } from '../enum/Enum';
 import { Random } from '../util/Random';
 
 interface IChildren {
     [key: string]: Entity;
+}
+
+interface IComparison {
+    low: number;
+    high: number;
+}
+
+interface IBounds {
+    x: IComparison;
+    y: IComparison;
+    z: IComparison;
 }
 
 export interface IGroupConfig {
@@ -48,6 +60,21 @@ export class SuperGroup extends Entity {
         });
     }
 
+    //#region properties
+    public get layer(): number {
+        return this._layer;
+    }
+
+    public set layer(value: number) {
+        if (this._layer !== value) {
+            this._layer = value;
+            for (let child of this.children) {
+                child.layer = value + 1;
+            }
+        }
+    }
+    //#endregion
+
     public add(entity: Entity | Entity[], addToGame: boolean = true): boolean {
         if (Array.isArray(entity)) {
             let result = true;
@@ -68,6 +95,7 @@ export class SuperGroup extends Entity {
         this.sort();
         this.childrenById[entity.id] = entity;
         entity.parent = this;
+        entity.layer = this.layer + 1;
 
         if (!!this.game && addToGame) {
             this.game.engine.add(entity);
@@ -179,35 +207,27 @@ export class SuperGroup extends Entity {
                 }
 
                 if (!this.didPropagateDownwards) {
+                    const bounds = this.getBounds();
                     switch (changed) {
                         case TransformEvent.Width:
                         case TransformEvent.X:
-                            this.local.width = this.world.width = this.children.reduce(
-                                (previous: number, child: Entity) => {
-                                    const length = child.x + child.width;
-                                    return length > previous ? length : previous;
-                                },
-                                0
+                            this.local.width = this.world.width = Util.Math.distance(
+                                bounds.x.low,
+                                bounds.x.high
                             );
                             break;
                         case TransformEvent.Height:
                         case TransformEvent.Y:
-                            this.local.height = this.world.height = this.children.reduce(
-                                (previous: number, child: Entity) => {
-                                    const length = child.y + child.height;
-                                    return length > previous ? length : previous;
-                                },
-                                0
+                            this.local.height = this.world.height = Util.Math.distance(
+                                bounds.y.low,
+                                bounds.y.high
                             );
                             break;
                         case TransformEvent.Depth:
                         case TransformEvent.Z:
-                            this.local.depth = this.world.depth = this.children.reduce(
-                                (previous: number, child: Entity) => {
-                                    const length = child.z + child.depth;
-                                    return length > previous ? length : previous;
-                                },
-                                0
+                            this.local.depth = this.world.depth = Util.Math.distance(
+                                bounds.z.low,
+                                bounds.z.high
                             );
                             break;
                     }
@@ -239,8 +259,39 @@ export class SuperGroup extends Entity {
         }
     }
 
+    private getBounds(): IBounds {
+        const compare: IBounds = {
+            x: { low: 0, high: 0 },
+            y: { low: 0, high: 0 },
+            z: { low: 0, high: 0 }
+        };
+
+        for (let child of this.children) {
+            if (child.x < compare.x.low) {
+                compare.x.low = child.x;
+            }
+            if (child.x + child.width > compare.x.high) {
+                compare.x.high = child.x + child.width;
+            }
+            if (child.y < compare.y.low) {
+                compare.y.low = child.y;
+            }
+            if (child.y + child.height > compare.y.high) {
+                compare.y.high = child.y + child.height;
+            }
+            if (child.z < compare.z.low) {
+                compare.z.low = child.z;
+            }
+            if (child.z + child.depth > compare.z.high) {
+                compare.z.high = child.z + child.depth;
+            }
+        }
+
+        return compare;
+    }
+
     private sort(): void {
-        this.children = ArrayUtil.sortByKey(this.children, 'z', SortOrder.Asc);
+        this.children = Util.Array.sortByKey(this.children, 'z', SortOrder.Asc);
     }
 
     //#region events

@@ -1,7 +1,7 @@
 import { Observer } from '../../Observer';
 import { Game } from '../Game';
 import { Transform, TransformEvent } from '../../structs/Transform';
-import { Random } from '../../util/Random';
+import * as Util from '../../util/Util';
 import {
     IEntity,
     EntityType,
@@ -22,6 +22,7 @@ export class Entity extends Observer implements IEntity {
     public game: Game;
     protected _visible = true;
     protected _tag: string = '';
+    protected _layer: number = 0;
 
     public constructor({
         type = EntityType.Entity,
@@ -40,7 +41,7 @@ export class Entity extends Observer implements IEntity {
         this.height = height;
         this.scale = scale;
         this.world = Transform.add(this.local, this.world);
-        this.id = Random.id(12);
+        this.id = Util.Random.id(12);
         this.type = type;
 
         this.local.on(TransformEvent.X, (previous: number) =>
@@ -176,6 +177,16 @@ export class Entity extends Observer implements IEntity {
             return false;
         }
     }
+
+    public get layer(): number {
+        return this._layer;
+    }
+
+    public set layer(value: number) {
+        if (this._layer !== value) {
+            this._layer = value;
+        }
+    }
     //#endregion
 
     protected get isGroup(): boolean {
@@ -199,10 +210,10 @@ export class Entity extends Observer implements IEntity {
         }
 
         console.log(
-            'reconcile',
-            origin.id,
-            id,
-            this.id,
+            Util.String.leftpad('', this.layer, '\t'),
+            `c: ${EntityType[this.type]} (${this.id.slice(0, 3)})`,
+            `o: ${origin.id.slice(0, 3)}`,
+            `e: ${id.slice(0, 3)}`,
             TransformEvent[changed],
             Direction[direction]
         );
@@ -243,11 +254,11 @@ export class Entity extends Observer implements IEntity {
             case TransformEvent.X:
             case TransformEvent.Y:
             case TransformEvent.Z:
-                this.reconcile(this.local, this, changed, this, Direction.Down, Random.id(12));
+                this.reconcile(this.local, this, changed, this, Direction.Down, Util.Random.id(12));
             case TransformEvent.Width:
             case TransformEvent.Height:
             case TransformEvent.Depth:
-                this.reconcile(this.local, this, changed, this, Direction.Up, Random.id(12));
+                this.reconcile(this.local, this, changed, this, Direction.Up, Util.Random.id(12));
         }
         this.emit(EntityEvent.Transform, this, previous, changed);
     }

@@ -1,5 +1,5 @@
 import { Game } from './entities/Game';
-import { Debug } from './util/Debug';
+import { Debug } from './util/Util';
 import { Sprite } from './entities/Sprite';
 import { Group } from './entities/Group';
 
@@ -13,21 +13,21 @@ const group = new Group(game, {
     y: 10,
     z: 2
 });
-const group1 = new Group(game, {
-    x: 10,
-    y: 10,
-    z: 3
-});
+// const group1 = new Group(game, {
+//     x: 10,
+//     y: 10,
+//     z: 3
+// });
 const gradient = new Sprite(game, {
     asset: 'gradient',
     x: 10,
     y: 10
 });
 
-group.add(group1);
-group1.add(gradient);
+group.add(gradient);
+// group1.add(gradient);
 game.add(group);
 game.start();
 console.log(game);
 
-setTimeout(() => (group1.x = 20), 1000);
+setTimeout(() => (gradient.x = 20), 1000);

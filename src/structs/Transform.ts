@@ -1,5 +1,6 @@
-import { Point } from './Point';
+import { Point3 } from './Point3';
 import { Observer } from '../Observer';
+import * as Util from '../util/Util';
 
 export enum TransformEvent {
     X,
@@ -26,7 +27,7 @@ export class Transform extends Observer {
     private _width: number = 0;
     private _height: number = 0;
     private _depth: number = 0;
-    protected point: Point = new Point();
+    protected point: Point3 = new Point3();
 
     public constructor({
         x = 0,
@@ -38,7 +39,7 @@ export class Transform extends Observer {
         scale = 1
     }: ITransformConfig) {
         super();
-        this.point = new Point(x, y, z);
+        this.point = new Point3(x, y, z);
         this.width = width;
         this.height = height;
         this.depth = depth;
@@ -157,6 +158,22 @@ export class Transform extends Observer {
             width: a.width - b.width,
             height: a.height - b.height,
             depth: a.depth - b.depth,
+            scale: a.scale
+        });
+    }
+
+    public distance(transform: Transform): Transform {
+        return Transform.distance(this, transform);
+    }
+
+    public static distance(a: Transform, b: Transform): Transform {
+        return new Transform({
+            x: Util.Math.distance(a.x, b.x),
+            y: Util.Math.distance(a.y, b.y),
+            z: Util.Math.distance(a.z, b.z),
+            width: Util.Math.distance(a.width, b.width),
+            height: Util.Math.distance(a.height, b.height),
+            depth: Util.Math.distance(a.depth, b.depth),
             scale: a.scale
         });
     }

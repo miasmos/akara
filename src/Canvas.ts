@@ -1,4 +1,4 @@
-import { Debug } from './util/Debug';
+import { Debug } from './util/Util';
 import { Color } from './structs/Color';
 import { ErrorMessage } from './enum/ErrorMessage';
 import { Transform } from './structs/Transform';
