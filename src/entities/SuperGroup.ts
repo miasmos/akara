@@ -29,6 +29,11 @@ export interface IGroupConfig {
     depth?: number;
     scale?: number;
     type?: EntityType;
+    preupdate?: Function;
+    update?: Function;
+    postupdate?: Function;
+    start?: Function;
+    destroy?: Function;
 }
 
 // private group, consumed by game.ts, contains all group logic
@@ -46,7 +51,12 @@ export class SuperGroup extends Entity {
         height = 0,
         depth = 0,
         scale = 1,
-        type = EntityType.Group
+        type = EntityType.Group,
+        preupdate,
+        update,
+        postupdate,
+        start,
+        destroy
     }: IGroupConfig) {
         super({
             type,
@@ -56,7 +66,12 @@ export class SuperGroup extends Entity {
             width,
             height,
             depth,
-            scale
+            scale,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
         });
     }
 

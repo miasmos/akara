@@ -12,7 +12,21 @@ export interface ISoundConfig extends IGroupConfig {
 export class Sound extends AssetEntity {
     public constructor(
         game: Game,
-        { x = 0, y = 0, z = 0, width = 0, height = 0, depth = 0, scale = 1, asset }: ISoundConfig
+        {
+            x = 0,
+            y = 0,
+            z = 0,
+            width = 0,
+            height = 0,
+            depth = 0,
+            scale = 1,
+            asset,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
+        }: ISoundConfig
     ) {
         super(game, {
             type: EntityType.Sound,
@@ -24,7 +38,12 @@ export class Sound extends AssetEntity {
             height,
             depth,
             scale,
-            asset
+            asset,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
         });
     }
 

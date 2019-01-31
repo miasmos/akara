@@ -31,7 +31,12 @@ export class Entity extends Observer implements IEntity {
         z = 0,
         width = 0,
         height = 0,
-        scale = 1
+        scale = 1,
+        preupdate,
+        update,
+        postupdate,
+        start,
+        destroy
     }: IEntityConfig) {
         super();
         this.x = x;
@@ -65,6 +70,21 @@ export class Entity extends Observer implements IEntity {
         this.local.on(TransformEvent.Scale, (previous: number) =>
             this.onTransformChange(previous, TransformEvent.Scale)
         );
+        this.initialize({ update, preupdate, postupdate, start, destroy });
+    }
+
+    protected initialize({ update, preupdate, postupdate, start, destroy }): void {
+        this.bind('update', update);
+        this.bind('preupdate', preupdate);
+        this.bind('postupdate', postupdate);
+        this.bind('start', start);
+        this.bind('destroy', destroy);
+    }
+
+    protected bind(key, fn) {
+        if (!(key in this) && typeof fn === 'function') {
+            this[key] = fn.bind(this);
+        }
     }
 
     //#region properties

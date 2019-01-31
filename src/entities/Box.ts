@@ -21,7 +21,12 @@ export class Box extends Entity {
             width = 0,
             height = 0,
             scale = 1,
-            backgroundColor = HexCode.White
+            backgroundColor = HexCode.White,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
         }: IBoxConfig
     ) {
         super({
@@ -31,7 +36,12 @@ export class Box extends Entity {
             z,
             width,
             height,
-            scale
+            scale,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
         });
         this.game = game;
         this.backgroundColor =

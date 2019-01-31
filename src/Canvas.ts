@@ -141,13 +141,32 @@ export class Canvas {
         x: number,
         y: number,
         width: number,
-        height: number
+        height: number,
+        stroke: number = 1
     ): void {
         if (!!this.context) {
             this.context.fillStyle = color.toString();
             this.context.strokeStyle = outline.toString();
-            this.context.lineWidth = 1;
+            this.context.lineWidth = stroke;
             this.context.strokeRect(x, y, width, height);
+        }
+    }
+
+    public drawLine(
+        color: Color,
+        x1: number,
+        y1: number,
+        x2: number,
+        y2: number,
+        stroke: number = 1
+    ): void {
+        if (!!this.context) {
+            this.context.lineWidth = stroke;
+            this.context.strokeStyle = color.toString();
+            this.context.beginPath();
+            this.context.moveTo(x1, y1);
+            this.context.lineTo(x2, y2);
+            this.context.stroke();
         }
     }
 }

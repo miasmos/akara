@@ -11,10 +11,14 @@ import { Scene } from './Scene';
 import { EntityType } from './base/IEntity';
 import { IGroupConfig } from './SuperGroup';
 
+export interface IDebugConfig {
+    outlines?: boolean;
+    grid?: boolean;
+}
 export interface IGameConfig extends IGroupConfig {
     backgroundColor?: Color | string;
     fps?: number;
-    outlines?: boolean;
+    debug?: IDebugConfig;
 }
 
 export class Game extends Entity {
@@ -23,7 +27,10 @@ export class Game extends Entity {
     public input: Input = new Input();
     public scene: SceneManager;
     public started: boolean = false;
-    public outlines: boolean = false;
+    public debug: IDebugConfig = {
+        outlines: false,
+        grid: false
+    };
 
     public constructor({
         backgroundColor = HexCode.Black,
@@ -35,7 +42,10 @@ export class Game extends Entity {
         depth = 0,
         scale = 1,
         fps = 60,
-        outlines = false
+        debug = {
+            outlines: false,
+            grid: false
+        }
     }: IGameConfig) {
         super({
             type: EntityType.Game,
@@ -50,7 +60,10 @@ export class Game extends Entity {
 
         this.moveable = false;
         this.collidable = false;
-        this.outlines = outlines;
+        this.debug = {
+            ...this.debug,
+            ...debug
+        };
         this.game = this;
         this.scene = new SceneManager(this);
         this.engine = new Engine({

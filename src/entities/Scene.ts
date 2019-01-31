@@ -21,7 +21,21 @@ export class Scene extends SuperGroup {
 
     public constructor(
         game: Game,
-        { x = 0, y = 0, z = 0, width = 0, height = 0, depth = 0, scale = 1, name }: ISceneConfig
+        {
+            x = 0,
+            y = 0,
+            z = 0,
+            width = 0,
+            height = 0,
+            depth = 0,
+            scale = 1,
+            name,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
+        }: ISceneConfig
     ) {
         super({
             type: EntityType.Scene,
@@ -31,14 +45,20 @@ export class Scene extends SuperGroup {
             width,
             height,
             depth,
-            scale
+            scale,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
         });
         this.name = name;
         this.game = game;
+        setTimeout(this.assetLoaded.bind(this), 0); // if no assets were added on next frame, trigger scene load
     }
 
     public add(entity: Entity): boolean {
-        this.initialize(entity);
+        this.bindAsset(entity);
         return super.add(entity);
     }
 
@@ -53,10 +73,10 @@ export class Scene extends SuperGroup {
         return super.remove(entity);
     }
 
-    private initialize(entity: Entity): void {
+    protected bindAsset(entity: Entity): void {
         if (entity instanceof Group) {
             for (let child of entity.children) {
-                this.initialize(child);
+                this.bindAsset(child);
             }
         } else if (entity instanceof AssetEntity) {
             this.assetCount++;
@@ -68,16 +88,22 @@ export class Scene extends SuperGroup {
         }
     }
 
-    //#region events
-    protected onEntityLoaded(entity: AssetEntity): void {
-        entity.off(EntityEvents.Loaded, this.onEntityLoaded.bind(this));
-        this.assetsLoaded++;
+    protected assetLoaded(entity: AssetEntity | undefined): void {
+        if (typeof entity !== 'undefined') {
+            this.assetsLoaded++;
+        }
         if (this.assetsLoaded >= this.assetCount) {
             if (!this.loaded) {
                 this.loaded = true;
                 this.emit(SceneEvent.Loaded, this);
             }
         }
+    }
+
+    //#region events
+    protected onEntityLoaded(entity: AssetEntity): void {
+        entity.off(EntityEvents.Loaded, this.onEntityLoaded.bind(this));
+        this.assetLoaded(entity);
     }
     //#endregion
 }

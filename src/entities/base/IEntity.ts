@@ -30,6 +30,11 @@ export interface IEntityConfig {
     height?: number;
     depth?: number;
     scale?: number;
+    preupdate?: Function;
+    update?: Function;
+    postupdate?: Function;
+    start?: Function;
+    destroy?: Function;
 }
 
 export enum Direction {

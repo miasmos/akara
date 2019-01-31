@@ -155,6 +155,10 @@ export class Engine extends Observer {
     private draw(): void {
         this.canvas.clear();
         const scene = this.game.scene.active;
+        if (this.game.debug.grid) {
+            this.drawGrid(10, 1);
+            this.drawGrid(5, 2);
+        }
 
         if (!!scene) {
             for (let entity of scene.children) {
@@ -188,13 +192,28 @@ export class Engine extends Observer {
                 break;
         }
 
-        const outlines = this.game.outlines;
+        const outlines = this.game.debug.outlines;
         if (outlines) {
             const backgroundColor =
                 entity.type === EntityType.Box
                     ? (entity as Box).backgroundColor
                     : this.canvas.backgroundColor;
             this.canvas.drawOutline(backgroundColor, new Color(HexCode.Green), x, y, width, height);
+        }
+    }
+
+    private drawGrid(resolution: number = 10, stroke: number = 1): void {
+        const { width, height } = this.game;
+        const linesX = Math.floor(width / resolution),
+            linesY = Math.floor(height / resolution);
+
+        for (let index = 1; index <= linesY; index++) {
+            const y = linesY * index;
+            this.canvas.drawLine(new Color(HexCode.Gray), 0, y, width, y, stroke);
+        }
+        for (let index = 1; index <= linesX; index++) {
+            const x = linesX * index;
+            this.canvas.drawLine(new Color(HexCode.Gray), x, 0, x, height, stroke);
         }
     }
 }

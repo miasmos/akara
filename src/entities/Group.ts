@@ -5,7 +5,20 @@ import { SuperGroup, IGroupConfig } from './SuperGroup';
 export class Group extends SuperGroup {
     public constructor(
         game: Game,
-        { x = 0, y = 0, z = 0, width = 0, height = 0, depth = 0, scale = 1 }: IGroupConfig
+        {
+            x = 0,
+            y = 0,
+            z = 0,
+            width = 0,
+            height = 0,
+            depth = 0,
+            scale = 1,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
+        }: IGroupConfig
     ) {
         super({
             x,
@@ -14,7 +27,12 @@ export class Group extends SuperGroup {
             width,
             height,
             depth,
-            scale
+            scale,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
         });
         this.game = game;
     }

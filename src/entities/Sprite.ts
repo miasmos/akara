@@ -21,7 +21,12 @@ export class Sprite extends AssetEntity {
             depth = 0,
             scale = 1,
             asset,
-            type = EntityType.Sprite
+            type = EntityType.Sprite,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
         }: ISpriteConfig
     ) {
         super(game, {
@@ -34,7 +39,12 @@ export class Sprite extends AssetEntity {
             width,
             height,
             depth,
-            scale
+            scale,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
         });
     }
 

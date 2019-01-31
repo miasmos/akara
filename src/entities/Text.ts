@@ -24,7 +24,12 @@ export class Text extends Entity {
             depth = 0,
             scale = 1,
             text = '',
-            color = new Color()
+            color = new Color(),
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
         }: ITextConfig
     ) {
         super({
@@ -35,7 +40,12 @@ export class Text extends Entity {
             width,
             height,
             depth,
-            scale
+            scale,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
         });
         this.game = game;
         this.text = text;

@@ -26,7 +26,12 @@ export class AssetEntity extends Entity {
             z = 0,
             width = 0,
             height = 0,
-            scale = 1
+            scale = 1,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
         }: IAssetEntityConfig
     ) {
         super({
@@ -36,15 +41,20 @@ export class AssetEntity extends Entity {
             z,
             width,
             height,
-            scale
+            scale,
+            preupdate,
+            update,
+            postupdate,
+            start,
+            destroy
         });
         this.assetType = assetType;
         this.assetName = asset;
         this.game = game;
-        this.initialize();
+        this.bindAsset();
     }
 
-    private initialize(): void {
+    private bindAsset(): void {
         const loader = this.game.load;
         const asset = loader.get(this.assetType, this.assetName);
         const engine = this.game.engine;
