@@ -2,8 +2,9 @@ import * as Util from '../util/Util';
 import { EntityType, EntityEvents, Direction } from './base/IEntity';
 import { Entity } from './base/Entity';
 import { TransformEvent, Transform } from '../structs/Transform';
-import { SortOrder } from '../enum/Enum';
+import { SortOrder, ErrorMessage } from '../enum/Enum';
 import { Random } from '../util/Random';
+import { Group } from './Group';
 
 interface IChildren {
     [key: string]: Entity;
@@ -29,6 +30,7 @@ export interface IGroupConfig {
     depth?: number;
     scale?: number;
     type?: EntityType;
+    load?: Function;
     preupdate?: Function;
     update?: Function;
     postupdate?: Function;
@@ -100,6 +102,11 @@ export class SuperGroup extends Entity {
                 }
             }
             return result;
+        }
+
+        if (this.equals(entity)) {
+            Util.Debug.error(ErrorMessage.CannotAddEntitySelf);
+            return false;
         }
 
         if (!!entity.parent) {
@@ -266,6 +273,24 @@ export class SuperGroup extends Entity {
                 }
             }
         }
+    }
+
+    public contains(entity: Entity): boolean {
+        if (entity.id in this.childrenById) {
+            return true;
+        }
+        for (let child of this.children) {
+            if (child instanceof Group) {
+                if (child.contains(entity)) {
+                    return true;
+                }
+            } else {
+                if (child.equals(entity)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public clear(): void {

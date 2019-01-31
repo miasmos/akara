@@ -7,7 +7,20 @@ export enum AssetType {
     Empty
 }
 
-export abstract class Asset extends Observer {
+export interface IAsset {
+    readonly type: AssetType;
+    loaded: boolean;
+    loading: boolean;
+    name: string;
+    path: string;
+    event: string;
+
+    load(): void;
+    equals(asset: Asset): boolean;
+    getRef(): HTMLImageElement | HTMLAudioElement | undefined;
+}
+
+export abstract class Asset extends Observer implements IAsset {
     public readonly type: AssetType;
     public loaded: boolean = false;
     public loading: boolean = false;

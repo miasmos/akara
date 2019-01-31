@@ -6,5 +6,7 @@ export enum ErrorMessage {
     TriedToAddToEmptyScene = 'Tried to add entity to an empty scene. Set an active scene first.',
     CannotAddScene = 'Cannot add a scene using game.add(), use game.scene.load() instead.',
     CannotRemoveScene = 'Cannot remove a scene using game.remove(), use game.scene.unload() instead.',
-    NoActiveScene = 'There is no active scene.'
+    NoActiveScene = 'There is no active scene.',
+    CannotAddEntitySelf = 'Cannot add entity. An entity cannot add itself.',
+    CannotAddEntityContains = 'Cannot add entity. Already exists in tree.'
 }
