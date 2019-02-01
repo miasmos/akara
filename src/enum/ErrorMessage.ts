@@ -8,5 +8,6 @@ export enum ErrorMessage {
     CannotRemoveScene = 'Cannot remove a scene using game.remove(), use game.scene.unload() instead.',
     NoActiveScene = 'There is no active scene.',
     CannotAddEntitySelf = 'Cannot add entity. An entity cannot add itself.',
-    CannotAddEntityContains = 'Cannot add entity. Already exists in tree.'
+    CannotAddEntityContains = 'Cannot add entity. Already exists in tree.',
+    CannotAddTopLevel = 'Cannot add top-level entities to a group.'
 }

@@ -1,5 +1,5 @@
 import { Entity } from './entities/base/Entity';
-import { EntityEvents, EntityType } from './entities/base/IEntity';
+import { EntityEvent, EntityType } from './entities/base/IEntity';
 
 export interface IEntities {
     [key: string]: Entity;
@@ -19,7 +19,7 @@ export class EntityManager {
             this.entities[entity.id] = entity;
             this.addEntityToTag(entity);
             this.addEntityToType(entity);
-            entity.on(EntityEvents.Tag, this.onTagChange.bind(this, entity));
+            entity.on(EntityEvent.Tag, this.onTagChange.bind(this, entity));
             return true;
         }
 
@@ -29,7 +29,7 @@ export class EntityManager {
     public remove(entity: Entity): boolean {
         if (entity.id in this.entities) {
             delete this.entities[entity.id];
-            entity.off(EntityEvents.Tag, this.onTagChange.bind(this, entity));
+            entity.off(EntityEvent.Tag, this.onTagChange.bind(this, entity));
             this.removeEntityFromType(entity);
             this.removeEntityFromTag(entity, entity.tag);
             return true;

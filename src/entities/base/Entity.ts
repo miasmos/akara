@@ -2,13 +2,7 @@ import { Observer } from '../../Observer';
 import { Game } from '../Game';
 import { Transform, TransformEvent } from '../../structs/Transform';
 import * as Util from '../../util/Util';
-import {
-    IEntity,
-    EntityType,
-    IEntityConfig,
-    EntityEvents as EntityEvent,
-    Direction
-} from './IEntity';
+import { IEntity, EntityType, IEntityConfig, EntityEvent, Direction } from './IEntity';
 import { SuperGroup } from '../SuperGroup';
 
 export class Entity extends Observer implements IEntity {
@@ -215,11 +209,11 @@ export class Entity extends Observer implements IEntity {
     }
     //#endregion
 
-    protected get isGroup(): boolean {
+    public get isGroup(): boolean {
         return this.type === EntityType.Group || this.type === EntityType.Scene;
     }
 
-    protected get shouldReconcile(): boolean {
+    public get shouldReconcile(): boolean {
         return !(this.type === EntityType.Scene || this.type === EntityType.Game);
     }
 
@@ -280,16 +274,7 @@ export class Entity extends Observer implements IEntity {
                 break;
         }
 
-        switch (changed) {
-            case TransformEvent.X:
-            case TransformEvent.Y:
-            case TransformEvent.Z:
-                this.reconcile(this.local, this, changed, this, Direction.Down, Util.Random.id(12));
-            case TransformEvent.Width:
-            case TransformEvent.Height:
-            case TransformEvent.Depth:
-                this.reconcile(this.local, this, changed, this, Direction.Up, Util.Random.id(12));
-        }
+        this.reconcile(this.local, this, changed, this, Direction.Up, Util.Random.id(12));
         this.emit(EntityEvent.Transform, this, previous, changed);
     }
 

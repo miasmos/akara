@@ -1,4 +1,4 @@
-import { EntityType, EntityEvents } from './base/IEntity';
+import { EntityType, EntityEvent } from './base/IEntity';
 import { Game } from './Game';
 import { IGroupConfig, SuperGroup } from './SuperGroup';
 import { AssetEntity } from './base/AssetEntity';
@@ -66,7 +66,7 @@ export class Scene extends SuperGroup {
 
     public remove(entity: Entity): boolean {
         if (entity instanceof AssetEntity) {
-            entity.off(EntityEvents.Loaded, this.onEntityLoaded.bind(this));
+            entity.off(EntityEvent.Loaded, this.onEntityLoaded.bind(this));
             this.assetCount--;
             if (entity.loaded) {
                 this.assetsLoaded--;
@@ -85,7 +85,7 @@ export class Scene extends SuperGroup {
             if (entity.loaded) {
                 this.assetsLoaded++;
             } else {
-                entity.on(EntityEvents.Loaded, this.onEntityLoaded.bind(this));
+                entity.on(EntityEvent.Loaded, this.onEntityLoaded.bind(this));
             }
         }
     }
@@ -104,7 +104,7 @@ export class Scene extends SuperGroup {
 
     //#region events
     protected onEntityLoaded(entity: AssetEntity): void {
-        entity.off(EntityEvents.Loaded, this.onEntityLoaded.bind(this));
+        entity.off(EntityEvent.Loaded, this.onEntityLoaded.bind(this));
         this.assetLoaded(entity);
     }
     //#endregion

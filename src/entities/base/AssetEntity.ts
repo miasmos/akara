@@ -1,5 +1,5 @@
 import { Entity } from './Entity';
-import { IEntityConfig, EntityEvents, IEntity } from './IEntity';
+import { IEntityConfig, EntityEvent, IEntity } from './IEntity';
 import { Asset, AssetType } from '../../loader/assets/Asset';
 import { Game } from '../Game';
 import { LoaderEvents } from '../../loader/Loader';
@@ -104,7 +104,7 @@ export class AssetEntity extends Entity implements IAssetEntity {
     protected onAssetLoaded(asset: Asset): void {
         if (asset.equals(this.asset)) {
             this.call('load');
-            this.emit(EntityEvents.Loaded, this);
+            this.emit(EntityEvent.Loaded, this);
             this.game.load.off(LoaderEvents.Load, this.onAssetLoaded.bind(this));
         }
     }
@@ -115,7 +115,7 @@ export class AssetEntity extends Entity implements IAssetEntity {
             this.game.load.off(LoaderEvents.Add, this.onAssetAdded.bind(this));
 
             if (asset.loaded) {
-                this.emit(EntityEvents.Loaded, this);
+                this.emit(EntityEvent.Loaded, this);
             } else {
                 this.game.load.on(LoaderEvents.Load, this.onAssetLoaded.bind(this));
             }

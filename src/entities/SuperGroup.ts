@@ -1,10 +1,9 @@
 import * as Util from '../util/Util';
-import { EntityType, EntityEvents, Direction } from './base/IEntity';
+import { EntityType, EntityEvent, Direction } from './base/IEntity';
 import { Entity } from './base/Entity';
 import { TransformEvent, Transform } from '../structs/Transform';
 import { SortOrder, ErrorMessage } from '../enum/Enum';
 import { Random } from '../util/Random';
-import { Group } from './Group';
 
 interface IChildren {
     [key: string]: Entity;
@@ -105,7 +104,11 @@ export class SuperGroup extends Entity {
         }
 
         if (this.equals(entity)) {
-            Util.Debug.error(ErrorMessage.CannotAddEntitySelf);
+            Util.Debug.warn(ErrorMessage.CannotAddEntitySelf);
+            return false;
+        }
+        if (entity.type === EntityType.Game || entity.type === EntityType.Scene) {
+            Util.Debug.warn(ErrorMessage.CannotAddTopLevel);
             return false;
         }
 
@@ -113,7 +116,7 @@ export class SuperGroup extends Entity {
             entity.parent.remove(entity);
         }
         this.children.push(entity);
-        entity.on(EntityEvents.Transform, this.onChildTransformChange.bind(this));
+        entity.on(EntityEvent.Transform, this.onChildTransformChange.bind(this));
         this.sort();
         this.childrenById[entity.id] = entity;
         entity.parent = this;
@@ -192,7 +195,7 @@ export class SuperGroup extends Entity {
 
         if (entity.id in this.childrenById) {
             delete this.childrenById[entity.id];
-            entity.off(EntityEvents.Transform, this.onChildTransformChange.bind(this));
+            entity.off(EntityEvent.Transform, this.onChildTransformChange.bind(this));
             this.children.splice(this.children.indexOf(entity), 1);
             entity.parent = undefined;
 
@@ -219,57 +222,57 @@ export class SuperGroup extends Entity {
         if (this.type !== EntityType.Scene) {
             this.local.suppress = true;
             if (direction === Direction.Up) {
-                if (this.didPropagateDownwards) {
-                    if (this.resolved.includes(last.id)) {
-                        this.resolved.splice(this.resolved.indexOf(last.id), 1);
-                    }
-                    if (this.resolved.length === 0) {
-                        this.didPropagateDownwards = false;
-                    }
-                }
+                const bounds = this.getBounds();
 
-                if (!this.didPropagateDownwards) {
-                    const bounds = this.getBounds();
-                    switch (changed) {
-                        case TransformEvent.Width:
-                        case TransformEvent.X:
-                            this.local.width = this.world.width = Util.Math.distance(
-                                bounds.x.low,
-                                bounds.x.high
-                            );
-                            break;
-                        case TransformEvent.Height:
-                        case TransformEvent.Y:
-                            this.local.height = this.world.height = Util.Math.distance(
-                                bounds.y.low,
-                                bounds.y.high
-                            );
-                            break;
-                        case TransformEvent.Depth:
-                        case TransformEvent.Z:
-                            this.local.depth = this.world.depth = Util.Math.distance(
-                                bounds.z.low,
-                                bounds.z.high
-                            );
-                            break;
-                    }
+                switch (changed) {
+                    case TransformEvent.Width:
+                    case TransformEvent.X:
+                        this.local.width = this.world.width = Util.Math.distance(
+                            bounds.x.low,
+                            bounds.x.high
+                        );
+                        break;
+                    case TransformEvent.Height:
+                    case TransformEvent.Y:
+                        this.local.height = this.world.height = Util.Math.distance(
+                            bounds.y.low,
+                            bounds.y.high
+                        );
+                        break;
+                    case TransformEvent.Depth:
+                    case TransformEvent.Z:
+                        this.local.depth = this.world.depth = Util.Math.distance(
+                            bounds.z.low,
+                            bounds.z.high
+                        );
+                        break;
                 }
             }
             this.local.suppress = false;
         }
         super.reconcile(transform, origin, changed, last, direction, id);
 
-        if (this.isGroup && direction === Direction.Down) {
+        if (this.isGroup) {
             let positionDidChange =
                 changed === TransformEvent.X ||
                 changed === TransformEvent.Y ||
                 changed === TransformEvent.Z;
 
             if (positionDidChange) {
-                this.didPropagateDownwards = true;
-                this.resolved = this.children.map(child => child.id);
-                for (let child of this.children) {
-                    child.reconcile(this.world, origin, changed, this, Direction.Down, id);
+                if (direction === Direction.Down) {
+                    this.didPropagateDownwards = true;
+                    // this.resolved = this.children.map(child => child.id);
+                    for (let child of this.children) {
+                        child.reconcile(this.world, origin, changed, this, Direction.Down, id);
+                    }
+                } else {
+                    const isRoot =
+                        !!this.parent && this.parent.type === EntityType.Scene ? true : false;
+                    if (isRoot) {
+                        for (let child of this.children) {
+                            child.reconcile(this.world, origin, changed, this, Direction.Down, id);
+                        }
+                    }
                 }
             }
         }
@@ -280,8 +283,8 @@ export class SuperGroup extends Entity {
             return true;
         }
         for (let child of this.children) {
-            if (child instanceof Group) {
-                if (child.contains(entity)) {
+            if (child.isGroup) {
+                if ((child as SuperGroup).contains(entity)) {
                     return true;
                 }
             } else {
@@ -326,8 +329,12 @@ export class SuperGroup extends Entity {
                 compare.z.high = child.z + child.depth;
             }
         }
-
-        return compare;
+        const clamp = Util.Math.clamp;
+        return {
+            x: { low: clamp(compare.x.low, 0), high: compare.x.high },
+            y: { low: clamp(compare.y.low, 0), high: compare.y.high },
+            z: { low: clamp(compare.z.low, 0), high: compare.z.high }
+        };
     }
 
     private sort(): void {
@@ -335,6 +342,32 @@ export class SuperGroup extends Entity {
     }
 
     //#region events
+    protected onTransformChange(previous: number, changed: TransformEvent): void {
+        switch (changed) {
+            case TransformEvent.Width:
+                this.world.width = this.local.width;
+                break;
+            case TransformEvent.Height:
+                this.world.height = this.local.height;
+                break;
+            case TransformEvent.Depth:
+                this.world.depth = this.local.depth;
+                break;
+        }
+
+        switch (changed) {
+            case TransformEvent.X:
+            case TransformEvent.Y:
+            case TransformEvent.Z:
+                this.reconcile(this.local, this, changed, this, Direction.Down, Util.Random.id(12));
+            case TransformEvent.Width:
+            case TransformEvent.Height:
+            case TransformEvent.Depth:
+                this.reconcile(this.local, this, changed, this, Direction.Up, Util.Random.id(12));
+        }
+        this.emit(EntityEvent.Transform, this, previous, changed);
+    }
+
     private onChildTransformChange(
         entity: Entity,
         previous: number,

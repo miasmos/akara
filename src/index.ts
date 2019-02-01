@@ -11,50 +11,29 @@ if (Debug.isDebug) {
 const game: Game = new Game({ debug: { outlines: true, grid: true } });
 game.load.image('assets/gradient.jpg', 'gradient');
 const group = new Group(game, {
-    x: 0,
-    y: 0,
+    x: 80,
+    y: 80,
     z: 2
 });
-// const group1 = new Group(game, {
-//     x: 10,
-//     y: 10,
-//     z: 3
-// });
-// const gradient = new Sprite(game, {
-//     asset: 'gradient',
-//     x: 10,
-//     y: 10
-// });
-
-const gradient = new Sprite(game, {
-    x: 0,
-    y: 0,
+const box = new Box(game, {
+    x: -40,
+    y: 40,
     z: 3,
-    width: 50,
-    height: 50,
-    asset: 'gradient',
-    load: () => {
-        console.log('load');
-    },
-    start: () => {
-        console.log('start');
-    },
-    preupdate: () => {
-        console.log('preupdate');
-    },
-    update: () => {
-        console.log('update');
-    },
-    postupdate: () => {
-        console.log('postupdate');
-    }
+    width: 40,
+    height: 40
 });
+const gradient = new Sprite(game, {
+    x: 80,
+    y: 80,
+    asset: 'gradient'
+});
+
+group.add(box);
 group.add(gradient);
 game.add(group);
 game.start();
 console.log(game);
+console.log(group);
+console.log(box);
 
-setTimeout(() => {
-    gradient.x = 50;
-    gradient.y = 50;
-}, 1000);
+game.load.image('assets/gradient.jpg', 'gradient');

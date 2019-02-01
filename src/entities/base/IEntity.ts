@@ -3,7 +3,7 @@ import { Game } from '../Game';
 import { SuperGroup } from '../SuperGroup';
 import { Transform, TransformEvent } from '../../structs/Transform';
 
-export enum EntityEvents {
+export enum EntityEvent {
     Rendered,
     Tag,
     Transform,
