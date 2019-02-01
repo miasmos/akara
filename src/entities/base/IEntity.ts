@@ -62,6 +62,7 @@ export interface IEntity {
     visible: boolean;
     renderable: boolean;
 
+    equals(entity: Entity): boolean;
     start?(): void;
     preupdate?(): void;
     update?(): void;

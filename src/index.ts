@@ -26,22 +26,35 @@ const group = new Group(game, {
 //     y: 10
 // });
 
-const box = new Box(game, {
+const gradient = new Sprite(game, {
     x: 0,
     y: 0,
-    width: 40,
-    height: 40,
-    backgroundColor: HexCode.White,
+    z: 3,
+    width: 50,
+    height: 50,
+    asset: 'gradient',
+    load: () => {
+        console.log('load');
+    },
+    start: () => {
+        console.log('start');
+    },
+    preupdate: () => {
+        console.log('preupdate');
+    },
     update: () => {
         console.log('update');
+    },
+    postupdate: () => {
+        console.log('postupdate');
     }
 });
-group.add(box);
+group.add(gradient);
 game.add(group);
 game.start();
 console.log(game);
 
 setTimeout(() => {
-    box.x = 40;
-    box.y = 40;
+    gradient.x = 50;
+    gradient.y = 50;
 }, 1000);

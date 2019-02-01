@@ -81,9 +81,15 @@ export class Entity extends Observer implements IEntity {
         this.bind('destroy', destroy);
     }
 
-    protected bind(key, fn) {
+    protected bind(key, fn): void {
         if (!(key in this) && typeof fn === 'function') {
             this[key] = fn.bind(this);
+        }
+    }
+
+    protected call(key): void {
+        if (key in this && typeof this[key] === 'function') {
+            this[key]();
         }
     }
 
@@ -215,6 +221,10 @@ export class Entity extends Observer implements IEntity {
 
     protected get shouldReconcile(): boolean {
         return !(this.type === EntityType.Scene || this.type === EntityType.Game);
+    }
+
+    public equals(entity: Entity): boolean {
+        return entity.id === this.id && entity.type === this.type;
     }
 
     public reconcile(
