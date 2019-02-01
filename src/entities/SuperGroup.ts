@@ -4,6 +4,7 @@ import { Entity } from './base/Entity';
 import { TransformEvent, Transform } from '../structs/Transform';
 import { SortOrder, ErrorMessage } from '../enum/Enum';
 import { Random } from '../util/Random';
+import { Sizing } from '../enum/Sizing';
 
 interface IChildren {
     [key: string]: Entity;
@@ -29,6 +30,7 @@ export interface IGroupConfig {
     depth?: number;
     scale?: number;
     type?: EntityType;
+    sizing?: Sizing;
     load?: Function;
     preupdate?: Function;
     update?: Function;
@@ -40,9 +42,8 @@ export interface IGroupConfig {
 // private group, consumed by game.ts, contains all group logic
 export class SuperGroup extends Entity {
     public children: Entity[] = [];
+    public sizing: Sizing = Sizing.Auto;
     private childrenById: IChildren = {};
-    private didPropagateDownwards: boolean = false;
-    private resolved: string[] = [];
 
     public constructor({
         x = 0,
@@ -219,7 +220,7 @@ export class SuperGroup extends Entity {
             id = Random.id(12);
         }
 
-        if (this.type !== EntityType.Scene) {
+        if (this.type !== EntityType.Scene && this.sizing === Sizing.Auto) {
             this.local.suppress = true;
             if (direction === Direction.Up) {
                 const bounds = this.getBounds();
@@ -260,8 +261,6 @@ export class SuperGroup extends Entity {
 
             if (positionDidChange) {
                 if (direction === Direction.Down) {
-                    this.didPropagateDownwards = true;
-                    // this.resolved = this.children.map(child => child.id);
                     for (let child of this.children) {
                         child.reconcile(this.world, origin, changed, this, Direction.Down, id);
                     }
@@ -269,9 +268,8 @@ export class SuperGroup extends Entity {
                     const isRoot =
                         !!this.parent && this.parent.type === EntityType.Scene ? true : false;
                     if (isRoot) {
-                        for (let child of this.children) {
-                            child.reconcile(this.world, origin, changed, this, Direction.Down, id);
-                        }
+                        // TODO: fix reconciliation causing more updates than necessary, track stack as event travels up then only update entities in the stack on the way down
+                        last.reconcile(this.world, origin, changed, this, Direction.Down, id);
                     }
                 }
             }

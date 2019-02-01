@@ -1,8 +1,11 @@
 import { Game } from './Game';
 import { SuperGroup, IGroupConfig } from './SuperGroup';
+import { Sizing } from '../enum/Sizing';
 
 // public-facing group, requires passing game instance, simple interface to supergroup
 export class Group extends SuperGroup {
+    public sizing: Sizing = Sizing.Auto;
+
     public constructor(
         game: Game,
         {
@@ -13,6 +16,7 @@ export class Group extends SuperGroup {
             height = 0,
             depth = 0,
             scale = 1,
+            sizing,
             preupdate,
             update,
             postupdate,
@@ -35,5 +39,11 @@ export class Group extends SuperGroup {
             destroy
         });
         this.game = game;
+
+        if (typeof sizing !== 'undefined') {
+            this.sizing = sizing;
+        } else {
+            this.sizing = game.settings.sizing;
+        }
     }
 }

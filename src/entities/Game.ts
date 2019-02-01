@@ -10,15 +10,20 @@ import { Entity } from './base/Entity';
 import { Scene } from './Scene';
 import { EntityType } from './base/IEntity';
 import { IGroupConfig } from './SuperGroup';
+import { Sizing } from '../enum/Sizing';
 
 export interface IDebugConfig {
-    outlines?: boolean;
-    grid?: boolean;
+    outlines: boolean;
+    grid: boolean;
+}
+export interface IGameSettings {
+    sizing: Sizing;
 }
 export interface IGameConfig extends IGroupConfig {
     backgroundColor?: Color | string;
     fps?: number;
     debug?: IDebugConfig;
+    sizing?: Sizing;
 }
 
 export class Game extends Entity {
@@ -27,6 +32,9 @@ export class Game extends Entity {
     public input: Input = new Input();
     public scene: SceneManager;
     public started: boolean = false;
+    public settings: IGameSettings = {
+        sizing: Sizing.Auto
+    };
     public debug: IDebugConfig = {
         outlines: false,
         grid: false
@@ -41,6 +49,7 @@ export class Game extends Entity {
         height = 400,
         depth = 0,
         scale = 1,
+        sizing = Sizing.Auto,
         fps = 60,
         debug = {
             outlines: false,
@@ -63,6 +72,9 @@ export class Game extends Entity {
         this.debug = {
             ...this.debug,
             ...debug
+        };
+        this.settings = {
+            sizing
         };
         this.game = this;
         this.scene = new SceneManager(this);
