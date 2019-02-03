@@ -4,14 +4,18 @@ import { Transform, TransformEvent } from '../../structs/Transform';
 import * as Util from '../../util/Util';
 import { IEntity, EntityType, IEntityConfig, EntityEvent, Direction } from './IEntity';
 import { SuperGroup } from '../SuperGroup';
+import { Point3 } from '../../structs/Point3';
+import { Size3 } from '../../structs/Size3';
 
 export class Entity extends Observer implements IEntity {
     public id: string = '';
     public moveable: boolean = true;
     public collidable: boolean = true;
+    public alpha: number = 1;
     public readonly type: EntityType;
     public world: Transform = new Transform({});
     public local: Transform = new Transform({});
+    public scale: Point3 = new Point3();
     public parent: SuperGroup | undefined;
     public game: Game;
     protected _visible = true;
@@ -25,7 +29,10 @@ export class Entity extends Observer implements IEntity {
         z = 0,
         width = 0,
         height = 0,
-        scale = 1,
+        scaleX = 1,
+        scaleY = 1,
+        scaleZ = 1,
+        alpha = 1,
         preupdate,
         update,
         postupdate,
@@ -38,7 +45,10 @@ export class Entity extends Observer implements IEntity {
         this.z = z;
         this.width = width;
         this.height = height;
-        this.scale = scale;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.scaleZ = scaleZ;
+        this.alpha = alpha;
         this.world = Transform.add(this.local, this.world);
         this.id = Util.Random.id(12);
         this.type = type;
@@ -61,8 +71,14 @@ export class Entity extends Observer implements IEntity {
         this.local.on(TransformEvent.Depth, (previous: number) =>
             this.onTransformChange(previous, TransformEvent.Depth)
         );
-        this.local.on(TransformEvent.Scale, (previous: number) =>
-            this.onTransformChange(previous, TransformEvent.Scale)
+        this.local.on(TransformEvent.ScaleX, (previous: number) =>
+            this.onTransformChange(previous, TransformEvent.ScaleX)
+        );
+        this.local.on(TransformEvent.ScaleY, (previous: number) =>
+            this.onTransformChange(previous, TransformEvent.ScaleY)
+        );
+        this.local.on(TransformEvent.ScaleZ, (previous: number) =>
+            this.onTransformChange(previous, TransformEvent.ScaleZ)
         );
         this.initialize({ update, preupdate, postupdate, start, destroy });
     }
@@ -148,14 +164,32 @@ export class Entity extends Observer implements IEntity {
         }
     }
 
-    public get scale(): number {
-        return this.local.scale;
+    public get scaleX(): number {
+        return this.local.scaleX;
     }
 
-    public set scale(value: number) {
-        if (value !== this.local.scale) {
-            this.local.scale = value;
-        }
+    public set scaleX(value: number) {
+        this.local.scaleX = value;
+    }
+
+    public get scaleY(): number {
+        return this.local.scaleY;
+    }
+
+    public set scaleY(value: number) {
+        this.local.scaleY = value;
+    }
+
+    public get scaleZ(): number {
+        return this.local.scaleZ;
+    }
+
+    public set scaleZ(value: number) {
+        this.local.scaleZ = value;
+    }
+
+    public get scaled(): Size3 {
+        return this.world.scaled;
     }
 
     public get visible(): boolean {
@@ -272,10 +306,23 @@ export class Entity extends Observer implements IEntity {
             case TransformEvent.Depth:
                 this.world.depth = this.local.depth;
                 break;
+            case TransformEvent.ScaleX:
+                this.world.scaleX = this.local.scaleX;
+                break;
+            case TransformEvent.ScaleY:
+                this.world.scaleY = this.local.scaleY;
+                break;
+            case TransformEvent.ScaleZ:
+                this.world.scaleZ = this.local.scaleZ;
+                break;
         }
 
         this.reconcile(this.local, this, changed, this, Direction.Up, Util.Random.id(12));
         this.emit(EntityEvent.Transform, this, previous, changed);
+    }
+
+    protected onScaleChange(previous: number): void {
+        this.emit(EntityEvent.Scale, this, previous);
     }
 
     protected onRenderedChange(previous: boolean): void {

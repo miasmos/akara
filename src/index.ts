@@ -4,6 +4,7 @@ import { Sprite } from './entities/Sprite';
 import { Group } from './entities/Group';
 import { Box } from './entities/Box';
 import { HexCode } from './enum/Enum';
+import { Sizing } from './enum/Sizing';
 
 if (Debug.isDebug) {
 }
@@ -25,6 +26,7 @@ const box = new Box(game, {
 const gradient = new Sprite(game, {
     x: 80,
     y: 80,
+    alpha: 0.5,
     asset: 'gradient'
 });
 
@@ -37,3 +39,8 @@ console.log(group);
 console.log(box);
 
 game.load.image('assets/gradient.jpg', 'gradient');
+
+setTimeout(() => {
+    box.scaleX = 1.5;
+    gradient.scaleX = 1.5;
+}, 2000);

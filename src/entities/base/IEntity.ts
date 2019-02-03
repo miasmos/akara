@@ -2,11 +2,13 @@ import { Entity } from './Entity';
 import { Game } from '../Game';
 import { SuperGroup } from '../SuperGroup';
 import { Transform, TransformEvent } from '../../structs/Transform';
+import { Point3 } from '../../structs/Point3';
 
 export enum EntityEvent {
     Rendered,
     Tag,
     Transform,
+    Scale,
     Loaded
 }
 
@@ -29,7 +31,10 @@ export interface IEntityConfig {
     width?: number;
     height?: number;
     depth?: number;
-    scale?: number;
+    scaleX?: number;
+    scaleY?: number;
+    scaleZ?: number;
+    alpha?: number;
     preupdate?: Function;
     update?: Function;
     postupdate?: Function;
@@ -49,6 +54,7 @@ export interface IEntity {
     world: Transform;
     readonly type: EntityType;
     parent: SuperGroup | undefined;
+    scale: Point3;
     game: Game;
     tag: string | undefined;
 
@@ -57,9 +63,8 @@ export interface IEntity {
     z: number;
     width: number;
     height: number;
-    depth: number;
-    scale: number;
     visible: boolean;
+    alpha: number;
     renderable: boolean;
 
     equals(entity: Entity): boolean;

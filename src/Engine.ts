@@ -172,7 +172,13 @@ export class Engine extends Observer {
             return;
         }
 
-        const { x, y, width, height } = entity.world;
+        const { width, height } = entity.world.scaled;
+        const { x, y } = entity.world;
+
+        if (entity.alpha !== 1) {
+            this.canvas.alpha = entity.alpha;
+        }
+
         switch (entity.type) {
             case EntityType.Group:
                 const groupEntity = entity as SuperGroup;

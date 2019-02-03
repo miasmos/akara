@@ -28,7 +28,10 @@ export interface IGroupConfig {
     width?: number;
     height?: number;
     depth?: number;
-    scale?: number;
+    scaleX?: number;
+    scaleY?: number;
+    scaleZ?: number;
+    alpha?: number;
     type?: EntityType;
     sizing?: Sizing;
     load?: Function;
@@ -52,7 +55,10 @@ export class SuperGroup extends Entity {
         width = 0,
         height = 0,
         depth = 0,
-        scale = 1,
+        scaleX = 1,
+        scaleY = 1,
+        scaleZ = 1,
+        alpha = 1,
         type = EntityType.Group,
         preupdate,
         update,
@@ -68,7 +74,10 @@ export class SuperGroup extends Entity {
             width,
             height,
             depth,
-            scale,
+            scaleX,
+            scaleY,
+            scaleZ,
+            alpha,
             preupdate,
             update,
             postupdate,
@@ -155,6 +164,30 @@ export class SuperGroup extends Entity {
         entity.reconcile(
             entity.local,
             entity,
+            TransformEvent.ScaleX,
+            entity,
+            Direction.Up,
+            Random.id(12)
+        );
+        entity.reconcile(
+            entity.local,
+            entity,
+            TransformEvent.ScaleY,
+            entity,
+            Direction.Up,
+            Random.id(12)
+        );
+        entity.reconcile(
+            entity.local,
+            entity,
+            TransformEvent.ScaleZ,
+            entity,
+            Direction.Up,
+            Random.id(12)
+        );
+        entity.reconcile(
+            entity.local,
+            entity,
             TransformEvent.Width,
             entity,
             Direction.Up,
@@ -179,6 +212,30 @@ export class SuperGroup extends Entity {
         entity.reconcile(this.world, this, TransformEvent.X, entity, Direction.Down, Random.id(12));
         entity.reconcile(this.world, this, TransformEvent.Y, entity, Direction.Down, Random.id(12));
         entity.reconcile(this.world, this, TransformEvent.Z, entity, Direction.Down, Random.id(12));
+        entity.reconcile(
+            this.world,
+            this,
+            TransformEvent.ScaleX,
+            entity,
+            Direction.Down,
+            Random.id(12)
+        );
+        entity.reconcile(
+            this.world,
+            this,
+            TransformEvent.ScaleY,
+            entity,
+            Direction.Down,
+            Random.id(12)
+        );
+        entity.reconcile(
+            this.world,
+            this,
+            TransformEvent.ScaleZ,
+            entity,
+            Direction.Down,
+            Random.id(12)
+        );
         return true;
     }
 
@@ -228,6 +285,7 @@ export class SuperGroup extends Entity {
                 switch (changed) {
                     case TransformEvent.Width:
                     case TransformEvent.X:
+                    case TransformEvent.ScaleX:
                         this.local.width = this.world.width = Util.Math.distance(
                             bounds.x.low,
                             bounds.x.high
@@ -235,6 +293,7 @@ export class SuperGroup extends Entity {
                         break;
                     case TransformEvent.Height:
                     case TransformEvent.Y:
+                    case TransformEvent.ScaleY:
                         this.local.height = this.world.height = Util.Math.distance(
                             bounds.y.low,
                             bounds.y.high
@@ -242,6 +301,7 @@ export class SuperGroup extends Entity {
                         break;
                     case TransformEvent.Depth:
                     case TransformEvent.Z:
+                    case TransformEvent.ScaleZ:
                         this.local.depth = this.world.depth = Util.Math.distance(
                             bounds.z.low,
                             bounds.z.high

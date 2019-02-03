@@ -48,7 +48,10 @@ export class Game extends Entity {
         width = 400,
         height = 400,
         depth = 0,
-        scale = 1,
+        scaleX = 1,
+        scaleY = 1,
+        scaleZ = 1,
+        alpha = 1,
         sizing = Sizing.Auto,
         fps = 60,
         debug = {
@@ -64,7 +67,10 @@ export class Game extends Entity {
             width,
             height,
             depth,
-            scale
+            scaleX,
+            scaleY,
+            scaleZ,
+            alpha
         });
 
         this.moveable = false;

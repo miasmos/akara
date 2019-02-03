@@ -103,6 +103,13 @@ export class Canvas {
         }
     }
 
+    public set alpha(value: number) {
+        if (!!this.context) {
+            this.context.save();
+            this.context.globalAlpha = value;
+        }
+    }
+
     public drawImage(
         image: CanvasImageSource,
         x: number,
@@ -112,12 +119,14 @@ export class Canvas {
     ): void {
         if (!!this.context) {
             this.context.drawImage(image, x, y, width, height);
+            this.context.restore();
         }
     }
 
     public drawBuffer(data: ImageData, x: number, y: number): void {
         if (!!this.context) {
             this.context.putImageData(data, x, y);
+            this.context.restore();
         }
     }
 
@@ -125,6 +134,7 @@ export class Canvas {
         if (!!this.context) {
             this.context.fillStyle = color.toString();
             this.context.fillText(text, x, y);
+            this.context.restore();
         }
     }
 
@@ -132,6 +142,7 @@ export class Canvas {
         if (!!this.context) {
             this.context.fillStyle = color.toString();
             this.context.fillRect(x, y, width, height);
+            this.context.restore();
         }
     }
 
@@ -149,6 +160,7 @@ export class Canvas {
             this.context.strokeStyle = outline.toString();
             this.context.lineWidth = stroke;
             this.context.strokeRect(x, y, width, height);
+            this.context.restore();
         }
     }
 
@@ -167,6 +179,7 @@ export class Canvas {
             this.context.moveTo(x1, y1);
             this.context.lineTo(x2, y2);
             this.context.stroke();
+            this.context.restore();
         }
     }
 }

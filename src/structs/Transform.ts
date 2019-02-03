@@ -1,6 +1,7 @@
 import { Point3 } from './Point3';
 import { Observer } from '../Observer';
 import * as Util from '../util/Util';
+import { Size3 } from './Size3';
 
 export enum TransformEvent {
     X,
@@ -9,7 +10,9 @@ export enum TransformEvent {
     Width,
     Height,
     Depth,
-    Scale
+    ScaleX,
+    ScaleY,
+    ScaleZ
 }
 
 export interface ITransformConfig {
@@ -19,15 +22,16 @@ export interface ITransformConfig {
     width?: number;
     height?: number;
     depth?: number;
-    scale?: number;
+    scaleX?: number;
+    scaleY?: number;
+    scaleZ?: number;
 }
 
 export class Transform extends Observer {
-    private _scale: number = 1;
-    private _width: number = 0;
-    private _height: number = 0;
-    private _depth: number = 0;
-    protected point: Point3 = new Point3();
+    public scaled: Size3;
+    protected size: Size3;
+    protected point: Point3;
+    protected scale: Point3;
 
     public constructor({
         x = 0,
@@ -36,14 +40,15 @@ export class Transform extends Observer {
         width = 0,
         height = 0,
         depth = 0,
-        scale = 1
+        scaleX = 1,
+        scaleY = 1,
+        scaleZ = 1
     }: ITransformConfig) {
         super();
         this.point = new Point3(x, y, z);
-        this.width = width;
-        this.height = height;
-        this.depth = depth;
-        this.scale = scale;
+        this.scale = new Point3(scaleX, scaleY, scaleZ);
+        this.size = new Size3(width, height, depth);
+        this.scaled = new Size3(width * scaleX, height * scaleY, depth * scaleZ);
     }
 
     public get x(): number {
@@ -83,50 +88,80 @@ export class Transform extends Observer {
     }
 
     public get width(): number {
-        return this._width;
+        return this.scaled.width;
     }
 
     public set width(value: number) {
-        if (value !== this._width) {
-            const previous = this._width;
-            this._width = value;
+        if (value !== this.size.width) {
+            const previous = this.size.width;
+            this.size.width = value;
+            this.scaled.width = this.scaleX * value;
             this.emit(TransformEvent.Width, previous);
         }
     }
 
     public get height(): number {
-        return this._height;
+        return this.scaled.height;
     }
 
     public set height(value: number) {
-        if (value !== this._height) {
-            const previous = this._height;
-            this._height = value;
+        if (value !== this.size.height) {
+            const previous = this.size.height;
+            this.size.height = value;
+            this.scaled.height = this.scaleY * value;
             this.emit(TransformEvent.Height, previous);
         }
     }
 
     public get depth(): number {
-        return this._depth;
+        return this.size.depth;
     }
 
     public set depth(value: number) {
-        if (value !== this._depth) {
-            const previous = this._depth;
-            this._depth = value;
+        if (value !== this.size.depth) {
+            const previous = this.size.depth;
+            this.size.depth = value;
+            this.scaled.depth = this.scaleZ * value;
             this.emit(TransformEvent.Depth, previous);
         }
     }
 
-    public get scale(): number {
-        return this._scale;
+    public get scaleX(): number {
+        return this.scale.x;
     }
 
-    public set scale(value: number) {
-        if (value !== this._scale) {
-            const previous = this._scale;
-            this._scale = value;
-            this.emit(TransformEvent.Scale, previous);
+    public set scaleX(value: number) {
+        if (value !== this.scale.x) {
+            let previous: number = this.scale.x;
+            this.scale.x = value;
+            this.scaled.width = value * this.size.width;
+            this.emit(TransformEvent.ScaleX, previous);
+        }
+    }
+
+    public get scaleY(): number {
+        return this.scale.y;
+    }
+
+    public set scaleY(value: number) {
+        if (value !== this.scale.y) {
+            let previous: number = this.scale.y;
+            this.scale.y = value;
+            this.scaled.height = value * this.size.height;
+            this.emit(TransformEvent.ScaleY, previous);
+        }
+    }
+
+    public get scaleZ(): number {
+        return this.scale.z;
+    }
+
+    public set scaleZ(value: number) {
+        if (value !== this.scale.z) {
+            let previous: number = this.scale.z;
+            this.scale.z = value;
+            this.scaled.depth = value * this.size.depth;
+            this.emit(TransformEvent.ScaleZ, previous);
         }
     }
 
@@ -142,7 +177,9 @@ export class Transform extends Observer {
             width: a.width + b.width,
             height: a.height + b.height,
             depth: a.depth + b.depth,
-            scale: a.scale
+            scaleX: a.scale.x,
+            scaleY: a.scale.y,
+            scaleZ: a.scale.z
         });
     }
 
@@ -158,7 +195,9 @@ export class Transform extends Observer {
             width: a.width - b.width,
             height: a.height - b.height,
             depth: a.depth - b.depth,
-            scale: a.scale
+            scaleX: a.scale.x,
+            scaleY: a.scale.y,
+            scaleZ: a.scale.z
         });
     }
 
@@ -174,7 +213,9 @@ export class Transform extends Observer {
             width: Util.Math.distance(a.width, b.width),
             height: Util.Math.distance(a.height, b.height),
             depth: Util.Math.distance(a.depth, b.depth),
-            scale: a.scale
+            scaleX: a.scale.x,
+            scaleY: a.scale.y,
+            scaleZ: a.scale.z
         });
     }
 
