@@ -5,6 +5,7 @@ import { Group } from './entities/Group';
 import { Box } from './entities/Box';
 import { HexCode } from './enum/Enum';
 import { Sizing } from './enum/Sizing';
+import { EntityType } from './entities/base/IEntity';
 
 if (Debug.isDebug) {
 }
@@ -26,6 +27,7 @@ const box = new Box(game, {
 const gradient = new Sprite(game, {
     x: 80,
     y: 80,
+    tag: 'group',
     alpha: 0.5,
     asset: 'gradient'
 });
@@ -44,3 +46,5 @@ setTimeout(() => {
     box.scaleX = 1.5;
     gradient.scaleX = 1.5;
 }, 2000);
+
+console.log(game.getByType(EntityType.Box));

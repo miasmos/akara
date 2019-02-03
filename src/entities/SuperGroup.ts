@@ -32,6 +32,7 @@ export interface IGroupConfig {
     scaleY?: number;
     scaleZ?: number;
     alpha?: number;
+    tag?: string;
     type?: EntityType;
     sizing?: Sizing;
     load?: Function;
@@ -59,6 +60,7 @@ export class SuperGroup extends Entity {
         scaleY = 1,
         scaleZ = 1,
         alpha = 1,
+        tag,
         type = EntityType.Group,
         preupdate,
         update,
@@ -77,6 +79,7 @@ export class SuperGroup extends Entity {
             scaleX,
             scaleY,
             scaleZ,
+            tag,
             alpha,
             preupdate,
             update,
@@ -334,6 +337,14 @@ export class SuperGroup extends Entity {
                 }
             }
         }
+    }
+
+    public getByTag(tag: string): Entity[] {
+        return this.game.engine.getEntitiesByTag(tag);
+    }
+
+    public getByType(type: EntityType): Entity[] {
+        return this.game.engine.getEntitiesByType(type);
     }
 
     public contains(entity: Entity): boolean {

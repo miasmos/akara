@@ -18,7 +18,7 @@ export class Entity extends Observer implements IEntity {
     public parent: SuperGroup | undefined;
     public game: Game;
     protected _visible = true;
-    protected _tag: string = '';
+    protected _tag: string | undefined = '';
     protected _alpha: number = 1;
     protected _layer: number = 0;
 
@@ -33,6 +33,7 @@ export class Entity extends Observer implements IEntity {
         scaleY = 1,
         scaleZ = 1,
         alpha = 1,
+        tag,
         preupdate,
         update,
         postupdate,
@@ -48,6 +49,7 @@ export class Entity extends Observer implements IEntity {
         this.scaleX = scaleX;
         this.scaleY = scaleY;
         this.scaleZ = scaleZ;
+        this.tag = tag;
         this.alpha = alpha;
         this.world = Transform.add(this.local, this.world);
         this.id = Util.Random.id(12);
@@ -204,13 +206,16 @@ export class Entity extends Observer implements IEntity {
         }
     }
 
-    public get tag(): string {
+    public get tag(): string | undefined {
         return this._tag;
     }
 
-    public set tag(value: string) {
-        if (value !== this._tag && value.length > 0) {
-            let previous: string = this._tag;
+    public set tag(value: string | undefined) {
+        if (
+            (value !== this._tag && (typeof value === 'string' && value.length > 0)) ||
+            typeof value === 'undefined'
+        ) {
+            let previous: string | undefined = this._tag;
             this._tag = value;
             this.onTagChange(previous);
         }
@@ -344,7 +349,7 @@ export class Entity extends Observer implements IEntity {
         this.emit(EntityEvent.Rendered, this, previous);
     }
 
-    protected onTagChange(previous: string): void {
+    protected onTagChange(previous: string | undefined): void {
         this.emit(EntityEvent.Tag, this, previous);
     }
     //#endregion

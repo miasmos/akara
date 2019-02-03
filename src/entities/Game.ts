@@ -52,6 +52,7 @@ export class Game extends Entity {
         scaleY = 1,
         scaleZ = 1,
         alpha = 1,
+        tag,
         sizing = Sizing.Auto,
         fps = 60,
         debug = {
@@ -70,7 +71,8 @@ export class Game extends Entity {
             scaleX,
             scaleY,
             scaleZ,
-            alpha
+            alpha,
+            tag
         });
 
         this.moveable = false;
@@ -178,6 +180,22 @@ export class Game extends Entity {
         this.started = false;
         this.scene.off(SceneManagerEvent.Loaded, this.onSceneManagerLoaded.bind(this));
         this.stopEngine();
+    }
+
+    public getByTag(tag: string): Entity[] {
+        if (!!this.scene.active) {
+            return this.scene.active.getByTag(tag);
+        } else {
+            return [];
+        }
+    }
+
+    public getByType(type: EntityType): Entity[] {
+        if (!!this.scene.active) {
+            return this.scene.active.getByType(type);
+        } else {
+            return [];
+        }
     }
 
     private startEngine(): void {

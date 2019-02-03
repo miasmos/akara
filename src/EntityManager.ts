@@ -114,8 +114,12 @@ export class EntityManager {
         this.entitiesByTag[entity.tag].push(entity.id);
     }
 
-    private removeEntityFromTag(entity: Entity, tag: string): void {
-        if (typeof entity.tag !== 'string' || tag.length === 0) {
+    private removeEntityFromTag(entity: Entity, tag: string | undefined): void {
+        if (
+            typeof entity.tag !== 'string' ||
+            typeof tag === 'undefined' ||
+            (typeof tag === 'string' && tag.length === 0)
+        ) {
             return;
         }
         if (tag in this.entitiesByTag) {

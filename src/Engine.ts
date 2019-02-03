@@ -124,6 +124,14 @@ export class Engine extends Observer {
         return true;
     }
 
+    public getEntitiesByTag(tag: string): Entity[] {
+        return this.entities.getTag(tag);
+    }
+
+    public getEntitiesByType(type: EntityType): Entity[] {
+        return this.entities.getType(type);
+    }
+
     public clear(): void {
         this.entities.clear();
     }
