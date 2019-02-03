@@ -11,7 +11,6 @@ export class Entity extends Observer implements IEntity {
     public id: string = '';
     public moveable: boolean = true;
     public collidable: boolean = true;
-    public alpha: number = 1;
     public readonly type: EntityType;
     public world: Transform = new Transform({});
     public local: Transform = new Transform({});
@@ -20,6 +19,7 @@ export class Entity extends Observer implements IEntity {
     public game: Game;
     protected _visible = true;
     protected _tag: string = '';
+    protected _alpha: number = 1;
     protected _layer: number = 0;
 
     public constructor({
@@ -239,6 +239,21 @@ export class Entity extends Observer implements IEntity {
     public set layer(value: number) {
         if (this._layer !== value) {
             this._layer = value;
+        }
+    }
+
+    public get alpha(): number {
+        return this._alpha;
+    }
+
+    public set alpha(value: number) {
+        if (value < 0) {
+            value = 0;
+        } else if (value > 1) {
+            value = 1;
+        }
+        if (value !== this._alpha) {
+            this._alpha = value;
         }
     }
     //#endregion
