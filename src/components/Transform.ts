@@ -2,6 +2,7 @@ import { Component, ComponentEvent, ComponentType, IComponentConfig } from './Co
 import { Point3 } from '../structs/Point3';
 import { Transform3, Transform3Event } from '../structs/Transform3';
 import { Entity } from '../entities';
+import { Pivot2 } from '../structs/Pivot2';
 
 export interface ITransformConfig extends IComponentConfig {
     x?: number;
@@ -80,6 +81,12 @@ export class Transform extends Component {
         this.local.on(Transform3Event.ScaleZ, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.ScaleZ)
         );
+        this.local.on(Transform3Event.PivotX, (previous: number) =>
+            this.onTransformChange(previous, Transform3Event.PivotX)
+        );
+        this.local.on(Transform3Event.PivotY, (previous: number) =>
+            this.onTransformChange(previous, Transform3Event.PivotY)
+        );
         super.configure({ type: ComponentType.Transform });
     }
 
@@ -116,6 +123,12 @@ export class Transform extends Component {
                 break;
             case Transform3Event.ScaleZ:
                 this.world.scaleZ = this.local.scaleZ;
+                break;
+            case Transform3Event.PivotX:
+                this.world.pivotX = this.local.pivotX;
+                break;
+            case Transform3Event.PivotY:
+                this.world.pivotY = this.local.pivotY;
                 break;
         }
 

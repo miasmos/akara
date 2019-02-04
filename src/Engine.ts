@@ -180,7 +180,7 @@ export class Engine extends Observer {
             return;
         }
 
-        const { width, height } = entity.world.scaled;
+        const { width, height } = entity.world.size;
         const { x, y } = entity.world;
 
         if (entity.alpha !== 1) {
@@ -206,13 +206,32 @@ export class Engine extends Observer {
                 break;
         }
 
-        const outlines = this.game.debug.outlines;
-        if (outlines) {
+        this.debug(entity);
+    }
+
+    private debug(entity: Entity): void {
+        const { width, height } = entity.world.size;
+        const { x, y } = entity.world;
+
+        const shouldDrawOutline = this.game.debug.outline;
+        if (shouldDrawOutline) {
             const backgroundColor =
                 entity.type === EntityType.Box
                     ? (entity as Box).backgroundColor
                     : this.canvas.backgroundColor;
             this.canvas.drawOutline(backgroundColor, new Color(HexCode.Green), x, y, width, height);
+        }
+
+        const shouldDrawPivot = this.game.debug.pivot;
+        if (shouldDrawPivot) {
+            const { pivot } = entity.world;
+            this.canvas.drawBox(
+                new Color(HexCode.Red),
+                x + width * pivot.x,
+                y + height * pivot.y,
+                1,
+                1
+            );
         }
     }
 

@@ -14,8 +14,9 @@ import { Sizing } from '../enum/Sizing';
 import { EntityFactory } from '../EntityFactory';
 
 export interface IDebugConfig {
-    outlines: boolean;
-    grid: boolean;
+    outline?: boolean;
+    grid?: boolean;
+    pivot?: boolean;
 }
 export interface IGameSettings {
     sizing: Sizing;
@@ -23,7 +24,7 @@ export interface IGameSettings {
 export interface IGameConfig extends IGroupConfig {
     backgroundColor?: Color | string;
     fps?: number;
-    debug?: IDebugConfig;
+    debug?: IDebugConfig | boolean;
     sizing?: Sizing;
 }
 
@@ -39,8 +40,9 @@ export class Game extends Entity {
         sizing: Sizing.Auto
     };
     public debug: IDebugConfig = {
-        outlines: false,
-        grid: false
+        outline: false,
+        grid: false,
+        pivot: false
     };
 
     public configure({
@@ -54,13 +56,16 @@ export class Game extends Entity {
         scaleX = 1,
         scaleY = 1,
         scaleZ = 1,
+        pivotX = 0,
+        pivotY = 0,
         alpha = 1,
         tag,
         sizing = Sizing.Auto,
         fps = 60,
         debug = {
-            outlines: false,
-            grid: false
+            outline: false,
+            grid: false,
+            pivot: false
         }
     }: IGameConfig): void {
         super.configure({
@@ -74,12 +79,26 @@ export class Game extends Entity {
             scaleX,
             scaleY,
             scaleZ,
+            pivotX,
+            pivotY,
             alpha,
             tag
         });
+
+        let debugOpts = {};
+        if (typeof debug === 'boolean') {
+            debugOpts = {
+                outline: debug,
+                grid: debug,
+                pivot: debug
+            };
+        } else {
+            debugOpts = debug;
+        }
+
         this.debug = {
             ...this.debug,
-            ...debug
+            ...debugOpts
         };
         this.settings = {
             sizing

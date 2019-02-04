@@ -10,6 +10,7 @@ import { ComponentManager, ComponentManagerEvent } from '../../ComponentManager'
 import { TransformEvent, Transform } from '../../components/Transform';
 import { Collider } from '../../components/Collider';
 import { ComponentType, Component } from '../../components/Component';
+import { Pivot2 } from '../../structs/Pivot2';
 
 export class Entity extends Observer implements IEntity {
     public id: string = '';
@@ -38,6 +39,8 @@ export class Entity extends Observer implements IEntity {
         scaleX = 1,
         scaleY = 1,
         scaleZ = 1,
+        pivotX = 0,
+        pivotY = 0,
         alpha = 1,
         tag,
         preupdate,
@@ -54,6 +57,8 @@ export class Entity extends Observer implements IEntity {
         this.scaleX = scaleX;
         this.scaleY = scaleY;
         this.scaleZ = scaleZ;
+        this.pivotX = pivotX;
+        this.pivotY = pivotY;
         this.tag = tag;
         this.alpha = alpha;
         this.id = Util.Random.id(12);
@@ -292,9 +297,37 @@ export class Entity extends Observer implements IEntity {
         }
     }
 
+    public get pivotX(): number {
+        if (!!this.transform) {
+            return this.transform.local.pivotX;
+        } else {
+            return 0;
+        }
+    }
+
+    public set pivotX(value: number) {
+        if (!!this.transform) {
+            this.transform.local.pivotX = value;
+        }
+    }
+
+    public get pivotY(): number {
+        if (!!this.transform) {
+            return this.transform.local.pivotY;
+        } else {
+            return 0;
+        }
+    }
+
+    public set pivotY(value: number) {
+        if (!!this.transform) {
+            this.transform.local.pivotY = value;
+        }
+    }
+
     public get scaled(): Size3 {
         if (!!this.transform) {
-            return this.transform.world.scaled;
+            return this.transform.world.size;
         } else {
             return new Size3();
         }
@@ -366,6 +399,14 @@ export class Entity extends Observer implements IEntity {
         const clamped = Util.Math.clamp(value, 0, 1);
         if (clamped !== this._alpha) {
             this._alpha = clamped;
+        }
+    }
+
+    public get pivot(): Pivot2 {
+        if (!!this.transform) {
+            return this.transform.local.pivot;
+        } else {
+            return Pivot2.topLeft;
         }
     }
     //#endregion

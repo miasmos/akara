@@ -5,7 +5,7 @@ import { EntityFactory } from './EntityFactory';
 if (Debug.isDebug) {
 }
 
-const game: Game = EntityFactory.game({ debug: { outlines: true, grid: true } });
+const game: Game = EntityFactory.game({ debug: { outline: true, grid: true, pivot: true } });
 game.load.image('assets/gradient.jpg', 'gradient');
 const group = game.entity.group({
     x: 80,

@@ -34,6 +34,8 @@ export interface IEntityConfig {
     scaleX?: number;
     scaleY?: number;
     scaleZ?: number;
+    pivotX?: number;
+    pivotY?: number;
     alpha?: number;
     tag?: string;
     preupdate?: Function;

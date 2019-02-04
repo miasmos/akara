@@ -1,4 +1,5 @@
 import { Point2 } from './Point2';
+import * as Util from '../util/Util';
 
 export class Vector2 extends Point2 {
     public static readonly down: Vector2 = new Vector2(0, -1);
@@ -10,18 +11,10 @@ export class Vector2 extends Point2 {
 
     public set(x?: number, y?: number): void {
         if (typeof x !== 'undefined') {
-            if (x < -1) {
-                x = -1;
-            } else if (x > 1) {
-                x = 1;
-            }
+            x = Util.Math.clamp(x, -1, 1);
         }
         if (typeof y !== 'undefined') {
-            if (y < -1) {
-                y = -1;
-            } else if (y > 1) {
-                y = 1;
-            }
+            y = Util.Math.clamp(y, -1, 1);
         }
         super.set(x, y);
     }
