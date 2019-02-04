@@ -58,6 +58,9 @@ export class Game extends Entity {
         scaleZ = 1,
         pivotX = 0,
         pivotY = 0,
+        rotateX = 0,
+        rotateY = 0,
+        rotateZ = 0,
         alpha = 1,
         tag,
         sizing = Sizing.Auto,
@@ -81,6 +84,9 @@ export class Game extends Entity {
             scaleZ,
             pivotX,
             pivotY,
+            rotateX,
+            rotateY,
+            rotateZ,
             alpha,
             tag
         });

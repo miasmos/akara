@@ -3,6 +3,7 @@ import { Observer } from '../Observer';
 import * as Util from '../util/Util';
 import { Size3 } from './Size3';
 import { Pivot2 } from './Pivot2';
+import { Rotation3 } from './Rotation3';
 
 export enum Transform3Event {
     X = 'Transform3Event.X',
@@ -15,7 +16,10 @@ export enum Transform3Event {
     ScaleY = 'Transform3Event.ScaleY',
     ScaleZ = 'Transform3Event.ScaleZ',
     PivotX = 'Transform3Event.PivotX',
-    PivotY = 'Transform3Event.PivotY'
+    PivotY = 'Transform3Event.PivotY',
+    RotateX = 'Transform3Event.RotateX',
+    RotateY = 'Transform3Event.RotateY',
+    RotateZ = 'Transform3Event.RotateZ'
 }
 
 export interface ITransform3Config {
@@ -28,18 +32,22 @@ export interface ITransform3Config {
     scaleX?: number;
     scaleY?: number;
     scaleZ?: number;
+    rotateX?: number;
+    rotateY?: number;
+    rotateZ?: number;
     pivotX?: number;
     pivotY?: number;
 }
 
 export class Transform3 extends Observer {
-    protected _size: Size3;
-    protected _origin: Point3;
-    protected scale: Point3;
+    protected _size: Size3; // raw inputs from w/h/d setters
+    protected _origin: Point3; // raw inputs from x/y/z setters
 
+    public scale: Point3;
     public pivot: Pivot2;
-    public size: Size3;
-    public origin: Point3;
+    public size: Size3; // computed w/h/d taking into account scaling
+    public origin: Point3; // computed x/y/z taking into account pivot point
+    public rotation: Rotation3; // raw inputs from rx/ry/rz setters
 
     public constructor({
         x = 0,
@@ -51,10 +59,14 @@ export class Transform3 extends Observer {
         scaleX = 1,
         scaleY = 1,
         scaleZ = 1,
+        rotateX = 0,
+        rotateY = 0,
+        rotateZ = 0,
         pivotX = 0,
         pivotY = 0
     }: ITransform3Config) {
         super();
+        this.rotation = new Rotation3(rotateX, rotateY, rotateZ);
         this.pivot = new Pivot2(pivotX, pivotY);
         this._origin = new Point3(x, y, z);
         this.scale = new Point3(scaleX, scaleY, scaleZ);
@@ -208,6 +220,39 @@ export class Transform3 extends Observer {
             this.pivot.y = value;
             this.origin.y = this.y - this.size.height * this.pivot.y;
             this.emit(Transform3Event.PivotY);
+        }
+    }
+
+    public get rotateX(): number {
+        return this.rotation.x;
+    }
+
+    public set rotateX(value: number) {
+        if (value !== this.rotation.x) {
+            this.rotation.x = value;
+            this.emit(Transform3Event.RotateX);
+        }
+    }
+
+    public get rotateY(): number {
+        return this.rotation.y;
+    }
+
+    public set rotateY(value: number) {
+        if (value !== this.rotation.y) {
+            this.rotation.y = value;
+            this.emit(Transform3Event.RotateY);
+        }
+    }
+
+    public get rotateZ(): number {
+        return this.rotation.z;
+    }
+
+    public set rotateZ(value: number) {
+        if (value !== this.rotation.z) {
+            this.rotation.z = value;
+            this.emit(Transform3Event.RotateZ);
         }
     }
 

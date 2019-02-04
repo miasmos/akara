@@ -14,6 +14,11 @@ export interface ITransformConfig extends IComponentConfig {
     scaleX?: number;
     scaleY?: number;
     scaleZ?: number;
+    pivotX?: number;
+    pivotY?: number;
+    rotateX?: number;
+    rotateY?: number;
+    rotateZ?: number;
     moveable?: boolean;
 }
 
@@ -38,6 +43,11 @@ export class Transform extends Component {
         scaleX = 1,
         scaleY = 1,
         scaleZ = 1,
+        pivotX = 0,
+        pivotY = 0,
+        rotateX = 0,
+        rotateY = 0,
+        rotateZ = 0,
         moveable = true
     }: ITransformConfig): void {
         this.local = new Transform3({
@@ -47,9 +57,14 @@ export class Transform extends Component {
             width,
             height,
             depth,
+            pivotX,
+            pivotY,
             scaleX,
             scaleY,
-            scaleZ
+            scaleZ,
+            rotateX,
+            rotateY,
+            rotateZ
         });
         this.world = Transform3.add(this.local, this.world);
         this.moveable = moveable;
@@ -86,6 +101,15 @@ export class Transform extends Component {
         );
         this.local.on(Transform3Event.PivotY, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.PivotY)
+        );
+        this.local.on(Transform3Event.RotateX, (previous: number) =>
+            this.onTransformChange(previous, Transform3Event.RotateX)
+        );
+        this.local.on(Transform3Event.RotateY, (previous: number) =>
+            this.onTransformChange(previous, Transform3Event.RotateY)
+        );
+        this.local.on(Transform3Event.RotateZ, (previous: number) =>
+            this.onTransformChange(previous, Transform3Event.RotateZ)
         );
         super.configure({ type: ComponentType.Transform });
     }
@@ -129,6 +153,15 @@ export class Transform extends Component {
                 break;
             case Transform3Event.PivotY:
                 this.world.pivotY = this.local.pivotY;
+                break;
+            case Transform3Event.RotateX:
+                this.world.rotateX = this.local.rotateX;
+                break;
+            case Transform3Event.RotateY:
+                this.world.rotateY = this.local.rotateY;
+                break;
+            case Transform3Event.RotateZ:
+                this.world.rotateZ = this.local.rotateZ;
                 break;
         }
 

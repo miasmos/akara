@@ -16,6 +16,7 @@ export class Canvas {
     private context: CanvasRenderingContext2D | undefined;
     private element: HTMLCanvasElement | undefined;
     private transform: Transform3 = new Transform3({});
+    private saved: boolean = false;
 
     public constructor({
         width = 400,
@@ -97,6 +98,37 @@ export class Canvas {
         this.height = height;
     }
 
+    public translate(x: number, y: number): void {
+        if (!!this.context) {
+            this.save();
+            this.context.translate(x, y);
+        }
+    }
+
+    public save(): void {
+        if (!this.saved) {
+            if (!!this.context) {
+                this.context.save();
+                this.saved = true;
+            }
+        }
+    }
+
+    public restore(): void {
+        if (this.saved) {
+            if (!!this.context) {
+                this.context.restore();
+                this.saved = false;
+            }
+        }
+    }
+
+    public rotate(degrees: number): void {
+        if (!!this.context) {
+            this.context.rotate((degrees * Math.PI) / 180);
+        }
+    }
+
     public clear(): void {
         if (!!this.context && !!this.element) {
             this.context.clearRect(0, 0, this.element.width, this.element.height);
@@ -105,7 +137,7 @@ export class Canvas {
 
     public set alpha(value: number) {
         if (!!this.context) {
-            this.context.save();
+            this.save();
             this.context.globalAlpha = value;
         }
     }
@@ -119,14 +151,12 @@ export class Canvas {
     ): void {
         if (!!this.context) {
             this.context.drawImage(image, x, y, width, height);
-            this.context.restore();
         }
     }
 
     public drawBuffer(data: ImageData, x: number, y: number): void {
         if (!!this.context) {
             this.context.putImageData(data, x, y);
-            this.context.restore();
         }
     }
 
@@ -134,7 +164,6 @@ export class Canvas {
         if (!!this.context) {
             this.context.fillStyle = color.toString();
             this.context.fillText(text, x, y);
-            this.context.restore();
         }
     }
 
@@ -142,7 +171,6 @@ export class Canvas {
         if (!!this.context) {
             this.context.fillStyle = color.toString();
             this.context.fillRect(x, y, width, height);
-            this.context.restore();
         }
     }
 

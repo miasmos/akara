@@ -181,10 +181,16 @@ export class Engine extends Observer {
         }
 
         const { width, height } = entity.world.size;
-        const { x, y } = entity.world;
+        const { x, y, rotateX, rotateY, rotateZ, pivotX, pivotY } = entity.world;
 
         if (entity.alpha !== 1) {
+            this.canvas.save();
             this.canvas.alpha = entity.alpha;
+        }
+        if (rotateX !== 0 || rotateY !== 0 || rotateZ !== 0) {
+            this.canvas.save();
+            this.canvas.translate(x + pivotX * width, y + pivotY * height);
+            this.canvas.rotate(rotateX);
         }
 
         switch (entity.type) {
@@ -206,6 +212,7 @@ export class Engine extends Observer {
                 break;
         }
 
+        this.canvas.restore();
         this.debug(entity);
     }
 

@@ -36,6 +36,9 @@ export interface IEntityConfig {
     scaleZ?: number;
     pivotX?: number;
     pivotY?: number;
+    rotateX?: number;
+    rotateY?: number;
+    rotateZ?: number;
     alpha?: number;
     tag?: string;
     preupdate?: Function;
@@ -66,6 +69,15 @@ export interface IEntity {
     z: number;
     width: number;
     height: number;
+    depth: number;
+    scaleX: number;
+    scaleY: number;
+    scaleZ: number;
+    pivotX: number;
+    pivotY: number;
+    rotateX: number;
+    rotateY: number;
+    rotateZ: number;
     visible: boolean;
     alpha: number;
     renderable: boolean;

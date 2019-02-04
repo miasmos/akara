@@ -37,4 +37,28 @@ export class Pivot2 extends Point2 {
     public right(): void {
         this.set(1, this.y);
     }
+
+    public add(pivot: Pivot2): Pivot2 {
+        return Pivot2.add(this, pivot);
+    }
+
+    public static add(a: Pivot2, b: Pivot2): Pivot2 {
+        return new Pivot2(a.x + b.x, a.y + b.y);
+    }
+
+    public subtract(pivot: Pivot2): Pivot2 {
+        return Pivot2.subtract(this, pivot);
+    }
+
+    public static subtract(a: Pivot2, b: Pivot2): Pivot2 {
+        return new Pivot2(a.x - b.x, a.y - b.y);
+    }
+
+    public equals(pivot: Pivot2): boolean {
+        return Pivot2.equals(this, pivot);
+    }
+
+    public static equals(a: Pivot2, b: Pivot2): boolean {
+        return a.x === b.x && a.y === b.y;
+    }
 }

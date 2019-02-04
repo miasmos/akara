@@ -41,6 +41,9 @@ export class Entity extends Observer implements IEntity {
         scaleZ = 1,
         pivotX = 0,
         pivotY = 0,
+        rotateX = 0,
+        rotateY = 0,
+        rotateZ = 0,
         alpha = 1,
         tag,
         preupdate,
@@ -59,6 +62,9 @@ export class Entity extends Observer implements IEntity {
         this.scaleZ = scaleZ;
         this.pivotX = pivotX;
         this.pivotY = pivotY;
+        this.rotateX = rotateX;
+        this.rotateY = rotateY;
+        this.rotateZ = rotateZ;
         this.tag = tag;
         this.alpha = alpha;
         this.id = Util.Random.id(12);
@@ -322,6 +328,48 @@ export class Entity extends Observer implements IEntity {
     public set pivotY(value: number) {
         if (!!this.transform) {
             this.transform.local.pivotY = value;
+        }
+    }
+
+    public get rotateX(): number {
+        if (!!this.transform) {
+            return this.transform.local.rotateX;
+        } else {
+            return 0;
+        }
+    }
+
+    public set rotateX(value: number) {
+        if (!!this.transform) {
+            this.transform.local.rotateX = value;
+        }
+    }
+
+    public get rotateY(): number {
+        if (!!this.transform) {
+            return this.transform.local.rotateY;
+        } else {
+            return 0;
+        }
+    }
+
+    public set rotateY(value: number) {
+        if (!!this.transform) {
+            this.transform.local.rotateY = value;
+        }
+    }
+
+    public get rotateZ(): number {
+        if (!!this.transform) {
+            return this.transform.local.rotateZ;
+        } else {
+            return 0;
+        }
+    }
+
+    public set rotateZ(value: number) {
+        if (!!this.transform) {
+            this.transform.local.rotateZ = value;
         }
     }
 
