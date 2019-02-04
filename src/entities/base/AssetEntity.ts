@@ -1,7 +1,6 @@
 import { Entity } from './Entity';
 import { IEntityConfig, EntityEvent, IEntity } from './IEntity';
 import { Asset, AssetType } from '../../loader/assets/Asset';
-import { Game } from '../Game';
 import { LoaderEvents } from '../../loader/Loader';
 import { EmptyAsset } from '../../loader/assets/EmptyAsset';
 
@@ -20,31 +19,28 @@ export class AssetEntity extends Entity implements IAssetEntity {
     private assetType: AssetType;
     private assetName: string;
 
-    public constructor(
-        game: Game,
-        {
-            type,
-            assetType,
-            asset,
-            x = 0,
-            y = 0,
-            z = 0,
-            width = 0,
-            height = 0,
-            scaleX = 1,
-            scaleY = 1,
-            scaleZ = 1,
-            alpha = 1,
-            tag,
-            load,
-            preupdate,
-            update,
-            postupdate,
-            start,
-            destroy
-        }: IAssetEntityConfig
-    ) {
-        super({
+    public configure({
+        type,
+        assetType,
+        asset,
+        x = 0,
+        y = 0,
+        z = 0,
+        width = 0,
+        height = 0,
+        scaleX = 1,
+        scaleY = 1,
+        scaleZ = 1,
+        alpha = 1,
+        tag,
+        load,
+        preupdate,
+        update,
+        postupdate,
+        start,
+        destroy
+    }: IAssetEntityConfig): void {
+        super.configure({
             type,
             x,
             y,
@@ -62,11 +58,11 @@ export class AssetEntity extends Entity implements IAssetEntity {
             start,
             destroy
         });
+
         this.assetType = assetType;
         this.assetName = asset;
-        this.game = game;
-        this.bindAsset();
         this.initialize({ load, update, preupdate, postupdate, start, destroy });
+        this.bindAsset();
     }
 
     protected initialize({ load, update, preupdate, postupdate, start, destroy }): void {

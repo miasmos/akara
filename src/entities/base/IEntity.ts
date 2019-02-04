@@ -1,15 +1,15 @@
 import { Entity } from './Entity';
 import { Game } from '../Game';
-import { SuperGroup } from '../SuperGroup';
-import { Transform, TransformEvent } from '../../structs/Transform';
+import { Group } from '../Group';
+import { Transform3, Transform3Event } from '../../structs/Transform3';
 import { Point3 } from '../../structs/Point3';
 
 export enum EntityEvent {
-    Rendered,
-    Tag,
-    Transform,
-    Scale,
-    Loaded
+    Rendered = 'EntityEvent.Rendered',
+    Tag = 'EntityEvent.Tag',
+    Transform = 'EntityEvent.Transform',
+    Scale = 'EntityEvent.Scale',
+    Loaded = 'EntityEvent.Loaded'
 }
 
 export enum EntityType {
@@ -24,7 +24,7 @@ export enum EntityType {
 }
 
 export interface IEntityConfig {
-    type: EntityType;
+    type?: EntityType;
     x?: number;
     y?: number;
     z?: number;
@@ -52,9 +52,9 @@ export interface IEntity {
     id: string;
     moveable: boolean;
     collidable: boolean;
-    world: Transform;
+    world: Transform3;
     readonly type: EntityType;
-    parent: SuperGroup | undefined;
+    parent: Group | undefined;
     scale: Point3;
     game: Game;
     tag: string | undefined;
@@ -75,9 +75,9 @@ export interface IEntity {
     postupdate?(): void;
     destroy?(): void;
     reconcile(
-        transform: Transform,
+        transform: Transform3,
         origin: Entity,
-        changed: TransformEvent,
+        changed: Transform3Event,
         last: Entity,
         direction?: Direction,
         id?: string

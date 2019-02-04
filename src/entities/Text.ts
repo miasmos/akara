@@ -1,8 +1,7 @@
 import { Entity } from './base/Entity';
 import { EntityType } from './base/IEntity';
-import { Game } from './Game';
 import { Color } from '../structs/Color';
-import { IGroupConfig } from './SuperGroup';
+import { IGroupConfig } from './Group';
 
 export interface ITextConfig extends IGroupConfig {
     text?: string;
@@ -10,33 +9,31 @@ export interface ITextConfig extends IGroupConfig {
 }
 
 export class Text extends Entity {
+    public type: EntityType = EntityType.Text;
     private _text: string = '';
     public color: Color = new Color();
 
-    public constructor(
-        game: Game,
-        {
-            x = 0,
-            y = 0,
-            z = 0,
-            width = 0,
-            height = 0,
-            depth = 0,
-            scaleX = 1,
-            scaleY = 1,
-            scaleZ = 1,
-            alpha = 1,
-            tag,
-            text = '',
-            color = new Color(),
-            preupdate,
-            update,
-            postupdate,
-            start,
-            destroy
-        }: ITextConfig
-    ) {
-        super({
+    public configure({
+        x = 0,
+        y = 0,
+        z = 0,
+        width = 0,
+        height = 0,
+        depth = 0,
+        scaleX = 1,
+        scaleY = 1,
+        scaleZ = 1,
+        alpha = 1,
+        tag,
+        text = '',
+        color = new Color(),
+        preupdate,
+        update,
+        postupdate,
+        start,
+        destroy
+    }: ITextConfig): void {
+        super.configure({
             type: EntityType.Text,
             x,
             y,
@@ -55,7 +52,6 @@ export class Text extends Entity {
             start,
             destroy
         });
-        this.game = game;
         this.text = text;
         this.color = color;
     }

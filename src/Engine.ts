@@ -9,7 +9,7 @@ import { Observer } from './Observer';
 import { EntityManager } from './EntityManager';
 import { Registry } from './Registry';
 import { Game } from './entities/Game';
-import { SuperGroup } from './entities/SuperGroup';
+import { Group } from './entities/Group';
 import { Debug } from './util/Util';
 import { ErrorMessage } from './enum/ErrorMessage';
 import { Color } from './structs/Color';
@@ -91,7 +91,7 @@ export class Engine extends Observer {
         this.registry.add(entity);
 
         if (entity.type === EntityType.Group) {
-            for (let child of (entity as SuperGroup).children) {
+            for (let child of (entity as Group).children) {
                 this.add(child);
             }
         }
@@ -113,7 +113,7 @@ export class Engine extends Observer {
         this.registry.remove(entity);
 
         if (entity.type === EntityType.Group) {
-            for (let child of (entity as SuperGroup).children) {
+            for (let child of (entity as Group).children) {
                 this.remove(child);
             }
         }
@@ -189,7 +189,7 @@ export class Engine extends Observer {
 
         switch (entity.type) {
             case EntityType.Group:
-                const groupEntity = entity as SuperGroup;
+                const groupEntity = entity as Group;
                 for (let entity of groupEntity.children) {
                     this.render(entity);
                 }

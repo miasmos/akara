@@ -9,8 +9,9 @@ import { ErrorMessage } from '../enum/ErrorMessage';
 import { Entity } from './base/Entity';
 import { Scene } from './Scene';
 import { EntityType } from './base/IEntity';
-import { IGroupConfig } from './SuperGroup';
+import { IGroupConfig } from './Group';
 import { Sizing } from '../enum/Sizing';
+import { EntityFactory } from '../EntityFactory';
 
 export interface IDebugConfig {
     outlines: boolean;
@@ -27,10 +28,12 @@ export interface IGameConfig extends IGroupConfig {
 }
 
 export class Game extends Entity {
+    public type: EntityType = EntityType.Game;
     public engine: Engine;
     public load: Loader = new Loader();
     public input: Input = new Input();
-    public scene: SceneManager;
+    public entity = new EntityFactory(this);
+    public scene: SceneManager = new SceneManager(this);
     public started: boolean = false;
     public settings: IGameSettings = {
         sizing: Sizing.Auto
@@ -40,7 +43,7 @@ export class Game extends Entity {
         grid: false
     };
 
-    public constructor({
+    public configure({
         backgroundColor = HexCode.Black,
         x = 0,
         y = 0,
@@ -59,8 +62,8 @@ export class Game extends Entity {
             outlines: false,
             grid: false
         }
-    }: IGameConfig) {
-        super({
+    }: IGameConfig): void {
+        super.configure({
             type: EntityType.Game,
             x,
             y,
@@ -74,9 +77,6 @@ export class Game extends Entity {
             alpha,
             tag
         });
-
-        this.moveable = false;
-        this.collidable = false;
         this.debug = {
             ...this.debug,
             ...debug
@@ -84,8 +84,6 @@ export class Game extends Entity {
         this.settings = {
             sizing
         };
-        this.game = this;
-        this.scene = new SceneManager(this);
         this.engine = new Engine({
             game: this,
             width,
@@ -93,7 +91,6 @@ export class Game extends Entity {
             backgroundColor,
             fps
         });
-
         this.scene.load(SceneName.Default);
     }
 

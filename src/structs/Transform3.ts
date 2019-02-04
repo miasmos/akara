@@ -3,19 +3,19 @@ import { Observer } from '../Observer';
 import * as Util from '../util/Util';
 import { Size3 } from './Size3';
 
-export enum TransformEvent {
-    X,
-    Y,
-    Z,
-    Width,
-    Height,
-    Depth,
-    ScaleX,
-    ScaleY,
-    ScaleZ
+export enum Transform3Event {
+    X = 'Transform3Event.X',
+    Y = 'Transform3Event.Y',
+    Z = 'Transform3Event.Z',
+    Width = 'Transform3Event.Width',
+    Height = 'Transform3Event.Height',
+    Depth = 'Transform3Event.Depth',
+    ScaleX = 'Transform3Event.ScaleX',
+    ScaleY = 'Transform3Event.ScaleY',
+    ScaleZ = 'Transform3Event.ScaleZ'
 }
 
-export interface ITransformConfig {
+export interface ITransform3Config {
     x?: number;
     y?: number;
     z?: number;
@@ -27,7 +27,7 @@ export interface ITransformConfig {
     scaleZ?: number;
 }
 
-export class Transform extends Observer {
+export class Transform3 extends Observer {
     public scaled: Size3;
     protected size: Size3;
     protected point: Point3;
@@ -43,7 +43,7 @@ export class Transform extends Observer {
         scaleX = 1,
         scaleY = 1,
         scaleZ = 1
-    }: ITransformConfig) {
+    }: ITransform3Config) {
         super();
         this.point = new Point3(x, y, z);
         this.scale = new Point3(scaleX, scaleY, scaleZ);
@@ -59,7 +59,7 @@ export class Transform extends Observer {
         if (value !== this.point.x) {
             const previous = this.point.x;
             this.point.x = value;
-            this.emit(TransformEvent.X, previous);
+            this.emit(Transform3Event.X, previous);
         }
     }
 
@@ -71,7 +71,7 @@ export class Transform extends Observer {
         if (value !== this.point.y) {
             const previous = this.point.y;
             this.point.y = value;
-            this.emit(TransformEvent.Y, previous);
+            this.emit(Transform3Event.Y, previous);
         }
     }
 
@@ -83,7 +83,7 @@ export class Transform extends Observer {
         if (value !== this.point.z) {
             const previous = this.point.z;
             this.point.z = value;
-            this.emit(TransformEvent.Z, previous);
+            this.emit(Transform3Event.Z, previous);
         }
     }
 
@@ -96,7 +96,7 @@ export class Transform extends Observer {
             const previous = this.size.width;
             this.size.width = value;
             this.scaled.width = this.scaleX * value;
-            this.emit(TransformEvent.Width, previous);
+            this.emit(Transform3Event.Width, previous);
         }
     }
 
@@ -109,7 +109,7 @@ export class Transform extends Observer {
             const previous = this.size.height;
             this.size.height = value;
             this.scaled.height = this.scaleY * value;
-            this.emit(TransformEvent.Height, previous);
+            this.emit(Transform3Event.Height, previous);
         }
     }
 
@@ -122,7 +122,7 @@ export class Transform extends Observer {
             const previous = this.size.depth;
             this.size.depth = value;
             this.scaled.depth = this.scaleZ * value;
-            this.emit(TransformEvent.Depth, previous);
+            this.emit(Transform3Event.Depth, previous);
         }
     }
 
@@ -135,7 +135,7 @@ export class Transform extends Observer {
             let previous: number = this.scale.x;
             this.scale.x = value;
             this.scaled.width = value * this.size.width;
-            this.emit(TransformEvent.ScaleX, previous);
+            this.emit(Transform3Event.ScaleX, previous);
         }
     }
 
@@ -148,7 +148,7 @@ export class Transform extends Observer {
             let previous: number = this.scale.y;
             this.scale.y = value;
             this.scaled.height = value * this.size.height;
-            this.emit(TransformEvent.ScaleY, previous);
+            this.emit(Transform3Event.ScaleY, previous);
         }
     }
 
@@ -161,16 +161,16 @@ export class Transform extends Observer {
             let previous: number = this.scale.z;
             this.scale.z = value;
             this.scaled.depth = value * this.size.depth;
-            this.emit(TransformEvent.ScaleZ, previous);
+            this.emit(Transform3Event.ScaleZ, previous);
         }
     }
 
-    public add(transform: Transform): Transform {
-        return Transform.add(this, transform);
+    public add(transform: Transform3): Transform3 {
+        return Transform3.add(this, transform);
     }
 
-    public static add(a: Transform, b: Transform): Transform {
-        return new Transform({
+    public static add(a: Transform3, b: Transform3): Transform3 {
+        return new Transform3({
             x: a.x + b.x,
             y: a.y + b.y,
             z: a.z + b.z,
@@ -183,12 +183,12 @@ export class Transform extends Observer {
         });
     }
 
-    public subtract(transform: Transform): Transform {
-        return Transform.subtract(this, transform);
+    public subtract(transform: Transform3): Transform3 {
+        return Transform3.subtract(this, transform);
     }
 
-    public static subtract(a: Transform, b: Transform): Transform {
-        return new Transform({
+    public static subtract(a: Transform3, b: Transform3): Transform3 {
+        return new Transform3({
             x: a.x - b.x,
             y: a.y - b.y,
             z: a.z - b.z,
@@ -201,12 +201,12 @@ export class Transform extends Observer {
         });
     }
 
-    public distance(transform: Transform): Transform {
-        return Transform.distance(this, transform);
+    public distance(transform: Transform3): Transform3 {
+        return Transform3.distance(this, transform);
     }
 
-    public static distance(a: Transform, b: Transform): Transform {
-        return new Transform({
+    public static distance(a: Transform3, b: Transform3): Transform3 {
+        return new Transform3({
             x: Util.Math.distance(a.x, b.x),
             y: Util.Math.distance(a.y, b.y),
             z: Util.Math.distance(a.z, b.z),
@@ -219,11 +219,11 @@ export class Transform extends Observer {
         });
     }
 
-    public equals(transform: Transform): boolean {
-        return Transform.equals(this, transform);
+    public equals(transform: Transform3): boolean {
+        return Transform3.equals(this, transform);
     }
 
-    public static equals(a: Transform, b: Transform): boolean {
+    public static equals(a: Transform3, b: Transform3): boolean {
         return (
             a.point === b.point &&
             a.width === b.width &&

@@ -1,48 +1,44 @@
 import { EntityType, EntityEvent } from './base/IEntity';
-import { Game } from './Game';
-import { IGroupConfig, SuperGroup } from './SuperGroup';
+import { IGroupConfig, Group } from './Group';
 import { AssetEntity } from './base/AssetEntity';
 import { Entity } from './base/Entity';
-import { Group } from './Group';
 
 export enum SceneEvent {
-    Loaded
+    Loaded = 'SceneEvent.Loaded'
 }
 export interface ISceneConfig extends IGroupConfig {
     name: string;
 }
 
-export class Scene extends SuperGroup {
+export class Scene extends Group {
+    public type: EntityType = EntityType.Scene;
     public name: string;
     public loaded: boolean = false;
     public active: boolean = false;
     protected assetCount: number = 0;
     protected assetsLoaded: number = 0;
 
-    public constructor(
-        game: Game,
-        {
-            x = 0,
-            y = 0,
-            z = 0,
-            width = 0,
-            height = 0,
-            depth = 0,
-            scaleX = 1,
-            scaleY = 1,
-            scaleZ = 1,
-            alpha = 1,
-            tag,
-            name,
-            load,
-            preupdate,
-            update,
-            postupdate,
-            start,
-            destroy
-        }: ISceneConfig
-    ) {
-        super({
+    public configure({
+        x = 0,
+        y = 0,
+        z = 0,
+        width = 0,
+        height = 0,
+        depth = 0,
+        scaleX = 1,
+        scaleY = 1,
+        scaleZ = 1,
+        alpha = 1,
+        tag,
+        name,
+        load,
+        preupdate,
+        update,
+        postupdate,
+        start,
+        destroy
+    }: ISceneConfig): void {
+        super.configure({
             type: EntityType.Scene,
             x,
             y,
@@ -63,7 +59,6 @@ export class Scene extends SuperGroup {
             destroy
         });
         this.name = name;
-        this.game = game;
         setTimeout(this.assetLoaded.bind(this), 0); // if no assets were added on next frame, trigger scene load
     }
 

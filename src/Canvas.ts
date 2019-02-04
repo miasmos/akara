@@ -1,7 +1,7 @@
 import { Debug } from './util/Util';
 import { Color } from './structs/Color';
 import { ErrorMessage } from './enum/ErrorMessage';
-import { Transform } from './structs/Transform';
+import { Transform3 } from './structs/Transform3';
 import { HexCode } from './enum/HexCode';
 
 export interface ICanvasConfig {
@@ -15,7 +15,7 @@ export class Canvas {
     public mounted: boolean = false;
     private context: CanvasRenderingContext2D | undefined;
     private element: HTMLCanvasElement | undefined;
-    private transform: Transform = new Transform({});
+    private transform: Transform3 = new Transform3({});
 
     public constructor({
         width = 400,

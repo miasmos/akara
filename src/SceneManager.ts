@@ -1,6 +1,6 @@
 import { Observer } from './Observer';
 import { Scene, SceneEvent } from './entities/Scene';
-import { IGroupConfig } from './entities/SuperGroup';
+import { IGroupConfig } from './entities/Group';
 import { Game } from './entities/Game';
 import { Debug } from './util/Util';
 import { ErrorMessage } from './enum/ErrorMessage';
@@ -11,7 +11,7 @@ export enum SceneName {
 }
 
 export enum SceneManagerEvent {
-    Loaded
+    Loaded = 'SceneManagerEvent.Loaded'
 }
 
 interface IScenes {
@@ -30,7 +30,7 @@ export class SceneManager extends Observer {
 
         const { x, y, z, width, height, depth } = game;
         this.add(
-            new Scene(game, {
+            game.entity.scene({
                 name: SceneName.Default,
                 x,
                 y,
