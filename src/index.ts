@@ -1,11 +1,12 @@
 import { Game } from './entities/Game';
 import { Debug } from './util/Util';
 import { EntityFactory } from './EntityFactory';
+import { Pivot2 } from './structs/Pivot2';
 
 if (Debug.isDebug) {
 }
 
-const game: Game = EntityFactory.game({ debug: { outline: true, grid: true, pivot: true } });
+const game: Game = EntityFactory.game({ debug: true });
 game.load.image('assets/gradient.jpg', 'gradient');
 const group = game.entity.group({
     x: 80,
@@ -13,8 +14,8 @@ const group = game.entity.group({
     z: 2
 });
 const box = game.entity.box({
-    x: 40,
-    y: 40,
+    x: 90,
+    y: 0,
     z: 3,
     width: 40,
     height: 40
@@ -38,10 +39,5 @@ console.log(box);
 game.load.image('assets/gradient.jpg', 'gradient');
 
 setTimeout(() => {
-    box.scaleX = 1.5;
-    gradient.scaleX = 1.5;
+    box.pivot = Pivot2.bottomRight;
 }, 2000);
-
-setTimeout(() => {
-    gradient.z = 5;
-}, 4000);

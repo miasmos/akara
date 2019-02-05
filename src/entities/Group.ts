@@ -259,6 +259,22 @@ export class Group extends Entity {
             Direction.Down,
             Random.id(12)
         );
+        entity.reconcile(
+            this.world,
+            this,
+            Transform3Event.PivotX,
+            entity,
+            Direction.Down,
+            Random.id(12)
+        );
+        entity.reconcile(
+            this.world,
+            this,
+            Transform3Event.PivotY,
+            entity,
+            Direction.Down,
+            Random.id(12)
+        );
         return true;
     }
 
@@ -309,6 +325,7 @@ export class Group extends Entity {
                     case Transform3Event.Width:
                     case Transform3Event.X:
                     case Transform3Event.ScaleX:
+                    case Transform3Event.PivotX:
                         this.local.width = this.world.width = Util.Math.distance(
                             bounds.x.low,
                             bounds.x.high
@@ -317,6 +334,7 @@ export class Group extends Entity {
                     case Transform3Event.Height:
                     case Transform3Event.Y:
                     case Transform3Event.ScaleY:
+                    case Transform3Event.PivotY:
                         this.local.height = this.world.height = Util.Math.distance(
                             bounds.y.low,
                             bounds.y.high
@@ -399,23 +417,27 @@ export class Group extends Entity {
         };
 
         for (let child of this.children) {
-            if (child.x < compare.x.low) {
-                compare.x.low = child.x;
+            const x = child.x - child.width * child.pivotX,
+                y = child.y - child.height * child.pivotY;
+            const { z, width, height, depth } = child;
+
+            if (x < compare.x.low) {
+                compare.x.low = x;
             }
-            if (child.x + child.width > compare.x.high) {
-                compare.x.high = child.x + child.width;
+            if (x + width > compare.x.high) {
+                compare.x.high = x + width;
             }
-            if (child.y < compare.y.low) {
-                compare.y.low = child.y;
+            if (y < compare.y.low) {
+                compare.y.low = y;
             }
-            if (child.y + child.height > compare.y.high) {
-                compare.y.high = child.y + child.height;
+            if (y + height > compare.y.high) {
+                compare.y.high = y + height;
             }
-            if (child.z < compare.z.low) {
-                compare.z.low = child.z;
+            if (z < compare.z.low) {
+                compare.z.low = z;
             }
-            if (child.z + child.depth > compare.z.high) {
-                compare.z.high = child.z + child.depth;
+            if (z + depth > compare.z.high) {
+                compare.z.high = z + depth;
             }
         }
         const clamp = Util.Math.clamp;

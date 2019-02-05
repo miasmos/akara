@@ -145,6 +145,12 @@ export class Entity extends Observer implements IEntity {
         }
     }
 
+    public set local(value: Transform3) {
+        if (!!this.transform) {
+            this.transform.local = value;
+        }
+    }
+
     public get world(): Transform3 {
         if (!!this.transform) {
             return this.transform.world;
@@ -153,11 +159,23 @@ export class Entity extends Observer implements IEntity {
         }
     }
 
+    public set world(value: Transform3) {
+        if (!!this.transform) {
+            this.transform.world = value;
+        }
+    }
+
     public get scale(): Point3 {
         if (!!this.transform) {
             return this.transform.scale;
         } else {
             return new Point3();
+        }
+    }
+
+    public set scale(value: Point3) {
+        if (!!this.transform) {
+            this.transform.scale = value;
         }
     }
 
@@ -373,11 +391,17 @@ export class Entity extends Observer implements IEntity {
         }
     }
 
-    public get scaled(): Size3 {
+    public get size(): Size3 {
         if (!!this.transform) {
             return this.transform.world.size;
         } else {
             return new Size3();
+        }
+    }
+
+    public set size(value: Size3) {
+        if (!!this.transform) {
+            this.transform.world.size = value;
         }
     }
 
@@ -455,6 +479,12 @@ export class Entity extends Observer implements IEntity {
             return this.transform.local.pivot;
         } else {
             return Pivot2.topLeft;
+        }
+    }
+
+    public set pivot(value: Pivot2) {
+        if (!!this.transform) {
+            this.transform.local.pivot = value;
         }
     }
     //#endregion

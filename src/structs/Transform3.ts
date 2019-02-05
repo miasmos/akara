@@ -40,14 +40,14 @@ export interface ITransform3Config {
 }
 
 export class Transform3 extends Observer {
-    protected _size: Size3; // raw inputs from w/h/d setters
-    protected _origin: Point3; // raw inputs from x/y/z setters
+    protected _rawSize: Size3; // raw inputs from w/h/d setters
+    protected _rawOrigin: Point3; // raw inputs from x/y/z setters
 
-    public scale: Point3;
-    public pivot: Pivot2;
-    public size: Size3; // computed w/h/d taking into account scaling
-    public origin: Point3; // computed x/y/z taking into account pivot point
-    public rotation: Rotation3; // raw inputs from rx/ry/rz setters
+    public _scale: Point3;
+    public _pivot: Pivot2;
+    public _size: Size3; // computed w/h/d taking into account scaling
+    public _origin: Point3; // computed x/y/z taking into account pivot point
+    public _rotation: Rotation3; // raw inputs from rx/ry/rz setters
 
     public constructor({
         x = 0,
@@ -66,160 +66,210 @@ export class Transform3 extends Observer {
         pivotY = 0
     }: ITransform3Config) {
         super();
-        this.rotation = new Rotation3(rotateX, rotateY, rotateZ);
-        this.pivot = new Pivot2(pivotX, pivotY);
-        this._origin = new Point3(x, y, z);
-        this.scale = new Point3(scaleX, scaleY, scaleZ);
-        this._size = new Size3(width, height, depth);
-        this.size = new Size3(width * scaleX, height * scaleY, depth * scaleZ);
-        this.origin = new Point3(
+        this._rotation = new Rotation3(rotateX, rotateY, rotateZ);
+        this._pivot = new Pivot2(pivotX, pivotY);
+        this._rawOrigin = new Point3(x, y, z);
+        this._scale = new Point3(scaleX, scaleY, scaleZ);
+        this._rawSize = new Size3(width, height, depth);
+        this._size = new Size3(width * scaleX, height * scaleY, depth * scaleZ);
+        this._origin = new Point3(
             x - this.size.width * this.pivot.x,
             y - this.size.height * this.pivot.y,
             z
         );
     }
 
+    public get rotation(): Point3 {
+        return this._rotation;
+    }
+
+    public set rotation(value: Point3) {
+        this.rotateX = value.x;
+        this.rotateY = value.y;
+        this.rotateZ = value.z;
+    }
+
+    public get origin(): Point3 {
+        return this._origin;
+    }
+
+    public set origin(value: Point3) {
+        this.x = value.x;
+        this.y = value.y;
+        this.z = value.z;
+    }
+
+    public get size(): Size3 {
+        return this._size;
+    }
+
+    public set size(value: Size3) {
+        this.width = value.width;
+        this.height = value.height;
+        this.depth = value.depth;
+    }
+
+    public get pivot(): Pivot2 {
+        return this._pivot;
+    }
+
+    public set pivot(value: Pivot2) {
+        this.pivotX = value.x;
+        this.pivotY = value.y;
+    }
+
+    public get scale(): Point3 {
+        return this._scale;
+    }
+
+    public set scale(value: Point3) {
+        this.scaleX = value.x;
+        this.scaleY = value.y;
+    }
+
     public get x(): number {
-        return this._origin.x;
+        return this._rawOrigin.x;
     }
 
     public set x(value: number) {
-        if (value !== this._origin.x) {
-            const previous = this._origin.x;
-            this._origin.x = value;
-            this.origin.x = this.x - this.size.width * this.pivot.x;
+        if (value !== this._rawOrigin.x) {
+            const previous = this._rawOrigin.x;
+            this._rawOrigin.x = value;
+            this._origin.x = this.x - this.size.width * this.pivot.x;
             this.emit(Transform3Event.X, previous);
         }
     }
 
     public get y(): number {
-        return this._origin.y;
+        return this._rawOrigin.y;
     }
 
     public set y(value: number) {
-        if (value !== this._origin.y) {
-            const previous = this._origin.y;
-            this._origin.y = value;
-            this.origin.y = this.y - this.size.height * this.pivot.y;
+        if (value !== this._rawOrigin.y) {
+            const previous = this._rawOrigin.y;
+            this._rawOrigin.y = value;
+            this._origin.y = this.y - this.size.height * this.pivot.y;
             this.emit(Transform3Event.Y, previous);
         }
     }
 
     public get z(): number {
-        return this._origin.z;
+        return this._rawOrigin.z;
     }
 
     public set z(value: number) {
-        if (value !== this._origin.z) {
-            const previous = this._origin.z;
-            this._origin.z = value;
+        if (value !== this._rawOrigin.z) {
+            const previous = this._rawOrigin.z;
+            this._rawOrigin.z = value;
             this.emit(Transform3Event.Z, previous);
         }
     }
 
     public get width(): number {
-        return this.size.width;
+        return this._size.width;
     }
 
     public set width(value: number) {
-        if (value !== this._size.width) {
-            const previous = this._size.width;
-            this._size.width = value;
-            this.size.width = this.scaleX * value;
-            this.origin.x = this.x - this.size.width * this.pivot.x;
+        if (value !== this._rawSize.width) {
+            const previous = this._rawSize.width;
+            this._rawSize.width = value;
+            this._size.width = this.scaleX * value;
+            this._origin.x = this.x - this.size.width * this.pivot.x;
             this.emit(Transform3Event.Width, previous);
         }
     }
 
     public get height(): number {
-        return this.size.height;
+        return this._size.height;
     }
 
     public set height(value: number) {
-        if (value !== this._size.height) {
-            const previous = this._size.height;
-            this._size.height = value;
-            this.size.height = this.scaleY * value;
-            this.origin.y = this.y - this.size.height * this.pivot.y;
+        if (value !== this._rawSize.height) {
+            const previous = this._rawSize.height;
+            this._rawSize.height = value;
+            this._size.height = this.scaleY * value;
+            this._origin.y = this.y - this.size.height * this.pivot.y;
             this.emit(Transform3Event.Height, previous);
         }
     }
 
     public get depth(): number {
-        return this._size.depth;
+        return this._rawSize.depth;
     }
 
     public set depth(value: number) {
-        if (value !== this._size.depth) {
-            const previous = this._size.depth;
-            this._size.depth = value;
-            this.size.depth = this.scaleZ * value;
+        if (value !== this._rawSize.depth) {
+            const previous = this._rawSize.depth;
+            this._rawSize.depth = value;
+            this._size.depth = this.scaleZ * value;
             this.emit(Transform3Event.Depth, previous);
         }
     }
 
     public get scaleX(): number {
-        return this.scale.x;
+        return this._scale.x;
     }
 
     public set scaleX(value: number) {
-        if (value !== this.scale.x) {
-            let previous: number = this.scale.x;
-            this.scale.x = value;
-            this.size.width = value * this._size.width;
+        if (value !== this._scale.x) {
+            let previous: number = this._scale.x;
+            this._scale.x = value;
+            this._size.width = value * this._rawSize.width;
+            this._origin.x = this.x - this.size.width * this.pivot.x;
             this.emit(Transform3Event.ScaleX, previous);
         }
     }
 
     public get scaleY(): number {
-        return this.scale.y;
+        return this._scale.y;
     }
 
     public set scaleY(value: number) {
-        if (value !== this.scale.y) {
-            let previous: number = this.scale.y;
-            this.scale.y = value;
-            this.size.height = value * this._size.height;
+        if (value !== this._scale.y) {
+            let previous: number = this._scale.y;
+            this._scale.y = value;
+            this._size.height = value * this._rawSize.height;
+            this._origin.y = this.y - this.size.height * this.pivot.y;
             this.emit(Transform3Event.ScaleY, previous);
         }
     }
 
     public get scaleZ(): number {
-        return this.scale.z;
+        return this._scale.z;
     }
 
     public set scaleZ(value: number) {
-        if (value !== this.scale.z) {
-            let previous: number = this.scale.z;
-            this.scale.z = value;
-            this.size.depth = value * this._size.depth;
+        if (value !== this._scale.z) {
+            let previous: number = this._scale.z;
+            this._scale.z = value;
+            this._size.depth = value * this._rawSize.depth;
             this.emit(Transform3Event.ScaleZ, previous);
         }
     }
 
     public get pivotX(): number {
-        return this.pivot.x;
+        return this._pivot.x;
     }
 
     public set pivotX(value: number) {
-        if (value !== this.pivot.x) {
-            let previous: number = this.pivot.x;
-            this.pivot.x = value;
-            this.origin.x = this.x - this.size.width * this.pivot.x;
-            this.emit(Transform3Event.PivotX);
+        if (value !== this._pivot.x) {
+            let previous: number = this._pivot.x;
+            this._pivot.x = value;
+            this._origin.x = this.x - this.size.width * this.pivot.x;
+            this.emit(Transform3Event.PivotX, previous);
         }
     }
 
     public get pivotY(): number {
-        return this.pivot.y;
+        return this._pivot.y;
     }
 
     public set pivotY(value: number) {
-        if (value !== this.pivot.y) {
-            let previous: number = this.pivot.y;
-            this.pivot.y = value;
-            this.origin.y = this.y - this.size.height * this.pivot.y;
-            this.emit(Transform3Event.PivotY);
+        if (value !== this._pivot.y) {
+            let previous: number = this._pivot.y;
+            this._pivot.y = value;
+            this._origin.y = this.y - this.size.height * this.pivot.y;
+            this.emit(Transform3Event.PivotY, previous);
         }
     }
 
@@ -229,8 +279,9 @@ export class Transform3 extends Observer {
 
     public set rotateX(value: number) {
         if (value !== this.rotation.x) {
+            let previous: number = this.rotation.x;
             this.rotation.x = value;
-            this.emit(Transform3Event.RotateX);
+            this.emit(Transform3Event.RotateX, previous);
         }
     }
 
@@ -240,8 +291,9 @@ export class Transform3 extends Observer {
 
     public set rotateY(value: number) {
         if (value !== this.rotation.y) {
+            let previous: number = this.rotation.y;
             this.rotation.y = value;
-            this.emit(Transform3Event.RotateY);
+            this.emit(Transform3Event.RotateY, previous);
         }
     }
 
@@ -251,8 +303,9 @@ export class Transform3 extends Observer {
 
     public set rotateZ(value: number) {
         if (value !== this.rotation.z) {
+            let previous: number = this.rotation.z;
             this.rotation.z = value;
-            this.emit(Transform3Event.RotateZ);
+            this.emit(Transform3Event.RotateZ, previous);
         }
     }
 
@@ -316,7 +369,7 @@ export class Transform3 extends Observer {
 
     public static equals(a: Transform3, b: Transform3): boolean {
         return (
-            a._origin === b._origin &&
+            a._rawOrigin === b._rawOrigin &&
             a.width === b.width &&
             a.height === b.height &&
             a.depth === b.depth
