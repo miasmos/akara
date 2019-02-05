@@ -20,7 +20,7 @@ export class Observer {
         this.subjects[event].push(new Subject(fn));
     }
 
-    public emit(event: string | number, ...params: any[]): void {
+    public emit(event: string | number, ...params: unknown[]): void {
         if (this.suppress) {
             return;
         }

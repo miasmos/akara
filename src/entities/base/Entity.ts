@@ -601,7 +601,7 @@ export class Entity extends Observer implements IEntity {
     protected onTransformRemove(component: Transform): void {}
     protected onColliderRemove(component: Collider): void {}
 
-    protected onTransformEvent(
+    public onTransformEvent(
         type: TransformEvent,
         transform: Transform,
         previous: number,

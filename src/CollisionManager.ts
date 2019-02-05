@@ -2,17 +2,14 @@ import { EntityManager } from './EntityManager';
 import { Transform3Event } from './structs/Transform3';
 import { ComponentType } from './components/Component';
 import { EntityEvent } from './entities/base/IEntity';
+import { Entity } from './entities';
 
 export interface ICollisionManagerConfig {
     resolution?: number;
 }
 
-interface ISectors {
-    sectors: number[];
-}
-
 export class CollisionManager {
-    public sectors: ISectors = [];
+    public sectors: number[] = [];
     protected _resolution: number;
     protected readonly initialSize = 2000;
     protected entities: EntityManager = new EntityManager();
@@ -54,7 +51,7 @@ export class CollisionManager {
     }
 
     public configure({ resolution = 100 }: ICollisionManagerConfig) {
-        this.resolution = resolution;
+        this._resolution = resolution;
         this.initialize();
     }
 
