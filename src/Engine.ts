@@ -180,8 +180,9 @@ export class Engine extends Observer {
             return;
         }
 
-        const { width, height } = entity.world.size;
-        const { x, y, rotateX, rotateY, rotateZ, pivotX, pivotY } = entity.world;
+        const { width, height } = entity.world._size;
+        const { x, y } = entity.world._origin;
+        const { rotateX, rotateY, rotateZ, pivotX, pivotY } = entity.world;
 
         if (entity.alpha !== 1) {
             this.canvas.save();
@@ -217,8 +218,8 @@ export class Engine extends Observer {
     }
 
     private debug(entity: Entity): void {
-        const { width, height } = entity.world.size;
-        const { x, y } = entity.world;
+        const { width, height } = entity.world._size;
+        const { x, y } = entity.world._origin;
 
         const shouldDrawOutline = this.game.debug.outline;
         if (shouldDrawOutline) {
@@ -231,13 +232,14 @@ export class Engine extends Observer {
 
         const shouldDrawPivot = this.game.debug.pivot;
         if (shouldDrawPivot) {
-            const { pivot } = entity.world;
+            const { _pivot: pivot } = entity.world;
+            const radius = 2;
             this.canvas.drawBox(
                 new Color(HexCode.Red),
-                x + width * pivot.x,
-                y + height * pivot.y,
-                1,
-                1
+                x + width * pivot.x - radius,
+                y + height * pivot.y - radius,
+                radius * 2,
+                radius * 2
             );
         }
     }
