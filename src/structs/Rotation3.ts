@@ -1,8 +1,7 @@
 import { Point3 } from './Point3';
-import * as Util from '../util/Util';
 
 export class Rotation3 extends Point3 {
-    public set(x?: number, y?: number, z?: number) {
+    public set(x?: number, y?: number, z?: number): void {
         if (typeof x !== 'undefined') {
             if (Math.abs(x) > 360) {
                 x = x % 360;

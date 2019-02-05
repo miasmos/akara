@@ -8,7 +8,7 @@ import { Point3 } from '../../structs/Point3';
 import { Size3 } from '../../structs/Size3';
 import { ComponentManager, ComponentManagerEvent } from '../../ComponentManager';
 import { TransformEvent, Transform } from '../../components/Transform';
-import { Collider } from '../../components/Collider';
+import { Collider, IColliderConfig } from '../../components/Collider';
 import { ComponentType, Component } from '../../components/Component';
 import { Pivot2 } from '../../structs/Pivot2';
 
@@ -16,17 +16,17 @@ export class Entity extends Observer implements IEntity {
     public id: string = '';
     public type: EntityType;
     public parent: Group | undefined;
-    public game: Game;
+    protected _game: Game;
     protected _visible = true;
     protected _tag: string | undefined = '';
     protected _alpha: number = 1;
     protected _layer: number = 0;
-    public components: ComponentManager = new ComponentManager();
+    protected component: ComponentManager = new ComponentManager();
 
     public constructor() {
         super();
-        this.components.on(ComponentManagerEvent.Add, this.onComponentAdd.bind(this));
-        this.components.on(ComponentManagerEvent.Remove, this.onComponentRemove.bind(this));
+        this.component.on(ComponentManagerEvent.Add, this.onComponentAdd.bind(this));
+        this.component.on(ComponentManagerEvent.Remove, this.onComponentRemove.bind(this));
     }
 
     public configure({
@@ -72,20 +72,20 @@ export class Entity extends Observer implements IEntity {
         this.initialize({ update, preupdate, postupdate, start, destroy });
     }
 
-    public addComponent(component: Component): boolean {
-        const added = this.components.add(component);
-        if (added) {
-            component.attach(this);
+    public addComponent(type: Component | ComponentType): boolean {
+        const added: Component | boolean = this.component.add(type);
+        if (typeof added !== 'boolean') {
+            added.attach(this);
             return true;
         } else {
             return false;
         }
     }
 
-    public removeComponent(component: Component): boolean {
-        const removed = this.components.remove(component);
-        if (removed) {
-            component.detach();
+    public removeComponent(type: Component | ComponentType): boolean {
+        const removed: Component | boolean = this.component.remove(type);
+        if (typeof removed !== 'boolean') {
+            removed.detach();
             return true;
         } else {
             return false;
@@ -113,12 +113,21 @@ export class Entity extends Observer implements IEntity {
     }
 
     //#region properties
-    public get transform(): Transform | undefined {
-        return this.components.get(ComponentType.Transform) as Transform;
+    public get game(): Game {
+        return this._game;
     }
 
-    public collider(): Collider | undefined {
-        return this.components.get(ComponentType.Collider) as Collider;
+    public set game(value: Game) {
+        this._game = value;
+        this.component.game = value;
+    }
+
+    public get transform(): Transform | undefined {
+        return this.component.get(ComponentType.Transform) as Transform;
+    }
+
+    public get collider(): Collider | undefined {
+        return this.component.get(ComponentType.Collider) as Collider;
     }
 
     public get moveable(): boolean {
@@ -129,11 +138,23 @@ export class Entity extends Observer implements IEntity {
         }
     }
 
+    public set moveable(value: boolean) {
+        if (!!this.transform) {
+            this.transform.moveable = value;
+        }
+    }
+
     public get collidable(): boolean {
         if (!!this.collider) {
-            return true;
+            return this.collider.collidable;
         } else {
             return false;
+        }
+    }
+
+    public set collidable(value: boolean) {
+        if (!!this.collider) {
+            this.collider.collidable = value;
         }
     }
 
@@ -312,7 +333,7 @@ export class Entity extends Observer implements IEntity {
     }
 
     public set scaleZ(value: number) {
-        const transform: Transform | undefined = this.components.get(
+        const transform: Transform | undefined = this.component.get(
             ComponentType.Transform
         ) as Transform;
 
@@ -513,7 +534,7 @@ export class Entity extends Observer implements IEntity {
             return;
         }
 
-        const transform: Transform | undefined = this.components.get(
+        const transform: Transform | undefined = this.component.get(
             ComponentType.Transform
         ) as Transform;
 
@@ -593,7 +614,7 @@ export class Entity extends Observer implements IEntity {
     }
 
     protected onTransformChange(previous: number, changed: Transform3Event): void {
-        const transform: Transform | undefined = this.components.get(
+        const transform: Transform | undefined = this.component.get(
             ComponentType.Transform
         ) as Transform;
 
