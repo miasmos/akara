@@ -29,6 +29,7 @@ export class Component extends Observer {
     }
 
     public attach(entity: Entity): void {
+        this.detach();
         this.parent = entity;
     }
 

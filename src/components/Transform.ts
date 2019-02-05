@@ -115,9 +115,8 @@ export class Transform extends Component {
     }
 
     public attach(entity: Entity): void {
-        this.detach();
-        this.on(ComponentEvent.Transform, entity.onTransformEvent.bind(entity));
         super.attach(entity);
+        this.on(ComponentEvent.Transform, entity.onTransformEvent.bind(entity));
     }
 
     public detach(): void {
