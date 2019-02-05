@@ -65,82 +65,82 @@ export class Transform extends Component {
             rotateY,
             rotateZ
         });
-        this._world = Transform3.add(this._local, this._world);
+        this.world = Transform3.add(this.local, this.world);
         this.moveable = moveable;
 
-        this._local.on(Transform3Event.X, (previous: number) =>
+        this.local.on(Transform3Event.X, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.X)
         );
-        this._local.on(Transform3Event.Y, (previous: number) =>
+        this.local.on(Transform3Event.Y, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.Y)
         );
-        this._local.on(Transform3Event.Z, (previous: number) =>
+        this.local.on(Transform3Event.Z, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.Z)
         );
-        this._local.on(Transform3Event.Width, (previous: number) =>
+        this.local.on(Transform3Event.Width, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.Width)
         );
-        this._local.on(Transform3Event.Height, (previous: number) =>
+        this.local.on(Transform3Event.Height, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.Height)
         );
-        this._local.on(Transform3Event.Depth, (previous: number) =>
+        this.local.on(Transform3Event.Depth, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.Depth)
         );
-        this._local.on(Transform3Event.ScaleX, (previous: number) =>
+        this.local.on(Transform3Event.ScaleX, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.ScaleX)
         );
-        this._local.on(Transform3Event.ScaleY, (previous: number) =>
+        this.local.on(Transform3Event.ScaleY, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.ScaleY)
         );
-        this._local.on(Transform3Event.ScaleZ, (previous: number) =>
+        this.local.on(Transform3Event.ScaleZ, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.ScaleZ)
         );
-        this._local.on(Transform3Event.PivotX, (previous: number) =>
+        this.local.on(Transform3Event.PivotX, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.PivotX)
         );
-        this._local.on(Transform3Event.PivotY, (previous: number) =>
+        this.local.on(Transform3Event.PivotY, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.PivotY)
         );
-        this._local.on(Transform3Event.RotateX, (previous: number) =>
+        this.local.on(Transform3Event.RotateX, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.RotateX)
         );
-        this._local.on(Transform3Event.RotateY, (previous: number) =>
+        this.local.on(Transform3Event.RotateY, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.RotateY)
         );
-        this._local.on(Transform3Event.RotateZ, (previous: number) =>
+        this.local.on(Transform3Event.RotateZ, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.RotateZ)
         );
         super.configure({ type: ComponentType.Transform });
     }
 
     public get world(): Transform3 {
-        return this._world;
+        return this.world;
     }
 
     public set world(value: Transform3) {
-        this._world.x = value.x;
-        this._world.y = value.y;
-        this._world.z = value.z;
+        this.world.x = value.x;
+        this.world.y = value.y;
+        this.world.z = value.z;
     }
 
     public get local(): Transform3 {
-        return this._local;
+        return this.local;
     }
 
     public set local(value: Transform3) {
-        this._local.x = value.x;
-        this._local.y = value.y;
-        this._local.z = value.z;
+        this.local.x = value.x;
+        this.local.y = value.y;
+        this.local.z = value.z;
     }
 
     public get scale(): Point3 {
-        return this._scale;
+        return this.scale;
     }
 
     public set scale(value: Point3) {
-        this._scale.x = value.x;
-        this._scale.y = value.y;
-        this._scale.z = value.z;
+        this.scale.x = value.x;
+        this.scale.y = value.y;
+        this.scale.z = value.z;
     }
 
     public attach(entity: Entity): void {
@@ -159,37 +159,37 @@ export class Transform extends Component {
     public onTransformChange(previous: number, changed: Transform3Event): void {
         switch (changed) {
             case Transform3Event.Width:
-                this._world.width = this._local.width;
+                this.world.width = this.local.width;
                 break;
             case Transform3Event.Height:
-                this._world.height = this._local.height;
+                this.world.height = this.local.height;
                 break;
             case Transform3Event.Depth:
-                this._world.depth = this._local.depth;
+                this.world.depth = this.local.depth;
                 break;
             case Transform3Event.ScaleX:
-                this._world.scaleX = this._local.scaleX;
+                this.world.scaleX = this.local.scaleX;
                 break;
             case Transform3Event.ScaleY:
-                this._world.scaleY = this._local.scaleY;
+                this.world.scaleY = this.local.scaleY;
                 break;
             case Transform3Event.ScaleZ:
-                this._world.scaleZ = this._local.scaleZ;
+                this.world.scaleZ = this.local.scaleZ;
                 break;
             case Transform3Event.PivotX:
-                this._world.pivotX = this._local.pivotX;
+                this.world.pivotX = this.local.pivotX;
                 break;
             case Transform3Event.PivotY:
-                this._world.pivotY = this._local.pivotY;
+                this.world.pivotY = this.local.pivotY;
                 break;
             case Transform3Event.RotateX:
-                this._world.rotateX = this._local.rotateX;
+                this.world.rotateX = this.local.rotateX;
                 break;
             case Transform3Event.RotateY:
-                this._world.rotateY = this._local.rotateY;
+                this.world.rotateY = this.local.rotateY;
                 break;
             case Transform3Event.RotateZ:
-                this._world.rotateZ = this._local.rotateZ;
+                this.world.rotateZ = this.local.rotateZ;
                 break;
         }
 

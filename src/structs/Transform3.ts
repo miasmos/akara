@@ -135,7 +135,7 @@ export class Transform3 extends Observer {
         if (value !== this._rawOrigin.x) {
             const previous = this._rawOrigin.x;
             this._rawOrigin.x = value;
-            this._origin.x = this.x - this.size.width * this.pivot.x;
+            this._origin.x = this.x;
             this.emit(Transform3Event.X, previous);
         }
     }
@@ -148,7 +148,7 @@ export class Transform3 extends Observer {
         if (value !== this._rawOrigin.y) {
             const previous = this._rawOrigin.y;
             this._rawOrigin.y = value;
-            this._origin.y = this.y - this.size.height * this.pivot.y;
+            this._origin.y = this.y;
             this.emit(Transform3Event.Y, previous);
         }
     }
@@ -174,7 +174,7 @@ export class Transform3 extends Observer {
             const previous = this._rawSize.width;
             this._rawSize.width = value;
             this._size.width = this.scaleX * value;
-            this._origin.x = this.x - this.size.width * this.pivot.x;
+            this._origin.x = this.x;
             this.emit(Transform3Event.Width, previous);
         }
     }
@@ -188,7 +188,7 @@ export class Transform3 extends Observer {
             const previous = this._rawSize.height;
             this._rawSize.height = value;
             this._size.height = this.scaleY * value;
-            this._origin.y = this.y - this.size.height * this.pivot.y;
+            this._origin.y = this.y;
             this.emit(Transform3Event.Height, previous);
         }
     }
@@ -215,7 +215,7 @@ export class Transform3 extends Observer {
             let previous: number = this._scale.x;
             this._scale.x = value;
             this._size.width = value * this._rawSize.width;
-            this._origin.x = this.x - this.size.width * this.pivot.x;
+            this._origin.x = this.x;
             this.emit(Transform3Event.ScaleX, previous);
         }
     }
@@ -229,7 +229,7 @@ export class Transform3 extends Observer {
             let previous: number = this._scale.y;
             this._scale.y = value;
             this._size.height = value * this._rawSize.height;
-            this._origin.y = this.y - this.size.height * this.pivot.y;
+            this._origin.y = this.y;
             this.emit(Transform3Event.ScaleY, previous);
         }
     }
@@ -255,7 +255,7 @@ export class Transform3 extends Observer {
         if (value !== this._pivot.x) {
             let previous: number = this._pivot.x;
             this._pivot.x = value;
-            this._origin.x = this.x - this.size.width * this.pivot.x;
+            this._origin.x = this.x;
             this.emit(Transform3Event.PivotX, previous);
         }
     }
@@ -268,7 +268,7 @@ export class Transform3 extends Observer {
         if (value !== this._pivot.y) {
             let previous: number = this._pivot.y;
             this._pivot.y = value;
-            this._origin.y = this.y - this.size.height * this.pivot.y;
+            this._origin.y = this.y;
             this.emit(Transform3Event.PivotY, previous);
         }
     }

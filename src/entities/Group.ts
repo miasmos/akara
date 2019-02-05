@@ -325,7 +325,6 @@ export class Group extends Entity {
                     case Transform3Event.Width:
                     case Transform3Event.X:
                     case Transform3Event.ScaleX:
-                    case Transform3Event.PivotX:
                         this.local.width = this.world.width = Util.Math.distance(
                             bounds.x.low,
                             bounds.x.high
@@ -334,7 +333,6 @@ export class Group extends Entity {
                     case Transform3Event.Height:
                     case Transform3Event.Y:
                     case Transform3Event.ScaleY:
-                    case Transform3Event.PivotY:
                         this.local.height = this.world.height = Util.Math.distance(
                             bounds.y.low,
                             bounds.y.high
