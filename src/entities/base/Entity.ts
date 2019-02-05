@@ -92,6 +92,10 @@ export class Entity extends Observer implements IEntity {
         }
     }
 
+    public getComponent(type: ComponentType): Component | undefined {
+        return this.component.get(type);
+    }
+
     protected initialize({ update, preupdate, postupdate, start, destroy }): void {
         this.bind('update', update);
         this.bind('preupdate', preupdate);
@@ -508,7 +512,6 @@ export class Entity extends Observer implements IEntity {
             this.transform.local.pivot = value;
         }
     }
-    //#endregion
 
     public get isGroup(): boolean {
         return this.type === EntityType.Group || this.type === EntityType.Scene;
@@ -517,6 +520,7 @@ export class Entity extends Observer implements IEntity {
     public get shouldReconcile(): boolean {
         return !(this.type === EntityType.Scene || this.type === EntityType.Game);
     }
+    //#endregion
 
     public equals(entity: Entity): boolean {
         return entity.id === this.id && entity.type === this.type;
@@ -597,7 +601,7 @@ export class Entity extends Observer implements IEntity {
     protected onTransformRemove(component: Transform): void {}
     protected onColliderRemove(component: Collider): void {}
 
-    public onTransformEvent(
+    protected onTransformEvent(
         type: TransformEvent,
         transform: Transform,
         previous: number,
