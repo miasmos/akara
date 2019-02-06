@@ -55,18 +55,17 @@ export class Color {
     }
 
     public static isHex(hex: string): boolean {
-        if (hex.length === 6 || hex.length === 3) {
-            for (const char of hex.toLowerCase()) {
-                const cast: string = parseInt(char, 16).toString(16);
-
-                if (cast !== char) {
-                    return false;
-                }
-            }
-        } else {
+        if (hex.length !== 6 && hex.length !== 3) {
             return false;
         }
 
-        return true;
+        const isValid = hex
+            .toLowerCase()
+            .split('')
+            .every(char => {
+                const cast: string = parseInt(char, 16).toString(16);
+                return cast === char;
+            });
+        return isValid;
     }
 }

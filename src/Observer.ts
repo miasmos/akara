@@ -25,11 +25,11 @@ export class Observer {
             return;
         }
         event = event.toString();
+
         if (event in this.subjects) {
-            const namespace = Object.values(this.subjects[event]);
-            for (const subject of namespace) {
+            Object.values(this.subjects[event]).forEach((subject: Subject) => {
                 subject.fn.apply(this, params);
-            }
+            });
         }
     }
 

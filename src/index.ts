@@ -28,9 +28,6 @@ group.add(box);
 group.add(gradient);
 game.add(group);
 game.start();
-console.log(game);
-console.log(group);
-console.log(box);
 
 game.load.image('assets/gradient.jpg', 'gradient');
 

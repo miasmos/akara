@@ -39,10 +39,9 @@ export class EntityManager {
     }
 
     public clear(): void {
-        for (const key in this.entities) {
-            const entity = this.entities[key];
+        Object.values(this.entities).forEach((entity: Entity) => {
             this.remove(entity);
-        }
+        });
     }
 
     public get(id: string): Entity | undefined {
@@ -56,12 +55,12 @@ export class EntityManager {
     public getTag(tag: string): Entity[] {
         if (tag in this.entitiesByTag) {
             const entities: Entity[] = [];
-            for (const id of this.entitiesByTag[tag]) {
+            Object.keys(this.entitiesByTag[tag]).forEach((id: string) => {
                 const entity = this.get(id);
                 if (entity) {
                     entities.push(entity);
                 }
-            }
+            });
             return entities;
         }
 
@@ -72,12 +71,12 @@ export class EntityManager {
         const key = type.toString();
         if (key in this.entitiesByType) {
             const entities: Entity[] = [];
-            for (const id of this.entitiesByType[key]) {
+            Object.keys(this.entitiesByType[type]).forEach((id: string) => {
                 const entity = this.get(id);
                 if (entity) {
                     entities.push(entity);
                 }
-            }
+            });
             return entities;
         }
 

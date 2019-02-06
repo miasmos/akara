@@ -96,23 +96,21 @@ export class Group extends Entity {
     public set layer(value: number) {
         if (this._layer !== value) {
             this._layer = value;
-            for (const child of this.children) {
+            this.children.forEach(child => {
                 child.layer = value + 1;
-            }
+            });
         }
     }
     // #endregion
 
     public add(entity: Entity | Entity[], addToGame: boolean = true): boolean {
         if (Array.isArray(entity)) {
-            let result = true;
-            for (const entity1 of entity) {
-                const result1 = this.add(entity1, addToGame);
-                if (!result1) {
-                    result = false;
-                }
-            }
-            return result;
+            const allEntitiesWereAdded = entity.every(child => {
+                const added = this.add(child, addToGame);
+                return added;
+            });
+
+            return allEntitiesWereAdded;
         }
 
         if (this.equals(entity)) {
@@ -279,14 +277,12 @@ export class Group extends Entity {
 
     public remove(entity: Entity | Entity[]): boolean {
         if (Array.isArray(entity)) {
-            let result = true;
-            for (const entity1 of entity) {
-                const result1 = this.remove(entity1);
-                if (!result1) {
-                    result = false;
-                }
-            }
-            return result;
+            const allEntitiesWereRemoved = entity.every(child => {
+                const remove = this.remove(child);
+                return remove;
+            });
+
+            return allEntitiesWereRemoved;
         }
 
         if (entity.id in this.childrenById) {
@@ -354,9 +350,9 @@ export class Group extends Entity {
 
             if (positionDidChange) {
                 if (direction === Direction.Down) {
-                    for (const child of this.children) {
+                    this.children.forEach(child => {
                         child.reconcile(this.world, origin, changed, this, Direction.Down, id);
-                    }
+                    });
                 } else {
                     const isRoot = this.parent && this.parent.type === EntityType.Scene;
                     if (isRoot) {
@@ -380,7 +376,8 @@ export class Group extends Entity {
         if (entity.id in this.childrenById) {
             return true;
         }
-        for (const child of this.children) {
+
+        const contained: boolean = this.children.some((child: Entity) => {
             if (child.isGroup) {
                 if ((child as Group).contains(entity)) {
                     return true;
@@ -388,14 +385,17 @@ export class Group extends Entity {
             } else if (child.equals(entity)) {
                 return true;
             }
-        }
-        return false;
+
+            return false;
+        });
+
+        return contained;
     }
 
     public clear(): void {
-        for (const entity of this.children) {
+        this.children.forEach((entity: Entity) => {
             this.remove(entity);
-        }
+        });
     }
 
     private getBounds(): IBounds {
@@ -405,7 +405,7 @@ export class Group extends Entity {
             z: { low: 0, high: 0 }
         };
 
-        for (const child of this.children) {
+        this.children.forEach((child: Entity) => {
             const x = child.x - child.width * child.pivotX;
             const y = child.y - child.height * child.pivotY;
             const { z, width, height, depth } = child;
@@ -428,7 +428,8 @@ export class Group extends Entity {
             if (z + depth > compare.z.high) {
                 compare.z.high = z + depth;
             }
-        }
+        });
+
         const { clamp } = Util.Math;
         return {
             x: { low: clamp(compare.x.low, 0), high: compare.x.high },

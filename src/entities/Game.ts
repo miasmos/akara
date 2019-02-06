@@ -134,14 +134,11 @@ export class Game extends Entity {
 
     public add(entity: Entity | Entity[]): boolean {
         if (Array.isArray(entity)) {
-            let result = true;
-            for (const entity1 of entity) {
-                const result1 = this.add(entity1);
-                if (!result1) {
-                    result = false;
-                }
-            }
-            return result;
+            const allEntitiesWereAdded = entity.some((child: Entity) => {
+                const added = this.add(child);
+                return added;
+            });
+            return allEntitiesWereAdded;
         }
 
         if (entity instanceof Scene) {
@@ -159,14 +156,11 @@ export class Game extends Entity {
 
     public remove(entity: Entity): boolean {
         if (Array.isArray(entity)) {
-            let result = true;
-            for (const entity1 of entity) {
-                const result1 = this.remove(entity1);
-                if (!result1) {
-                    result = false;
-                }
-            }
-            return result;
+            const allEntitiesWereRemoved = entity.some((child: Entity) => {
+                const removed = this.remove(child);
+                return removed;
+            });
+            return allEntitiesWereRemoved;
         }
 
         if (entity instanceof Scene) {

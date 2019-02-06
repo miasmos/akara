@@ -17,10 +17,9 @@ export class Registry {
     }
 
     private initialize(): void {
-        for (const key in EngineEvent) {
-            const method: string = EngineEvent[key];
+        Object.values(EngineEvent).forEach((method: string) => {
             this.addRegister(method);
-        }
+        });
 
         this.engine.on(EngineEvent.Start, this.onStart.bind(this));
         this.engine.on(EngineEvent.Preupdate, this.onPreupdate.bind(this));
@@ -36,11 +35,11 @@ export class Registry {
             return false;
         }
 
-        for (const method in this.registers) {
+        Object.keys(this.registers).forEach((method: string) => {
             if (method in entity && typeof entity[method] === 'function') {
                 this.addEntityToRegister(entity, method);
             }
-        }
+        });
 
         return true;
     }
@@ -51,12 +50,11 @@ export class Registry {
         }
 
         delete this.entities[entity.id];
-
-        for (const method in this.registers) {
+        Object.keys(this.registers).forEach((method: string) => {
             if (method in entity) {
                 this.removeEntityFromRegister(entity, method);
             }
-        }
+        });
 
         return true;
     }
@@ -70,14 +68,13 @@ export class Registry {
 
     public call(method: EngineEvent): void {
         if (method in this.registers) {
-            for (const key in this.registers[method]) {
-                const id = this.registers[method][key];
+            Object.values(this.registers[method]).forEach((id: string) => {
                 const entity = this.entities[id];
 
                 if (method in entity && typeof entity[method] === 'function') {
                     entity[method].call(entity);
                 }
-            }
+            });
         }
     }
 

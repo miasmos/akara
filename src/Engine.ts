@@ -91,9 +91,7 @@ export class Engine extends Observer {
         this.registry.add(entity);
 
         if (entity.type === EntityType.Group) {
-            for (const child of (entity as Group).children) {
-                this.add(child);
-            }
+            (entity as Group).children.map(child => this.add(child));
         }
 
         if (this.started) {
@@ -113,9 +111,7 @@ export class Engine extends Observer {
         this.registry.remove(entity);
 
         if (entity.type === EntityType.Group) {
-            for (const child of (entity as Group).children) {
-                this.remove(child);
-            }
+            (entity as Group).children.map(child => this.remove(child));
         }
 
         if (EngineEvent.Destroy in entity) {
@@ -169,9 +165,7 @@ export class Engine extends Observer {
         }
 
         if (scene) {
-            for (const entity of scene.children) {
-                this.render(entity);
-            }
+            scene.children.map(entity => this.render(entity));
         }
     }
 
@@ -196,9 +190,7 @@ export class Engine extends Observer {
 
         switch (entity.type) {
             case EntityType.Group:
-                for (const child of (entity as Group).children) {
-                    this.render(child);
-                }
+                (entity as Group).children.map(child => this.render(child));
                 break;
             case EntityType.Box:
                 this.canvas.drawBox((entity as Box).backgroundColor, x, y, width, height);

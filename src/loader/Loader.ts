@@ -48,12 +48,10 @@ export class Loader extends Observer {
     public start(): boolean {
         if (!this.started) {
             this.started = true;
-            for (const index in this.assets) {
-                for (const index1 in this.assets[index]) {
-                    const asset: Asset = this.assets[index][index1];
-                    asset.load();
-                }
-            }
+            Object.keys(this.assets).forEach(index => {
+                Object.values(this.assets[index]).forEach((asset: Asset) => asset.load());
+            });
+
             return true;
         }
         return false;

@@ -91,9 +91,7 @@ export class Scene extends Group {
 
     protected bindAsset(entity: Entity): void {
         if (entity instanceof Group) {
-            for (const child of entity.children) {
-                this.bindAsset(child);
-            }
+            entity.children.forEach(child => this.bindAsset(child));
         } else if (entity instanceof AssetEntity) {
             this.assetCount += 1;
             if (entity.loaded) {
