@@ -8,7 +8,7 @@ import { Point3 } from '../../structs/Point3';
 import { Size3 } from '../../structs/Size3';
 import { ComponentManager, ComponentManagerEvent } from '../../ComponentManager';
 import { TransformEvent, Transform } from '../../components/Transform';
-import { Collider, IColliderConfig } from '../../components/Collider';
+import { Collider } from '../../components/Collider';
 import { ComponentType, Component } from '../../components/Component';
 import { Pivot2 } from '../../structs/Pivot2';
 
@@ -77,9 +77,9 @@ export class Entity extends Observer implements IEntity {
         if (typeof added !== 'boolean') {
             added.attach(this);
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public removeComponent(type: Component | ComponentType): boolean {
@@ -87,9 +87,9 @@ export class Entity extends Observer implements IEntity {
         if (typeof removed !== 'boolean') {
             removed.detach();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public getComponent(type: ComponentType): Component | undefined {
@@ -116,7 +116,7 @@ export class Entity extends Observer implements IEntity {
         }
     }
 
-    //#region properties
+    // #region properties
     public get game(): Game {
         return this._game;
     }
@@ -135,85 +135,85 @@ export class Entity extends Observer implements IEntity {
     }
 
     public get moveable(): boolean {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.moveable;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public set moveable(value: boolean) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.moveable = value;
         }
     }
 
     public get collidable(): boolean {
-        if (!!this.collider) {
+        if (this.collider) {
             return this.collider.collidable;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public set collidable(value: boolean) {
-        if (!!this.collider) {
+        if (this.collider) {
             this.collider.collidable = value;
         }
     }
 
     public get local(): Transform3 {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local;
-        } else {
-            return new Transform3({});
         }
+
+        return new Transform3({});
     }
 
     public set local(value: Transform3) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.local = value;
         }
     }
 
     public get world(): Transform3 {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.world;
-        } else {
-            return new Transform3({});
         }
+
+        return new Transform3({});
     }
 
     public set world(value: Transform3) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.world = value;
         }
     }
 
     public get scale(): Point3 {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.scale;
-        } else {
-            return new Point3();
         }
+
+        return new Point3();
     }
 
     public set scale(value: Point3) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.scale = value;
         }
     }
 
     public get x(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.x;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public set x(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             if (value !== this.transform.local.x) {
                 this.transform.local.x = value;
             }
@@ -221,15 +221,15 @@ export class Entity extends Observer implements IEntity {
     }
 
     public get y(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.y;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public set y(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             if (value !== this.transform.local.y) {
                 this.transform.local.y = value;
             }
@@ -237,15 +237,15 @@ export class Entity extends Observer implements IEntity {
     }
 
     public get z(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.z;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public set z(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             if (value !== this.transform.local.z) {
                 this.transform.local.z = value;
             }
@@ -253,15 +253,15 @@ export class Entity extends Observer implements IEntity {
     }
 
     public get width(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.width;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public set width(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             if (value !== this.transform.local.width) {
                 this.transform.local.width = value;
             }
@@ -269,15 +269,15 @@ export class Entity extends Observer implements IEntity {
     }
 
     public get height(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.height;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public set height(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             if (value !== this.transform.local.height) {
                 this.transform.local.height = value;
             }
@@ -285,15 +285,15 @@ export class Entity extends Observer implements IEntity {
     }
 
     public get depth(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.depth;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public set depth(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             if (value !== this.transform.local.depth) {
                 this.transform.local.depth = value;
             }
@@ -301,39 +301,39 @@ export class Entity extends Observer implements IEntity {
     }
 
     public get scaleX(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.scaleX;
-        } else {
-            return 1;
         }
+
+        return 1;
     }
 
     public set scaleX(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.local.scaleX = value;
         }
     }
 
     public get scaleY(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.scaleY;
-        } else {
-            return 1;
         }
+
+        return 1;
     }
 
     public set scaleY(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.local.scaleY = value;
         }
     }
 
     public get scaleZ(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.scaleZ;
-        } else {
-            return 1;
         }
+
+        return 1;
     }
 
     public set scaleZ(value: number) {
@@ -341,91 +341,91 @@ export class Entity extends Observer implements IEntity {
             ComponentType.Transform
         ) as Transform;
 
-        if (!!transform) {
+        if (transform) {
             transform.local.scaleZ = value;
         }
     }
 
     public get pivotX(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.pivotX;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public set pivotX(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.local.pivotX = value;
         }
     }
 
     public get pivotY(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.pivotY;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public set pivotY(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.local.pivotY = value;
         }
     }
 
     public get rotateX(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.rotateX;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public set rotateX(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.local.rotateX = value;
         }
     }
 
     public get rotateY(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.rotateY;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public set rotateY(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.local.rotateY = value;
         }
     }
 
     public get rotateZ(): number {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.rotateZ;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public set rotateZ(value: number) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.local.rotateZ = value;
         }
     }
 
     public get size(): Size3 {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.world.size;
-        } else {
-            return new Size3();
         }
+
+        return new Size3();
     }
 
     public set size(value: Size3) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.world.size = value;
         }
     }
@@ -451,14 +451,14 @@ export class Entity extends Observer implements IEntity {
             (value !== this._tag && (typeof value === 'string' && value.length > 0)) ||
             typeof value === 'undefined'
         ) {
-            let previous: string | undefined = this._tag;
+            const previous: string | undefined = this._tag;
             this._tag = value;
             this.onTagChange(previous);
         }
     }
 
     public get renderable(): boolean {
-        const game = this.game;
+        const { game } = this;
 
         if (!this.transform) {
             return true;
@@ -466,16 +466,16 @@ export class Entity extends Observer implements IEntity {
 
         const { x, y, width, height } = this.transform.world;
 
-        if (!!game) {
+        if (game) {
             return !(
                 x > game.width ||
                 x + width < game.x ||
                 y > game.height ||
                 y + height < game.y
             );
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public get layer(): number {
@@ -500,15 +500,15 @@ export class Entity extends Observer implements IEntity {
     }
 
     public get pivot(): Pivot2 {
-        if (!!this.transform) {
+        if (this.transform) {
             return this.transform.local.pivot;
-        } else {
-            return Pivot2.topLeft;
         }
+
+        return Pivot2.topLeft;
     }
 
     public set pivot(value: Pivot2) {
-        if (!!this.transform) {
+        if (this.transform) {
             this.transform.local.pivot = value;
         }
     }
@@ -520,7 +520,7 @@ export class Entity extends Observer implements IEntity {
     public get shouldReconcile(): boolean {
         return !(this.type === EntityType.Scene || this.type === EntityType.Game);
     }
-    //#endregion
+    // #endregion
 
     public equals(entity: Entity): boolean {
         return entity.id === this.id && entity.type === this.type;
@@ -545,9 +545,6 @@ export class Entity extends Observer implements IEntity {
         if (!transform) {
             return;
         }
-        if (typeof this.type === 'undefined') {
-            debugger;
-        }
 
         console.log(
             Util.String.leftpad('', this.layer, '\t'),
@@ -568,38 +565,42 @@ export class Entity extends Observer implements IEntity {
                 case Transform3Event.Z:
                     transform.world.z = local.z + transform.local.z;
                     break;
+                default:
             }
-        } else {
-            if (!!this.parent) {
-                this.parent.reconcile(transform.local, origin, changed, this, Direction.Up, id);
-            }
+        } else if (this.parent) {
+            this.parent.reconcile(transform.local, origin, changed, this, Direction.Up, id);
         }
     }
 
-    //#region events
+    // #region events
     protected onComponentAdd(type: ComponentType, component: Component): void {
         switch (type) {
             case ComponentType.Transform:
-                this.onTransformAdd(component as Transform);
+                this.onTransformAdd();
+                break;
             case ComponentType.Collider:
-                this.onColliderAdd(component as Collider);
+                this.onColliderAdd();
+                break;
+            default:
         }
     }
 
     protected onComponentRemove(type: ComponentType, component: Component): void {
         switch (type) {
             case ComponentType.Transform:
-                this.onTransformRemove(component as Transform);
+                this.onTransformRemove();
+                break;
             case ComponentType.Collider:
-                this.onColliderRemove(component as Collider);
+                this.onColliderRemove();
+                break;
+            default:
         }
     }
 
-    protected onTransformAdd(component: Transform): void {}
-    protected onColliderAdd(component: Collider): void {}
-
-    protected onTransformRemove(component: Transform): void {}
-    protected onColliderRemove(component: Collider): void {}
+    protected onTransformAdd(): void {}
+    protected onColliderAdd(): void {}
+    protected onTransformRemove(): void {}
+    protected onColliderRemove(): void {}
 
     public onTransformEvent(
         type: TransformEvent,
@@ -614,6 +615,7 @@ export class Entity extends Observer implements IEntity {
             case TransformEvent.Scale:
                 this.onScaleChange(previous);
                 break;
+            default:
         }
     }
 
@@ -622,7 +624,7 @@ export class Entity extends Observer implements IEntity {
             ComponentType.Transform
         ) as Transform;
 
-        if (!!transform) {
+        if (transform) {
             this.reconcile(transform.local, this, changed, this, Direction.Up, Util.Random.id(12));
             this.emit(EntityEvent.Transform, this, previous, changed);
         }
@@ -639,5 +641,5 @@ export class Entity extends Observer implements IEntity {
     protected onTagChange(previous: string | undefined): void {
         this.emit(EntityEvent.Tag, this, previous);
     }
-    //#endregion
+    // #endregion
 }

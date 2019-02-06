@@ -1,4 +1,5 @@
 import { Environment as EnvironmentEnum } from '../enum/Environment';
+
 const env: string | undefined = process.env.NODE_ENV;
 
 export class Environment {

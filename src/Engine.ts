@@ -91,7 +91,7 @@ export class Engine extends Observer {
         this.registry.add(entity);
 
         if (entity.type === EntityType.Group) {
-            for (let child of (entity as Group).children) {
+            for (const child of (entity as Group).children) {
                 this.add(child);
             }
         }
@@ -113,7 +113,7 @@ export class Engine extends Observer {
         this.registry.remove(entity);
 
         if (entity.type === EntityType.Group) {
-            for (let child of (entity as Group).children) {
+            for (const child of (entity as Group).children) {
                 this.remove(child);
             }
         }
@@ -168,8 +168,8 @@ export class Engine extends Observer {
             this.drawGrid(5, 2);
         }
 
-        if (!!scene) {
-            for (let entity of scene.children) {
+        if (scene) {
+            for (const entity of scene.children) {
                 this.render(entity);
             }
         }
@@ -196,21 +196,20 @@ export class Engine extends Observer {
 
         switch (entity.type) {
             case EntityType.Group:
-                const groupEntity = entity as Group;
-                for (let entity of groupEntity.children) {
-                    this.render(entity);
+                for (const child of (entity as Group).children) {
+                    this.render(child);
                 }
                 break;
             case EntityType.Box:
                 this.canvas.drawBox((entity as Box).backgroundColor, x, y, width, height);
                 break;
             case EntityType.Text:
-                const textEntity = entity as Text;
-                this.canvas.drawText(textEntity.text, textEntity.color, x, y);
+                this.canvas.drawText((entity as Text).text, (entity as Text).color, x, y);
                 break;
             case EntityType.Sprite:
                 this.canvas.drawImage((entity as Sprite).image, x, y, width, height);
                 break;
+            default:
         }
 
         this.canvas.restore();
@@ -246,14 +245,14 @@ export class Engine extends Observer {
 
     private drawGrid(resolution: number = 10, stroke: number = 1): void {
         const { width, height } = this.game;
-        const linesX = Math.floor(width / resolution),
-            linesY = Math.floor(height / resolution);
+        const linesX = Math.floor(width / resolution);
+        const linesY = Math.floor(height / resolution);
 
-        for (let index = 1; index <= linesY; index++) {
+        for (let index = 1; index <= linesY; index += 1) {
             const y = linesY * index;
             this.canvas.drawLine(new Color(HexCode.Gray), 0, y, width, y, stroke);
         }
-        for (let index = 1; index <= linesX; index++) {
+        for (let index = 1; index <= linesX; index += 1) {
             const x = linesX * index;
             this.canvas.drawLine(new Color(HexCode.Gray), x, 0, x, height, stroke);
         }

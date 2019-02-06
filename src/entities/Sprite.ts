@@ -70,11 +70,11 @@ export class Sprite extends AssetEntity {
         return (this.asset as ImageAsset).getRef();
     }
 
-    //#region events
+    // #region events
     protected onAssetLoaded(asset: Asset): void {
         this.local.width = this.image.width;
         this.local.height = this.image.height;
         super.onAssetLoaded(asset);
     }
-    //#endregion
+    // #endregion
 }

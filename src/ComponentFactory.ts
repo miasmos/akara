@@ -14,6 +14,7 @@ export class ComponentFactory {
                 return this.transform(game, config as ITransformConfig);
             case ComponentType.Collider:
                 return this.collider(game, config as IColliderConfig);
+            default:
         }
 
         return this.component(game, config as IComponentConfig);

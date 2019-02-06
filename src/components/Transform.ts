@@ -149,13 +149,13 @@ export class Transform extends Component {
     }
 
     public detach(): void {
-        if (!!this.parent) {
+        if (this.parent) {
             this.off(ComponentEvent.Transform, this.parent.onTransformEvent.bind(this.parent));
         }
         super.detach();
     }
 
-    //#region events
+    // #region events
     public onTransformChange(previous: number, changed: Transform3Event): void {
         switch (changed) {
             case Transform3Event.Width:
@@ -191,6 +191,7 @@ export class Transform extends Component {
             case Transform3Event.RotateZ:
                 this.world.rotateZ = this.local.rotateZ;
                 break;
+            default:
         }
 
         this.emit(ComponentEvent.Transform, TransformEvent.Transform, this, previous, changed);
@@ -199,5 +200,5 @@ export class Transform extends Component {
     protected onScaleChange(previous: number): void {
         this.emit(ComponentEvent.Transform, TransformEvent.Scale, this, previous);
     }
-    //#endregion
+    // #endregion
 }

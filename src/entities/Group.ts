@@ -88,7 +88,7 @@ export class Group extends Entity {
         });
     }
 
-    //#region properties
+    // #region properties
     public get layer(): number {
         return this._layer;
     }
@@ -96,17 +96,17 @@ export class Group extends Entity {
     public set layer(value: number) {
         if (this._layer !== value) {
             this._layer = value;
-            for (let child of this.children) {
+            for (const child of this.children) {
                 child.layer = value + 1;
             }
         }
     }
-    //#endregion
+    // #endregion
 
     public add(entity: Entity | Entity[], addToGame: boolean = true): boolean {
         if (Array.isArray(entity)) {
             let result = true;
-            for (let entity1 of entity) {
+            for (const entity1 of entity) {
                 const result1 = this.add(entity1, addToGame);
                 if (!result1) {
                     result = false;
@@ -124,7 +124,7 @@ export class Group extends Entity {
             return false;
         }
 
-        if (!!entity.parent) {
+        if (entity.parent) {
             entity.parent.remove(entity);
         }
         this.children.push(entity);
@@ -138,7 +138,6 @@ export class Group extends Entity {
             this.game.engine.add(entity);
         }
 
-        // TODO: refactor reconcile to reconcile(transform:Transform, origin:Entity, changed: TransformEvent[], ...)
         entity.reconcile(
             entity.local,
             entity,
@@ -281,7 +280,7 @@ export class Group extends Entity {
     public remove(entity: Entity | Entity[]): boolean {
         if (Array.isArray(entity)) {
             let result = true;
-            for (let entity1 of entity) {
+            for (const entity1 of entity) {
                 const result1 = this.remove(entity1);
                 if (!result1) {
                     result = false;
@@ -296,7 +295,7 @@ export class Group extends Entity {
             this.children.splice(this.children.indexOf(entity), 1);
             entity.parent = undefined;
 
-            if (!!this.game) {
+            if (this.game) {
                 this.game.engine.remove(entity);
             }
             return true;
@@ -325,27 +324,22 @@ export class Group extends Entity {
                     case Transform3Event.Width:
                     case Transform3Event.X:
                     case Transform3Event.ScaleX:
-                        this.local.width = this.world.width = Util.Math.distance(
-                            bounds.x.low,
-                            bounds.x.high
-                        );
+                        this.local.width = Util.Math.distance(bounds.x.low, bounds.x.high);
+                        this.world.width = this.local.width;
                         break;
                     case Transform3Event.Height:
                     case Transform3Event.Y:
                     case Transform3Event.ScaleY:
-                        this.local.height = this.world.height = Util.Math.distance(
-                            bounds.y.low,
-                            bounds.y.high
-                        );
+                        this.local.height = Util.Math.distance(bounds.y.low, bounds.y.high);
+                        this.world.height = this.local.height;
                         break;
                     case Transform3Event.Depth:
                     case Transform3Event.Z:
                     case Transform3Event.ScaleZ:
-                        this.local.depth = this.world.depth = Util.Math.distance(
-                            bounds.z.low,
-                            bounds.z.high
-                        );
+                        this.local.depth = Util.Math.distance(bounds.z.low, bounds.z.high);
+                        this.world.depth = this.local.depth;
                         break;
+                    default:
                 }
             }
             this.local.suppress = false;
@@ -353,21 +347,20 @@ export class Group extends Entity {
         super.reconcile(transform, origin, changed, last, direction, id);
 
         if (this.isGroup) {
-            let positionDidChange =
+            const positionDidChange =
                 changed === Transform3Event.X ||
                 changed === Transform3Event.Y ||
                 changed === Transform3Event.Z;
 
             if (positionDidChange) {
                 if (direction === Direction.Down) {
-                    for (let child of this.children) {
+                    for (const child of this.children) {
                         child.reconcile(this.world, origin, changed, this, Direction.Down, id);
                     }
                 } else {
-                    const isRoot =
-                        !!this.parent && this.parent.type === EntityType.Scene ? true : false;
+                    const isRoot = this.parent && this.parent.type === EntityType.Scene;
                     if (isRoot) {
-                        // TODO: fix reconciliation causing more updates than necessary, track stack as event travels up then only update entities in the stack on the way down
+                        // TODO: fix reconciliation causing more updates than necessary
                         last.reconcile(this.world, origin, changed, this, Direction.Down, id);
                     }
                 }
@@ -387,22 +380,20 @@ export class Group extends Entity {
         if (entity.id in this.childrenById) {
             return true;
         }
-        for (let child of this.children) {
+        for (const child of this.children) {
             if (child.isGroup) {
                 if ((child as Group).contains(entity)) {
                     return true;
                 }
-            } else {
-                if (child.equals(entity)) {
-                    return true;
-                }
+            } else if (child.equals(entity)) {
+                return true;
             }
         }
         return false;
     }
 
     public clear(): void {
-        for (let entity of this.children) {
+        for (const entity of this.children) {
             this.remove(entity);
         }
     }
@@ -414,9 +405,9 @@ export class Group extends Entity {
             z: { low: 0, high: 0 }
         };
 
-        for (let child of this.children) {
-            const x = child.x - child.width * child.pivotX,
-                y = child.y - child.height * child.pivotY;
+        for (const child of this.children) {
+            const x = child.x - child.width * child.pivotX;
+            const y = child.y - child.height * child.pivotY;
             const { z, width, height, depth } = child;
 
             if (x < compare.x.low) {
@@ -438,7 +429,7 @@ export class Group extends Entity {
                 compare.z.high = z + depth;
             }
         }
-        const clamp = Util.Math.clamp;
+        const { clamp } = Util.Math;
         return {
             x: { low: clamp(compare.x.low, 0), high: compare.x.high },
             y: { low: clamp(compare.y.low, 0), high: compare.y.high },
@@ -450,7 +441,7 @@ export class Group extends Entity {
         this.children = Util.Array.sortByKey(this.children, 'z', SortOrder.Asc);
     }
 
-    //#region events
+    // #region events
     public onTransformChange(previous: number, changed: Transform3Event): void {
         switch (changed) {
             case Transform3Event.Width:
@@ -462,6 +453,7 @@ export class Group extends Entity {
             case Transform3Event.Depth:
                 this.world.depth = this.local.depth;
                 break;
+            default:
         }
 
         switch (changed) {
@@ -473,6 +465,7 @@ export class Group extends Entity {
             case Transform3Event.Height:
             case Transform3Event.Depth:
                 this.reconcile(this.local, this, changed, this, Direction.Up, Util.Random.id(12));
+            default:
         }
         this.emit(EntityEvent.Transform, this, previous, changed);
     }
@@ -486,5 +479,5 @@ export class Group extends Entity {
             this.sort();
         }
     }
-    //#endregion
+    // #endregion
 }

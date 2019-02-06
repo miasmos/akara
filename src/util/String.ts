@@ -6,16 +6,14 @@ export class String {
         len -= str.length;
 
         let pad = '';
-        while (true) {
-            if (len & 1) {
+        while (len) {
+            if (len & 1) { // eslint-disable-line no-bitwise
                 pad += ch;
             }
-            len >>= 1;
+            len >>= 1; // eslint-disable-line no-bitwise
 
             if (len) {
                 ch += ch;
-            } else {
-                break;
             }
         }
 

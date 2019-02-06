@@ -17,7 +17,7 @@ export class Registry {
     }
 
     private initialize(): void {
-        for (let key in EngineEvent) {
+        for (const key in EngineEvent) {
             const method: string = EngineEvent[key];
             this.addRegister(method);
         }
@@ -36,7 +36,7 @@ export class Registry {
             return false;
         }
 
-        for (let method in this.registers) {
+        for (const method in this.registers) {
             if (method in entity && typeof entity[method] === 'function') {
                 this.addEntityToRegister(entity, method);
             }
@@ -48,11 +48,11 @@ export class Registry {
     public remove(entity: Entity): boolean {
         if (!(entity.id in this.entities)) {
             return false;
-        } else {
-            delete this.entities[entity.id];
         }
 
-        for (let method in this.registers) {
+        delete this.entities[entity.id];
+
+        for (const method in this.registers) {
             if (method in entity) {
                 this.removeEntityFromRegister(entity, method);
             }
@@ -70,7 +70,7 @@ export class Registry {
 
     public call(method: EngineEvent): void {
         if (method in this.registers) {
-            for (let key in this.registers[method]) {
+            for (const key in this.registers[method]) {
                 const id = this.registers[method][key];
                 const entity = this.entities[id];
 
@@ -109,7 +109,7 @@ export class Registry {
         return false;
     }
 
-    //#region events
+    // #region events
     private onStart(): void {
         this.call(EngineEvent.Start);
     }
@@ -129,5 +129,5 @@ export class Registry {
     private onDestroy(): void {
         this.call(EngineEvent.Destroy);
     }
-    //#endregion events
+    // #endregion events
 }

@@ -27,7 +27,7 @@ export class Observer {
         event = event.toString();
         if (event in this.subjects) {
             const namespace = Object.values(this.subjects[event]);
-            for (let subject of namespace) {
+            for (const subject of namespace) {
                 subject.fn.apply(this, params);
             }
         }
@@ -40,7 +40,7 @@ export class Observer {
         }
         if (typeof fn === 'function') {
             const namespace = Object.values(this.subjects[event]);
-            for (let index = 0; index < namespace.length; index++) {
+            for (let index = 0; index < namespace.length; index += 1) {
                 const subject: Subject = namespace[index];
                 if (subject.fn === fn) {
                     this.subjects[event].splice(0, index);

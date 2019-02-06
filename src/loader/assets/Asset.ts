@@ -35,12 +35,13 @@ export abstract class Asset extends Observer implements IAsset {
         this.path = path;
         this.event = event;
     }
+
     protected abstract getLoader(): HTMLImageElement | HTMLAudioElement | undefined;
 
     public load(): void {
         if (!this.ref) {
             this.ref = this.getLoader();
-            if (!!this.ref) {
+            if (this.ref) {
                 this.ref.src = this.path;
                 this.loading = true;
                 this.ref.addEventListener(this.event, this.onLoaded.bind(this));

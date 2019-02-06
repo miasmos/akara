@@ -1,10 +1,9 @@
 import { EntityType, IEntityConfig } from './entities/base/IEntity';
-import { IGroupConfig } from './entities/Group';
+import { IGroupConfig, Group } from './entities/Group';
 import { Box, IBoxConfig } from './entities/Box';
 import { Game, IGameConfig } from './entities/Game';
 import { Entity } from './entities/base/Entity';
 import { Scene, ISceneConfig } from './entities/Scene';
-import { Group } from './entities/Group';
 import { ISoundConfig, Sound } from './entities/Sound';
 import { ISpriteConfig, Sprite } from './entities/Sprite';
 import { ComponentType } from './components/Component';
@@ -34,6 +33,7 @@ export class EntityFactory {
                 return this.sound(config as ISoundConfig);
             case EntityType.Sprite:
                 return this.sprite(config as ISpriteConfig);
+            default:
         }
 
         return this.entity(config as IEntityConfig);

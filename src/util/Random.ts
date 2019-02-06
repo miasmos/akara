@@ -7,15 +7,15 @@ export class Random {
         if (length < 1) {
             length = 1;
         }
-        let seed = Math.random()
+        const seed = Math.random()
             .toString(36)
             .substr(2, 9);
 
         if (prefix.length + seed.length < length) {
             return this.id(length, prefix + seed);
-        } else {
-            let id = prefix + seed;
-            return id.substring(0, length - 1);
         }
+
+        const id = prefix + seed;
+        return id.substring(0, length - 1);
     }
 }

@@ -39,7 +39,7 @@ export class EntityManager {
     }
 
     public clear(): void {
-        for (let key in this.entities) {
+        for (const key in this.entities) {
             const entity = this.entities[key];
             this.remove(entity);
         }
@@ -56,9 +56,9 @@ export class EntityManager {
     public getTag(tag: string): Entity[] {
         if (tag in this.entitiesByTag) {
             const entities: Entity[] = [];
-            for (let id of this.entitiesByTag[tag]) {
+            for (const id of this.entitiesByTag[tag]) {
                 const entity = this.get(id);
-                if (!!entity) {
+                if (entity) {
                     entities.push(entity);
                 }
             }
@@ -72,9 +72,9 @@ export class EntityManager {
         const key = type.toString();
         if (key in this.entitiesByType) {
             const entities: Entity[] = [];
-            for (let id of this.entitiesByType[key]) {
+            for (const id of this.entitiesByType[key]) {
                 const entity = this.get(id);
-                if (!!entity) {
+                if (entity) {
                     entities.push(entity);
                 }
             }
@@ -130,12 +130,12 @@ export class EntityManager {
         }
     }
 
-    //#region events
+    // #region events
     private onTagChange(entity: Entity, previous: string | undefined): void {
         if (!!previous && previous.length) {
             this.removeEntityFromTag(entity, previous);
         }
         this.addEntityToTag(entity);
     }
-    //#endregion
+    // #endregion
 }

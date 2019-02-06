@@ -20,15 +20,17 @@ export class Color {
     }
 
     public set hex(value: string) {
-        value = value.toLowerCase();
-        if (this.isHex(value)) {
-            if (value.length === 3) {
-                value = value.split('').reduce((previous, char) => previous + char + char, '');
+        let lowercase = value.toLowerCase();
+        if (Color.isHex(lowercase)) {
+            if (lowercase.length === 3) {
+                lowercase = lowercase
+                    .split('')
+                    .reduce((previous, char) => previous + char + char, '');
             }
-            if (value.length !== 6) {
+            if (lowercase.length !== 6) {
                 return;
             }
-            this._hex = value;
+            this._hex = lowercase;
         }
     }
 
@@ -45,17 +47,16 @@ export class Color {
     }
 
     public toString(): string {
-        return '#' + this.hex;
+        return `#${this.hex}`;
     }
 
     public equals(color: Color): boolean {
         return this.hex === color.hex;
     }
 
-    private isHex(hex: string): boolean {
+    public static isHex(hex: string): boolean {
         if (hex.length === 6 || hex.length === 3) {
-            hex = hex.toLowerCase();
-            for (let char of hex) {
+            for (const char of hex.toLowerCase()) {
                 const cast: string = parseInt(char, 16).toString(16);
 
                 if (cast !== char) {

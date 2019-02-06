@@ -69,7 +69,8 @@ export class Scene extends Group {
             destroy
         });
         this.name = name;
-        setTimeout(this.assetLoaded.bind(this), 0); // if no assets were added on next frame, trigger scene load
+        // if no assets were added on next frame, trigger scene load
+        setTimeout(this.assetLoaded.bind(this), 0);
     }
 
     public add(entity: Entity): boolean {
@@ -80,9 +81,9 @@ export class Scene extends Group {
     public remove(entity: Entity): boolean {
         if (entity instanceof AssetEntity) {
             entity.off(EntityEvent.Loaded, this.onEntityLoaded.bind(this));
-            this.assetCount--;
+            this.assetCount -= 1;
             if (entity.loaded) {
-                this.assetsLoaded--;
+                this.assetsLoaded -= 1;
             }
         }
         return super.remove(entity);
@@ -90,13 +91,13 @@ export class Scene extends Group {
 
     protected bindAsset(entity: Entity): void {
         if (entity instanceof Group) {
-            for (let child of entity.children) {
+            for (const child of entity.children) {
                 this.bindAsset(child);
             }
         } else if (entity instanceof AssetEntity) {
-            this.assetCount++;
+            this.assetCount += 1;
             if (entity.loaded) {
-                this.assetsLoaded++;
+                this.assetsLoaded += 1;
             } else {
                 entity.on(EntityEvent.Loaded, this.onEntityLoaded.bind(this));
             }
@@ -105,7 +106,7 @@ export class Scene extends Group {
 
     protected assetLoaded(entity: AssetEntity | undefined): void {
         if (typeof entity !== 'undefined') {
-            this.assetsLoaded++;
+            this.assetsLoaded += 1;
         }
         if (this.assetsLoaded >= this.assetCount) {
             if (!this.loaded) {
@@ -115,10 +116,10 @@ export class Scene extends Group {
         }
     }
 
-    //#region events
+    // #region events
     protected onEntityLoaded(entity: AssetEntity): void {
         entity.off(EntityEvent.Loaded, this.onEntityLoaded.bind(this));
         this.assetLoaded(entity);
     }
-    //#endregion
+    // #endregion
 }

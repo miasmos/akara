@@ -212,7 +212,7 @@ export class Transform3 extends Observer {
 
     public set scaleX(value: number) {
         if (value !== this._scale.x) {
-            let previous: number = this._scale.x;
+            const previous: number = this._scale.x;
             this._scale.x = value;
             this._size.width = value * this._rawSize.width;
             this._origin.x = this.x;
@@ -226,7 +226,7 @@ export class Transform3 extends Observer {
 
     public set scaleY(value: number) {
         if (value !== this._scale.y) {
-            let previous: number = this._scale.y;
+            const previous: number = this._scale.y;
             this._scale.y = value;
             this._size.height = value * this._rawSize.height;
             this._origin.y = this.y;
@@ -240,7 +240,7 @@ export class Transform3 extends Observer {
 
     public set scaleZ(value: number) {
         if (value !== this._scale.z) {
-            let previous: number = this._scale.z;
+            const previous: number = this._scale.z;
             this._scale.z = value;
             this._size.depth = value * this._rawSize.depth;
             this.emit(Transform3Event.ScaleZ, previous);
@@ -253,7 +253,7 @@ export class Transform3 extends Observer {
 
     public set pivotX(value: number) {
         if (value !== this._pivot.x) {
-            let previous: number = this._pivot.x;
+            const previous: number = this._pivot.x;
             this._pivot.x = value;
             this._origin.x = this.x;
             this.emit(Transform3Event.PivotX, previous);
@@ -266,7 +266,7 @@ export class Transform3 extends Observer {
 
     public set pivotY(value: number) {
         if (value !== this._pivot.y) {
-            let previous: number = this._pivot.y;
+            const previous: number = this._pivot.y;
             this._pivot.y = value;
             this._origin.y = this.y;
             this.emit(Transform3Event.PivotY, previous);
@@ -279,7 +279,7 @@ export class Transform3 extends Observer {
 
     public set rotateX(value: number) {
         if (value !== this.rotation.x) {
-            let previous: number = this.rotation.x;
+            const previous: number = this.rotation.x;
             this.rotation.x = value;
             this.emit(Transform3Event.RotateX, previous);
         }
@@ -291,7 +291,7 @@ export class Transform3 extends Observer {
 
     public set rotateY(value: number) {
         if (value !== this.rotation.y) {
-            let previous: number = this.rotation.y;
+            const previous: number = this.rotation.y;
             this.rotation.y = value;
             this.emit(Transform3Event.RotateY, previous);
         }
@@ -303,7 +303,7 @@ export class Transform3 extends Observer {
 
     public set rotateZ(value: number) {
         if (value !== this.rotation.z) {
-            let previous: number = this.rotation.z;
+            const previous: number = this.rotation.z;
             this.rotation.z = value;
             this.emit(Transform3Event.RotateZ, previous);
         }

@@ -43,14 +43,14 @@ export class SceneManager extends Observer {
     }
 
     public get loaded(): boolean {
-        return !!this.active ? this.active.loaded : true;
+        return this.active ? this.active.loaded : true;
     }
 
     public load(name: string): boolean {
         if (this.has(name)) {
             this.unload();
             const scene = this.get(name);
-            if (!!scene) {
+            if (scene) {
                 this.active = scene;
                 scene.on(SceneEvent.Loaded, this.onSceneLoaded.bind(this));
                 this.game.engine.add(scene);
@@ -69,7 +69,7 @@ export class SceneManager extends Observer {
     }
 
     public unload(): boolean {
-        if (!!this.active) {
+        if (this.active) {
             const scene = this.active;
             this.game.engine.remove(scene);
             scene.off(SceneEvent.Loaded, this.onSceneLoaded.bind(this));
@@ -86,26 +86,24 @@ export class SceneManager extends Observer {
                 this.scenes.push(target);
                 return true;
             }
-        } else {
-            if (!!this.active) {
-                return this.active.add(target);
-            }
+        } else if (this.active) {
+            return this.active.add(target);
         }
+
         return false;
     }
 
     public remove(target: Scene | Entity): boolean {
         if (target instanceof Scene) {
             if (this.has(target.name)) {
-                delete this.scenesByName[name];
+                delete this.scenesByName[target.name];
                 this.scenes.splice(this.scenes.indexOf(target), 1);
                 return true;
             }
-        } else {
-            if (!!this.active) {
-                return this.active.remove(target);
-            }
+        } else if (this.active) {
+            return this.active.remove(target);
         }
+
         return false;
     }
 
@@ -117,9 +115,9 @@ export class SceneManager extends Observer {
         return name in this.scenesByName;
     }
 
-    //#region events
+    // #region events
     private onSceneLoaded(scene: Scene): void {
         this.emit(SceneManagerEvent.Loaded, scene);
     }
-    //#endregion
+    // #endregion
 }

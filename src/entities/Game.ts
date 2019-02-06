@@ -39,6 +39,7 @@ export class Game extends Entity {
     public settings: IGameSettings = {
         sizing: Sizing.Auto
     };
+
     public debug: IDebugConfig = {
         outline: false,
         grid: false,
@@ -124,17 +125,17 @@ export class Game extends Entity {
     }
 
     public get children(): Entity[] {
-        if (!!this.scene.active) {
+        if (this.scene.active) {
             return this.scene.active.children;
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     public add(entity: Entity | Entity[]): boolean {
         if (Array.isArray(entity)) {
             let result = true;
-            for (let entity1 of entity) {
+            for (const entity1 of entity) {
                 const result1 = this.add(entity1);
                 if (!result1) {
                     result = false;
@@ -148,18 +149,18 @@ export class Game extends Entity {
             return false;
         }
 
-        if (!!this.scene.active) {
+        if (this.scene.active) {
             return this.scene.add(entity);
-        } else {
-            Debug.error(ErrorMessage.TriedToAddToEmptyScene);
-            return false;
         }
+
+        Debug.error(ErrorMessage.TriedToAddToEmptyScene);
+        return false;
     }
 
     public remove(entity: Entity): boolean {
         if (Array.isArray(entity)) {
             let result = true;
-            for (let entity1 of entity) {
+            for (const entity1 of entity) {
                 const result1 = this.remove(entity1);
                 if (!result1) {
                     result = false;
@@ -173,12 +174,12 @@ export class Game extends Entity {
             return false;
         }
 
-        if (!!this.scene.active) {
+        if (this.scene.active) {
             return this.scene.remove(entity);
-        } else {
-            Debug.error(ErrorMessage.TriedToAddToEmptyScene);
-            return false;
         }
+
+        Debug.error(ErrorMessage.TriedToAddToEmptyScene);
+        return false;
     }
 
     public start(): void {
@@ -188,12 +189,10 @@ export class Game extends Entity {
 
             if (!this.scene.active) {
                 Debug.warn(ErrorMessage.NoActiveScene);
-            } else {
-                if (this.scene.loaded) {
-                    this.startEngine();
-                } else {
-                    this.scene.on(SceneManagerEvent.Loaded, this.onSceneManagerLoaded.bind(this));
-                }
+            } else if (this.scene.loaded) {
+                this.startEngine();
+            } else if (!this.scene.loaded) {
+                this.scene.on(SceneManagerEvent.Loaded, this.onSceneManagerLoaded.bind(this));
             }
         }
     }
@@ -205,19 +204,19 @@ export class Game extends Entity {
     }
 
     public getByTag(tag: string): Entity[] {
-        if (!!this.scene.active) {
+        if (this.scene.active) {
             return this.scene.active.getByTag(tag);
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     public getByType(type: EntityType): Entity[] {
-        if (!!this.scene.active) {
+        if (this.scene.active) {
             return this.scene.active.getByType(type);
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     private startEngine(): void {
@@ -228,11 +227,11 @@ export class Game extends Entity {
         this.engine.stop();
     }
 
-    //#region events
+    // #region events
     private onSceneManagerLoaded(): void {
         if (this.started) {
             this.startEngine();
         }
     }
-    //#endregion
+    // #endregion
 }

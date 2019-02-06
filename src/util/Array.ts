@@ -16,7 +16,7 @@ export class Array {
             switch (sortOrder) {
                 case SortOrder.Asc:
                     return a[key] - b[key];
-                case SortOrder.Desc:
+                default:
                     return b[key] - a[key];
             }
         });

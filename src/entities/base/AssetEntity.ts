@@ -87,9 +87,9 @@ export class AssetEntity extends Entity implements IAssetEntity {
     private bindAsset(): void {
         const loader = this.game.load;
         const asset = loader.get(this.assetType, this.assetName);
-        const engine = this.game.engine;
+        const { engine } = this.game;
 
-        if (!!asset) {
+        if (asset) {
             this.asset = asset;
             if (asset.loaded) {
                 this.onAssetLoaded(this.asset);
@@ -114,7 +114,7 @@ export class AssetEntity extends Entity implements IAssetEntity {
         return this.asset.loaded;
     }
 
-    //#region events
+    // #region events
     protected onAssetLoaded(asset: Asset): void {
         if (asset.equals(this.asset)) {
             this.call('load');
@@ -135,5 +135,5 @@ export class AssetEntity extends Entity implements IAssetEntity {
             }
         }
     }
-    //#endregion
+    // #endregion
 }

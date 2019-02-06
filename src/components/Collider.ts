@@ -22,7 +22,7 @@ export class Collider extends Component {
     }
 
     public test2(entity: Entity): boolean {
-        if (!!this.parent) {
+        if (this.parent) {
             if (!this.parent.collidable || !entity.collidable) {
                 return false;
             }
@@ -34,23 +34,21 @@ export class Collider extends Component {
                 entity.world.y + entity.world.height >=
                     this.parent.world.y + this.parent.world.height
             );
-
-            return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public test3(entity: Entity): boolean {
-        if (!!this.parent) {
+        if (this.parent) {
             return (
                 this.test2(entity) &&
                 entity.world.z + entity.world.depth >= this.parent.world.z &&
                 entity.world.z + entity.world.depth <= this.parent.world.z + this.parent.world.depth
             );
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public attach(entity: Entity): void {

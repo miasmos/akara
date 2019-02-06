@@ -1,10 +1,6 @@
 import { Game } from './entities/Game';
-import { Debug } from './util/Util';
 import { EntityFactory } from './EntityFactory';
 import { Pivot2 } from './structs/Pivot2';
-
-if (Debug.isDebug) {
-}
 
 const game: Game = EntityFactory.game({ debug: true });
 game.load.image('assets/gradient.jpg', 'gradient');

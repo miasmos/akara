@@ -48,8 +48,8 @@ export class Loader extends Observer {
     public start(): boolean {
         if (!this.started) {
             this.started = true;
-            for (let index in this.assets) {
-                for (let index1 in this.assets[index]) {
+            for (const index in this.assets) {
+                for (const index1 in this.assets[index]) {
                     const asset: Asset = this.assets[index][index1];
                     asset.load();
                 }
@@ -91,7 +91,7 @@ export class Loader extends Observer {
         }
         this.assets[asset.type][asset.name] = asset;
         asset.on(LoaderEvents.Load, this.onAssetLoaded.bind(this));
-        this.count++;
+        this.count += 1;
 
         if (this.started) {
             asset.load();
@@ -104,13 +104,13 @@ export class Loader extends Observer {
 
         if (id in this.assets) {
             return this.nextId();
-        } else {
-            return id;
         }
+
+        return id;
     }
 
     private onAssetLoaded(asset: Asset): void {
-        this.assetsLoaded++;
+        this.assetsLoaded += 1;
         this.emit(LoaderEvents.Load, asset);
     }
 }

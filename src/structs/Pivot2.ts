@@ -13,13 +13,16 @@ export class Pivot2 extends Point2 {
     public static readonly bottomRight: Pivot2 = new Pivot2(1, 1);
 
     public set(x?: number, y?: number): void {
+        let x1;
+        let y1;
+
         if (typeof x !== 'undefined') {
-            x = Util.Math.clamp(x, 0, 1);
+            x1 = Util.Math.clamp(x, 0, 1);
         }
         if (typeof y !== 'undefined') {
-            y = Util.Math.clamp(y, 0, 1);
+            y1 = Util.Math.clamp(y, 0, 1);
         }
-        super.set(x, y);
+        super.set(x1, y1);
     }
 
     public top(): void {
