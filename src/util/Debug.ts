@@ -4,7 +4,7 @@ export class Debug {
     public static isDebug: boolean = Environment.isDevelopment();
 
     public static log<T>(...args: T[]): void {
-        if (true || Debug.isDebug) {
+        if (Debug.isDebug) {
             window.console.log(...args);
         }
     }

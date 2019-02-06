@@ -114,7 +114,7 @@ export class Transform extends Component {
     }
 
     public get world(): Transform3 {
-        return this.world;
+        return this._world;
     }
 
     public set world(value: Transform3) {
@@ -124,7 +124,7 @@ export class Transform extends Component {
     }
 
     public get local(): Transform3 {
-        return this.local;
+        return this._local;
     }
 
     public set local(value: Transform3) {
@@ -134,7 +134,7 @@ export class Transform extends Component {
     }
 
     public get scale(): Point3 {
-        return this.scale;
+        return this._scale;
     }
 
     public set scale(value: Point3) {

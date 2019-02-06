@@ -8,8 +8,9 @@ export interface ICollisionManagerConfig {
     resolution?: number;
 }
 
+// TODO: complete collision implementation
 export class CollisionManager {
-    public sectors: number[] = [];
+    public sectors: number[][][][] = [];
     protected _resolution: number;
     protected readonly initialSize = 2000;
     protected entities: EntityManager = new EntityManager();
@@ -33,12 +34,15 @@ export class CollisionManager {
     protected initialize(): void {
         const columnsTotal = Math.floor(this.initialSize / this.resolution) + 1;
         for (let index = 0; index <= columnsTotal; index += this.resolution) {
-            const x = (this.sectors[index] = []);
+            this.sectors[index] = [];
+            const x: number[][][] = this.sectors[index];
+
             for (let index1 = 0; index1 <= columnsTotal; index1 += this.resolution) {
-                const y = (x[index1] = []);
+                x[index1] = [];
+                const y: number[][] = x[index1];
 
                 for (let index2 = 0; index2 <= columnsTotal; index2 += this.resolution) {
-                    const z = (y[index1] = []);
+                    y[index2] = [];
                 }
             }
         }
