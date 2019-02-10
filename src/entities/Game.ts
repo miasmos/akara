@@ -1,7 +1,7 @@
 import { Engine } from '../Engine';
 import { Loader } from '../loader/Loader';
 import { Color } from '../structs/Color';
-import { Input } from '../Input';
+import { Input } from '../input/Input';
 import { HexCode } from '../enum/HexCode';
 import { SceneManager, SceneName, SceneManagerEvent } from '../SceneManager';
 import { Debug } from '../util/Debug';
@@ -12,6 +12,7 @@ import { EntityType } from './base/IEntity';
 import { IGroupConfig } from './Group';
 import { Sizing } from '../enum/Sizing';
 import { EntityFactory } from '../EntityFactory';
+import { CameraManager } from '../CameraManager';
 
 export interface IDebugConfig {
     outline?: boolean;
@@ -35,6 +36,7 @@ export class Game extends Entity {
     public input: Input = new Input();
     public entity = new EntityFactory(this);
     public scene: SceneManager = new SceneManager(this);
+    public camera: CameraManager = new CameraManager(this);
     public started: boolean = false;
     public settings: IGameSettings = {
         sizing: Sizing.Auto
@@ -117,7 +119,24 @@ export class Game extends Entity {
             backgroundColor,
             fps
         });
+        this.scene.add(
+            this.entity.scene({
+                name: SceneName.Default,
+                x: this.x,
+                y: this.y,
+                z: this.z,
+                width: this.width,
+                height: this.height,
+                depth: this.depth
+            })
+        );
         this.scene.load(SceneName.Default);
+        this.camera.active = this.entity.camera({
+            x: this.x,
+            y: this.y,
+            width: this.width,
+            height: this.height
+        });
     }
 
     public get loaded(): boolean {

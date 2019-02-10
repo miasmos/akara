@@ -1,7 +1,7 @@
 import * as Util from '../util/Util';
 import { Game } from '../entities/Game';
 import { Observer } from '../Observer';
-import { Entity } from '../entities';
+import { Entity } from '../entities/base/Entity';
 
 export interface IComponentConfig {
     type?: ComponentType;

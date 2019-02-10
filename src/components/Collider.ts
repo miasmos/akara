@@ -1,5 +1,5 @@
 import { IComponentConfig, Component, ComponentType } from './Component';
-import { Entity } from '../entities';
+import { Entity } from '../entities/base/Entity';
 
 export enum ColliderEvent {}
 

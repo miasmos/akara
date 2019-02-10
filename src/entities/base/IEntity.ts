@@ -20,7 +20,8 @@ export enum EntityType {
     Group,
     Sound,
     Scene,
-    Game
+    Game,
+    Camera
 }
 
 export interface IEntityConfig {

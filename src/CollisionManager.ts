@@ -2,7 +2,7 @@ import { EntityManager } from './EntityManager';
 import { Transform3Event } from './structs/Transform3';
 import { ComponentType } from './components/Component';
 import { EntityEvent } from './entities/base/IEntity';
-import { Entity } from './entities';
+import { Entity } from './entities/base/Entity';
 
 export interface ICollisionManagerConfig {
     resolution?: number;

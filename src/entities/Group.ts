@@ -54,6 +54,7 @@ export class Group extends Entity {
         rotateY = 0,
         rotateZ = 0,
         alpha = 1,
+        sizing = Sizing.Auto,
         tag,
         type = EntityType.Group,
         preupdate,
@@ -86,6 +87,8 @@ export class Group extends Entity {
             start,
             destroy
         });
+
+        this.sizing = sizing;
     }
 
     // #region properties

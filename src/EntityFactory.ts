@@ -8,6 +8,7 @@ import { ISoundConfig, Sound } from './entities/Sound';
 import { ISpriteConfig, Sprite } from './entities/Sprite';
 import { ComponentType } from './components/Component';
 import { ComponentFactory } from './ComponentFactory';
+import { ICameraConfig, Camera } from './entities/Camera';
 
 export class EntityFactory {
     protected _game: Game;
@@ -18,8 +19,14 @@ export class EntityFactory {
 
     public get(
         type: EntityType,
-        config: IGroupConfig | IEntityConfig | ISceneConfig | IGameConfig | ISoundConfig
-    ): Entity | Sound | Scene | Sprite | Game | Box {
+        config:
+            | IGroupConfig
+            | IEntityConfig
+            | ISceneConfig
+            | IGameConfig
+            | ISoundConfig
+            | ICameraConfig
+    ): Entity | Sound | Scene | Sprite | Game | Box | Camera {
         switch (type) {
             case EntityType.Game:
                 return EntityFactory.game(config as IGameConfig);
@@ -33,10 +40,11 @@ export class EntityFactory {
                 return this.sound(config as ISoundConfig);
             case EntityType.Sprite:
                 return this.sprite(config as ISpriteConfig);
+            case EntityType.Camera:
+                return this.camera(config as ICameraConfig);
             default:
+                return this.entity(config as IEntityConfig);
         }
-
-        return this.entity(config as IEntityConfig);
     }
 
     public static game(config: IGameConfig): Game {
@@ -89,6 +97,15 @@ export class EntityFactory {
         box.addComponent(transform);
         box.configure(config);
         return box;
+    }
+
+    public camera(config: ICameraConfig): Camera {
+        const camera = new Camera();
+        camera.game = this._game;
+        const transform = ComponentFactory.get(this._game, ComponentType.Transform, {});
+        camera.addComponent(transform);
+        camera.configure(config);
+        return camera;
     }
 
     public entity(config: IEntityConfig): Entity {

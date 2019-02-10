@@ -464,9 +464,20 @@ export class Entity extends Observer implements IEntity {
             return true;
         }
 
-        const { x, y, width, height } = this.transform.world;
+        const { x, y, z, width, height } = this.transform.world;
+        const camera = game.camera.active;
 
         if (game) {
+            if (camera) {
+                return !(
+                    x > camera.x + camera.width ||
+                    x + width < camera.x ||
+                    y > camera.y + camera.height ||
+                    y + height < camera.y ||
+                    z < camera.z
+                );
+            }
+
             return !(
                 x > game.width ||
                 x + width < game.x ||

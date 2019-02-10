@@ -1,7 +1,7 @@
 import { Component, ComponentEvent, ComponentType, IComponentConfig } from './Component';
 import { Point3 } from '../structs/Point3';
 import { Transform3, Transform3Event } from '../structs/Transform3';
-import { Entity } from '../entities';
+import { Entity } from '../entities/base/Entity';
 
 export interface ITransformConfig extends IComponentConfig {
     x?: number;

@@ -1,5 +1,5 @@
-import { Keyboard } from './enum/Keyboard';
-import { Observer } from './Observer';
+import { Keyboard } from '../enum/Keyboard';
+import { Observer } from '../Observer';
 
 export class Input extends Observer {
     private keys: number[] = [];

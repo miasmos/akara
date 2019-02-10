@@ -27,19 +27,6 @@ export class SceneManager extends Observer {
     public constructor(game: Game) {
         super();
         this.game = game;
-
-        const { x, y, z, width, height, depth } = game;
-        this.add(
-            game.entity.scene({
-                name: SceneName.Default,
-                x,
-                y,
-                z,
-                width,
-                height,
-                depth
-            })
-        );
     }
 
     public get loaded(): boolean {

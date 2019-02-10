@@ -31,6 +31,7 @@
         "comma-dangle": 0,
         "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
         "@typescript-eslint/interface-name-prefix": 0,
+        "@typescript-eslint/indent": 0,
         "jsdoc/check-examples": 1,
         "jsdoc/check-param-names": 1,
         "jsdoc/check-tag-names": 1,

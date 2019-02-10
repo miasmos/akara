@@ -174,8 +174,8 @@ export class Engine extends Observer {
             return;
         }
 
-        const { width, height } = entity.world._size;
-        const { x, y } = entity.world._origin;
+        const { width, height } = entity.world.size;
+        let { x, y } = entity.world.origin;
         const { rotateX, rotateY, rotateZ, pivotX, pivotY } = entity.world;
 
         if (entity.alpha !== 1) {
@@ -186,6 +186,12 @@ export class Engine extends Observer {
             this.canvas.save();
             this.canvas.translate(x + pivotX * width, y + pivotY * height);
             this.canvas.rotate(rotateX);
+        }
+
+        const camera = this.game.camera.active;
+        if (camera) {
+            x -= camera.x;
+            y -= camera.y;
         }
 
         switch (entity.type) {
