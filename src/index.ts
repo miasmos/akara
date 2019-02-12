@@ -1,7 +1,16 @@
 import { EntityFactory } from './EntityFactory';
+import { Game, IGameConfig } from './entities/Game';
 
-export const Akara = {
+interface IAkara {
+    game(config: IGameConfig): Game;
+}
+export const Akara: IAkara = {
     game: EntityFactory.game
 };
 
+declare global {
+    interface Window {
+        Akara: IAkara;
+    }
+}
 window.Akara = Akara;
