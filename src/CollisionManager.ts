@@ -4,6 +4,12 @@ import { EntityEvent } from './entities/base/IEntity';
 import { Entity } from './entities/base/Entity';
 import { Point3 } from './structs/Point3';
 import { Game } from './entities/Game';
+import { Observer } from './Observer';
+import { ComponentType } from './components/Component';
+
+export enum CollisionEvent {
+    Collision
+}
 
 export interface ICollisionManagerConfig {
     resolution?: number;
@@ -13,16 +19,16 @@ interface Sectors {
     [key: string]: Point3[];
 }
 
-// TODO: complete collision implementation
-export class CollisionManager {
+export class CollisionManager extends Observer {
     public sectors: Entity[][][][] = [];
     protected game: Game;
     private sectorsByEntity: Sectors = {};
     protected _resolution: number;
-    protected initialSize = 2000;
     protected entities: EntityManager = new EntityManager();
+    public collisions: string[] = [];
 
     public constructor(game: Game) {
+        super();
         this.game = game;
     }
 
@@ -85,20 +91,15 @@ export class CollisionManager {
     }
 
     protected initialize(): void {
-        const columnsTotal = Math.floor(this.initialSize / this.resolution) + 1;
-        for (let index = 0; index <= columnsTotal * this.resolution; index += this.resolution) {
+        for (let index = 0; index <= this.size * this.resolution; index += this.resolution) {
             this.sectors[index] = [];
 
-            for (
-                let index1 = 0;
-                index1 <= columnsTotal * this.resolution;
-                index1 += this.resolution
-            ) {
+            for (let index1 = 0; index1 <= this.size * this.resolution; index1 += this.resolution) {
                 this.sectors[index][index1] = [];
 
                 for (
                     let index2 = 0;
-                    index2 <= columnsTotal * this.resolution;
+                    index2 <= this.size * this.resolution;
                     index2 += this.resolution
                 ) {
                     this.sectors[index][index1][index2] = [];
@@ -168,13 +169,69 @@ export class CollisionManager {
 
     public configure({ resolution = 100 }: ICollisionManagerConfig): void {
         this._resolution = resolution;
-        this.initialSize = Math.max(this.game.width, this.game.height, this.game.depth);
         this.initialize();
+    }
+
+    public update(): void {
+        const collisions: string[] = [];
+        const entitiesByCollision: { [key: string]: Entity[] } = {};
+
+        for (let x = 0; x <= this.size * this.resolution; x += this.resolution) {
+            for (let y = 0; y <= this.size * this.resolution; y += this.resolution) {
+                for (let z = 0; z <= this.size * this.resolution; z += this.resolution) {
+                    const entities = this.sectors[x][y][z];
+                    entities.forEach((entity: Entity) => {
+                        entities.forEach((comparer: Entity) => {
+                            if (
+                                entity.equals(comparer) ||
+                                !entity.collider ||
+                                !entity.renderable ||
+                                !comparer.collider ||
+                                !comparer.renderable
+                            ) {
+                                return;
+                            }
+
+                            const id = [entity.id, comparer.id].sort().toString();
+                            if (collisions.includes(id)) {
+                                return;
+                            }
+
+                            const intersecting = entity.collider.test2(comparer);
+                            if (intersecting) {
+                                collisions.push(id);
+                                entitiesByCollision[id] = [entity, comparer];
+                            }
+                        });
+                    });
+                }
+            }
+        }
+
+        this.collisions.forEach((id: string) => {
+            if (!collisions.includes(id)) {
+                this.collisions.splice(this.collisions.indexOf(id), 1);
+            } else {
+                collisions.splice(collisions.indexOf(id), 1);
+            }
+        });
+        collisions.forEach((id: string) => {
+            const [entity, comparer] = entitiesByCollision[id];
+            this.emit(CollisionEvent.Collision, entity, comparer);
+        });
     }
 
     // #region properties
     public get resolution(): number {
         return this._resolution;
+    }
+
+    public get size(): number {
+        return (
+            Math.floor(
+                Math.max(this.game.width, this.game.height, this.game.depth) / this.resolution
+            ) + 1
+        );
     }
     // #endregion
 
@@ -206,7 +263,6 @@ export class CollisionManager {
                 this.sectorsByEntity[entity.id].forEach((value: Point3) => {
                     this.removeEntityFromSector(entity, value.x, value.y, value.z);
                 });
-                this.sectorsByEntity[entity.id] = [];
                 this.updateEntity(entity);
                 break;
             default:

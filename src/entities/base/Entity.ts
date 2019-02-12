@@ -96,6 +96,10 @@ export class Entity extends Observer implements IEntity {
         return this.component.get(type);
     }
 
+    public hasComponent(type: ComponentType): boolean {
+        return this.component.has(type);
+    }
+
     protected initialize({ update, preupdate, postupdate, start, destroy }): void {
         this.bind('update', update);
         this.bind('preupdate', preupdate);

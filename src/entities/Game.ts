@@ -12,7 +12,6 @@ import { IGroupConfig } from './Group';
 import { Sizing } from '../enum/Sizing';
 import { EntityFactory } from '../EntityFactory';
 import { CameraManager } from '../CameraManager';
-import { CollisionManager } from '../CollisionManager';
 
 export interface IDebugConfig {
     outline?: boolean;
@@ -37,7 +36,6 @@ export class Game extends Entity {
     public scene: SceneManager = new SceneManager(this);
     public camera: CameraManager = new CameraManager(this);
     public started: boolean = false;
-    public collisions: CollisionManager = new CollisionManager(this);
     public settings: IGameSettings = {
         sizing: Sizing.Auto
     };
@@ -119,7 +117,6 @@ export class Game extends Entity {
             backgroundColor,
             fps
         });
-        this.collisions.configure({});
         this.scene.add(
             this.entity.scene({
                 name: SceneName.Default,

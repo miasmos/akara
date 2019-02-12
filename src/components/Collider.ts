@@ -1,8 +1,6 @@
 import { IComponentConfig, Component, ComponentType } from './Component';
 import { Entity } from '../entities/base/Entity';
 
-export enum ColliderEvent {}
-
 export interface IColliderConfig extends IComponentConfig {
     collidable?: boolean;
 }

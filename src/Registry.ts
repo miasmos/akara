@@ -26,6 +26,7 @@ export class Registry {
         this.engine.on(EngineEvent.Update, this.onUpdate.bind(this));
         this.engine.on(EngineEvent.Postupdate, this.onPostupdate.bind(this));
         this.engine.on(EngineEvent.Destroy, this.onDestroy.bind(this));
+        this.engine.on(EngineEvent.Collision, this.onCollision.bind(this));
     }
 
     public add(entity: Entity): boolean {
@@ -66,15 +67,24 @@ export class Registry {
         return undefined;
     }
 
-    public call(method: EngineEvent): void {
+    public call(method: EngineEvent, id?: string, ...params: unknown[]): void {
         if (method in this.registers) {
-            Object.values(this.registers[method]).forEach((id: string) => {
-                const entity = this.entities[id];
-
-                if (method in entity && typeof entity[method] === 'function') {
-                    entity[method].call(entity);
+            if (typeof id === 'string') {
+                if (id in this.entities) {
+                    const entity = this.entities[id];
+                    if (method in entity && typeof entity[method] === 'function') {
+                        entity[method].call(entity, ...params);
+                    }
                 }
-            });
+            } else {
+                Object.values(this.registers[method]).forEach((id: string) => {
+                    const entity = this.entities[id];
+
+                    if (method in entity && typeof entity[method] === 'function') {
+                        entity[method].call(entity, ...params);
+                    }
+                });
+            }
         }
     }
 
@@ -125,6 +135,10 @@ export class Registry {
 
     private onDestroy(): void {
         this.call(EngineEvent.Destroy);
+    }
+
+    private onCollision(source: Entity, collided: Entity): void {
+        this.call(EngineEvent.Collision, source.id, collided);
     }
     // #endregion events
 }

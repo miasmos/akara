@@ -14,13 +14,15 @@ import { Debug } from './util/Util';
 import { ErrorMessage } from './enum/ErrorMessage';
 import { Color } from './structs/Color';
 import { HexCode } from './enum/HexCode';
+import { CollisionManager, CollisionEvent } from './CollisionManager';
 
 export enum EngineEvent {
     Start = 'start',
     Preupdate = 'preupdate',
     Update = 'update',
     Postupdate = 'postupdate',
-    Destroy = 'destroy'
+    Destroy = 'destroy',
+    Collision = 'collision'
 }
 
 export interface IEngineConfig {
@@ -36,6 +38,7 @@ export class Engine extends Observer {
     public started: boolean = false;
     public canvas: Canvas;
     private entities: EntityManager = new EntityManager();
+    private collisions: CollisionManager;
     private registry: Registry;
     public game: Game;
 
@@ -52,6 +55,9 @@ export class Engine extends Observer {
     }: IEngineConfig) {
         super();
         this.game = game;
+        this.collisions = new CollisionManager(this.game);
+        this.collisions.configure({});
+        this.collisions.on(CollisionEvent.Collision, this.collide.bind(this));
         this.canvas = new Canvas({
             width,
             height,
@@ -87,7 +93,7 @@ export class Engine extends Observer {
             return false;
         }
 
-        this.game.collisions.addEntity(entity);
+        this.collisions.addEntity(entity);
         this.entities.add(entity);
         this.registry.add(entity);
 
@@ -108,6 +114,7 @@ export class Engine extends Observer {
             return false;
         }
 
+        this.collisions.removeEntity(entity);
         this.entities.remove(entity);
         this.registry.remove(entity);
 
@@ -150,11 +157,17 @@ export class Engine extends Observer {
 
     private update(): void {
         this.registry.call(EngineEvent.Update);
+        this.collisions.update();
         this.draw();
     }
 
     private postupdate(): void {
         this.registry.call(EngineEvent.Postupdate);
+    }
+
+    private collide(source: Entity, collided: Entity): void {
+        this.registry.call(EngineEvent.Collision, source.id, collided);
+        this.registry.call(EngineEvent.Collision, collided.id, source);
     }
 
     private draw(): void {

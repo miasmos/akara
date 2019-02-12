@@ -89,6 +89,7 @@ export interface IEntity {
     update?(): void;
     postupdate?(): void;
     destroy?(): void;
+    collision?(entity: Entity): void;
     reconcile(
         transform: Transform3,
         origin: Entity,
