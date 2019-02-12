@@ -1,13 +1,15 @@
-import { Keyboard } from '../enum/Keyboard';
+import { Keyboard as KeyboardEnum } from '../enum/Keyboard';
 import { Observer } from '../Observer';
 
-export class Input extends Observer {
+export class Keyboard extends Observer {
     private keys: number[] = [];
+    private target: HTMLCanvasElement;
 
-    public constructor() {
+    public constructor(target: HTMLCanvasElement) {
         super();
-        window.addEventListener('keydown', this.onKeyDown.bind(this));
-        window.addEventListener('keyup', this.onKeyUp.bind(this));
+        this.target = target;
+        target.addEventListener('keydown', this.onKeyDown.bind(this));
+        target.addEventListener('keyup', this.onKeyUp.bind(this));
     }
 
     public onKeyDown(event: KeyboardEvent): void {
@@ -16,7 +18,7 @@ export class Input extends Observer {
             this.keys.push(key);
         }
 
-        this.emit(Keyboard.KeyDown, key);
+        this.emit(KeyboardEnum.KeyDown, key);
     }
 
     public onKeyUp(event: KeyboardEvent): void {
@@ -25,7 +27,7 @@ export class Input extends Observer {
             this.keys.splice(this.keys.indexOf(key), 1);
         }
 
-        this.emit(Keyboard.KeyUp, key);
+        this.emit(KeyboardEnum.KeyUp, key);
     }
 
     public isDown(key: number): boolean {

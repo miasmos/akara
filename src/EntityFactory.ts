@@ -50,7 +50,7 @@ export class EntityFactory {
     public static game(config: IGameConfig): Game {
         const game = new Game();
         game.game = game;
-        const transform = ComponentFactory.get(game, ComponentType.Transform, {});
+        const transform = ComponentFactory.transform(game, {});
         game.addComponent(transform);
         game.configure(config);
         return game;
@@ -59,8 +59,10 @@ export class EntityFactory {
     public sprite(config: ISpriteConfig): Sprite {
         const sprite = new Sprite();
         sprite.game = this._game;
-        const transform = ComponentFactory.get(this._game, ComponentType.Transform, {});
+        const transform = ComponentFactory.transform(this._game, {});
         sprite.addComponent(transform);
+        const collider = ComponentFactory.collider(this._game, {});
+        sprite.addComponent(collider);
         sprite.configure(config);
         return sprite;
     }
@@ -68,7 +70,7 @@ export class EntityFactory {
     public sound(config: ISoundConfig): Sound {
         const sound = new Sound();
         sound.game = this._game;
-        const transform = ComponentFactory.get(this._game, ComponentType.Transform, {});
+        const transform = ComponentFactory.transform(this._game, {});
         sound.addComponent(transform);
         sound.configure(config);
         return sound;
@@ -77,7 +79,7 @@ export class EntityFactory {
     public group(config: IGroupConfig): Group {
         const group = new Group();
         group.game = this._game;
-        const transform = ComponentFactory.get(this._game, ComponentType.Transform, {});
+        const transform = ComponentFactory.transform(this._game, {});
         group.addComponent(transform);
         group.configure(config);
         return group;
@@ -93,8 +95,10 @@ export class EntityFactory {
     public box(config: IBoxConfig): Box {
         const box = new Box();
         box.game = this._game;
-        const transform = ComponentFactory.get(this._game, ComponentType.Transform, {});
+        const transform = ComponentFactory.transform(this._game, {});
         box.addComponent(transform);
+        const collider = ComponentFactory.collider(this._game, {});
+        box.addComponent(collider);
         box.configure(config);
         return box;
     }
@@ -102,7 +106,7 @@ export class EntityFactory {
     public camera(config: ICameraConfig): Camera {
         const camera = new Camera();
         camera.game = this._game;
-        const transform = ComponentFactory.get(this._game, ComponentType.Transform, {});
+        const transform = ComponentFactory.transform(this._game, {});
         camera.addComponent(transform);
         camera.configure(config);
         return camera;
@@ -111,6 +115,8 @@ export class EntityFactory {
     public entity(config: IEntityConfig): Entity {
         const entity = new Entity();
         entity.game = this._game;
+        const transform = ComponentFactory.transform(this._game, {});
+        entity.addComponent(transform);
         entity.configure(config);
         return entity;
     }

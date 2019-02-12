@@ -87,6 +87,7 @@ export class Engine extends Observer {
             return false;
         }
 
+        this.game.collisions.addEntity(entity);
         this.entities.add(entity);
         this.registry.add(entity);
 

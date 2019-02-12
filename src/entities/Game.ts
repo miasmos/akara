@@ -1,7 +1,6 @@
 import { Engine } from '../Engine';
 import { Loader } from '../loader/Loader';
 import { Color } from '../structs/Color';
-import { Input } from '../input/Input';
 import { HexCode } from '../enum/HexCode';
 import { SceneManager, SceneName, SceneManagerEvent } from '../SceneManager';
 import { Debug } from '../util/Debug';
@@ -13,6 +12,7 @@ import { IGroupConfig } from './Group';
 import { Sizing } from '../enum/Sizing';
 import { EntityFactory } from '../EntityFactory';
 import { CameraManager } from '../CameraManager';
+import { CollisionManager } from '../CollisionManager';
 
 export interface IDebugConfig {
     outline?: boolean;
@@ -33,11 +33,11 @@ export class Game extends Entity {
     public type: EntityType = EntityType.Game;
     public engine: Engine;
     public load: Loader = new Loader();
-    public input: Input = new Input();
     public entity = new EntityFactory(this);
     public scene: SceneManager = new SceneManager(this);
     public camera: CameraManager = new CameraManager(this);
     public started: boolean = false;
+    public collisions: CollisionManager = new CollisionManager(this);
     public settings: IGameSettings = {
         sizing: Sizing.Auto
     };
@@ -119,6 +119,7 @@ export class Game extends Entity {
             backgroundColor,
             fps
         });
+        this.collisions.configure({});
         this.scene.add(
             this.entity.scene({
                 name: SceneName.Default,
