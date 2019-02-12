@@ -12,6 +12,7 @@ import { IGroupConfig } from './Group';
 import { Sizing } from '../enum/Sizing';
 import { EntityFactory } from '../EntityFactory';
 import { CameraManager } from '../CameraManager';
+import { ComponentFactory } from '../ComponentFactory';
 
 export interface IDebugConfig {
     outline?: boolean;
@@ -32,7 +33,8 @@ export class Game extends Entity {
     public type: EntityType = EntityType.Game;
     public engine: Engine;
     public load: Loader = new Loader();
-    public entity = new EntityFactory(this);
+    public entity: EntityFactory = new EntityFactory();
+    public component: ComponentFactory = new ComponentFactory();
     public scene: SceneManager = new SceneManager(this);
     public camera: CameraManager = new CameraManager(this);
     public started: boolean = false;
@@ -110,6 +112,8 @@ export class Game extends Entity {
         this.settings = {
             sizing
         };
+        this.entity.configure({ game: this });
+        this.component.configure({ game: this });
         this.engine = new Engine({
             game: this,
             width,

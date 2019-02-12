@@ -21,12 +21,12 @@ export class Entity extends Observer implements IEntity {
     protected _tag: string | undefined = '';
     protected _alpha: number = 1;
     protected _layer: number = 0;
-    protected component: ComponentManager = new ComponentManager();
+    protected components: ComponentManager = new ComponentManager();
 
     public constructor() {
         super();
-        this.component.on(ComponentManagerEvent.Add, this.onComponentAdd.bind(this));
-        this.component.on(ComponentManagerEvent.Remove, this.onComponentRemove.bind(this));
+        this.components.on(ComponentManagerEvent.Add, this.onComponentAdd.bind(this));
+        this.components.on(ComponentManagerEvent.Remove, this.onComponentRemove.bind(this));
     }
 
     public configure({
@@ -73,7 +73,7 @@ export class Entity extends Observer implements IEntity {
     }
 
     public addComponent(type: Component | ComponentType): boolean {
-        const added: Component | boolean = this.component.add(type);
+        const added: Component | boolean = this.components.add(type);
         if (typeof added !== 'boolean') {
             added.attach(this);
             return true;
@@ -83,7 +83,7 @@ export class Entity extends Observer implements IEntity {
     }
 
     public removeComponent(type: Component | ComponentType): boolean {
-        const removed: Component | boolean = this.component.remove(type);
+        const removed: Component | boolean = this.components.remove(type);
         if (typeof removed !== 'boolean') {
             removed.detach();
             return true;
@@ -93,11 +93,11 @@ export class Entity extends Observer implements IEntity {
     }
 
     public getComponent(type: ComponentType): Component | undefined {
-        return this.component.get(type);
+        return this.components.get(type);
     }
 
     public hasComponent(type: ComponentType): boolean {
-        return this.component.has(type);
+        return this.components.has(type);
     }
 
     protected initialize({ update, preupdate, postupdate, start, destroy }): void {
@@ -127,15 +127,15 @@ export class Entity extends Observer implements IEntity {
 
     public set game(value: Game) {
         this._game = value;
-        this.component.game = value;
+        this.components.game = value;
     }
 
     public get transform(): Transform | undefined {
-        return this.component.get(ComponentType.Transform) as Transform;
+        return this.components.get(ComponentType.Transform) as Transform;
     }
 
     public get collider(): Collider | undefined {
-        return this.component.get(ComponentType.Collider) as Collider;
+        return this.components.get(ComponentType.Collider) as Collider;
     }
 
     public get moveable(): boolean {
@@ -341,7 +341,7 @@ export class Entity extends Observer implements IEntity {
     }
 
     public set scaleZ(value: number) {
-        const transform: Transform | undefined = this.component.get(
+        const transform: Transform | undefined = this.components.get(
             ComponentType.Transform
         ) as Transform;
 
@@ -553,7 +553,7 @@ export class Entity extends Observer implements IEntity {
             return;
         }
 
-        const transform: Transform | undefined = this.component.get(
+        const transform: Transform | undefined = this.components.get(
             ComponentType.Transform
         ) as Transform;
 
@@ -635,7 +635,7 @@ export class Entity extends Observer implements IEntity {
     }
 
     protected onTransformChange(previous: number, changed: Transform3Event): void {
-        const transform: Transform | undefined = this.component.get(
+        const transform: Transform | undefined = this.components.get(
             ComponentType.Transform
         ) as Transform;
 
