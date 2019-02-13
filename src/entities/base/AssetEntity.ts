@@ -3,6 +3,7 @@ import { IEntityConfig, EntityEvent, IEntity } from './IEntity';
 import { Asset, AssetType } from '../../loader/assets/Asset';
 import { LoaderEvents } from '../../loader/Loader';
 import { EmptyAsset } from '../../loader/assets/EmptyAsset';
+import { Game } from '../Game';
 
 export interface IAssetEntity extends IEntity {
     load?: Function;
@@ -43,7 +44,8 @@ export class AssetEntity extends Entity implements IAssetEntity {
         update,
         postupdate,
         start,
-        destroy
+        destroy,
+        collision
     }: IAssetEntityConfig): void {
         super.configure({
             type,
@@ -66,22 +68,24 @@ export class AssetEntity extends Entity implements IAssetEntity {
             update,
             postupdate,
             start,
-            destroy
+            destroy,
+            collision
         });
 
         this.assetType = assetType;
         this.assetName = asset;
-        this.initialize({ load, update, preupdate, postupdate, start, destroy });
+        this.initialize({ load, update, preupdate, postupdate, start, destroy, collision });
         this.bindAsset();
     }
 
-    protected initialize({ load, update, preupdate, postupdate, start, destroy }): void {
+    protected initialize({ load, update, preupdate, postupdate, start, destroy, collision }): void {
         this.bind('load', load);
         this.bind('update', update);
         this.bind('preupdate', preupdate);
         this.bind('postupdate', postupdate);
         this.bind('start', start);
         this.bind('destroy', destroy);
+        this.bind('collision', collision);
     }
 
     private bindAsset(): void {

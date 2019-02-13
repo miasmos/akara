@@ -12,10 +12,10 @@ export enum ComponentEvent {
 }
 
 export enum ComponentType {
-    Component = 'Component',
-    Transform = 'Transform',
-    ShapeRenderer = 'ShapeRenderer',
-    Collider = 'Collider'
+    Component = 'component',
+    Transform = 'transform',
+    ShapeRenderer = 'shapeRenderer',
+    Collider = 'collider'
 }
 
 export class Component extends Observer {

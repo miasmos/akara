@@ -35,7 +35,8 @@ export class Camera extends Entity {
         update,
         postupdate,
         start,
-        destroy
+        destroy,
+        collision
     }: ICameraConfig): void {
         super.configure({
             type: EntityType.Text,

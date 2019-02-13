@@ -5,7 +5,7 @@ import { Entity } from './entities/base/Entity';
 import { Point3 } from './structs/Point3';
 import { Game } from './entities/Game';
 import { Observer } from './Observer';
-import { ComponentType } from './components/Component';
+import * as Util from './util/Util';
 
 export enum CollisionEvent {
     Collision
@@ -56,6 +56,7 @@ export class CollisionManager extends Observer {
         return removed;
     }
 
+    // TODO: calculate only entities that moved this frame
     protected updateEntity(entity: Entity): void {
         const x1 = entity.x;
         const x2 = entity.x + entity.width;
@@ -67,6 +68,7 @@ export class CollisionManager extends Observer {
         this.sectorsByEntity[entity.id] = [];
         const startX = x1 - (x1 % this.resolution);
         const endX = x1 + x2 - ((x1 + x2) % this.resolution) + this.resolution;
+
         for (let index = startX; index <= endX; index += this.resolution) {
             const startY = y1 - (y1 % this.resolution);
             const endY = y1 + y2 - ((y1 + y2) % this.resolution) + this.resolution;
@@ -90,24 +92,6 @@ export class CollisionManager extends Observer {
         return count !== sector.length;
     }
 
-    protected initialize(): void {
-        for (let index = 0; index <= this.size * this.resolution; index += this.resolution) {
-            this.sectors[index] = [];
-
-            for (let index1 = 0; index1 <= this.size * this.resolution; index1 += this.resolution) {
-                this.sectors[index][index1] = [];
-
-                for (
-                    let index2 = 0;
-                    index2 <= this.size * this.resolution;
-                    index2 += this.resolution
-                ) {
-                    this.sectors[index][index1][index2] = [];
-                }
-            }
-        }
-    }
-
     public getSector(x: number, y: number, z: number): Entity[] {
         const clampX = x - (x % this.resolution);
         const clampY = y - (y % this.resolution);
@@ -127,40 +111,46 @@ export class CollisionManager extends Observer {
     }
 
     protected resize(x: number, y: number, z: number): void {
-        const x1 = (x - (x % this.resolution) + this.resolution) / this.resolution;
-        const y1 = (y - (y % this.resolution) + this.resolution) / this.resolution;
-        const z1 = (z - (z % this.resolution) + this.resolution) / this.resolution;
+        const x1 = x - (x % this.resolution);
+        const y1 = y - (y % this.resolution);
+        const z1 = z - (z % this.resolution);
 
-        const diffX = this.sectors.length - x1;
-        const diffY = this.sectors[0].length - y1;
-        const diffZ = this.sectors[0][0].length - z1;
+        if (typeof this.sectors === 'undefined') {
+            this.sectors = [];
+        }
+        if (typeof this.sectors[0] === 'undefined') {
+            this.sectors[0] = [];
+        }
+        if (typeof this.sectors[0][0] === 'undefined') {
+            this.sectors[0][0] = [];
+        }
+
+        const diffX = Util.Math.clamp(x1 - this.sectors.length, 0);
+        const diffY = Util.Math.clamp(y1 - this.sectors[0].length, 0);
+        const diffZ = Util.Math.clamp(z1 - this.sectors[0][0].length, 0);
         const diff = Math.max(diffX, diffY, diffZ);
+        if (diff > 0) {
+            console.log('resize');
+        }
+        const start = this.sectors.length - 1;
 
-        for (
-            let index = this.sectors.length - 1 * this.resolution;
-            index < (this.sectors.length - 1 + diff) * this.resolution;
-            index += this.resolution
-        ) {
+        for (let index = start; index < diff + this.resolution; index += this.resolution) {
             if (typeof this.sectors[index] === 'undefined') {
                 this.sectors[index] = [];
             }
 
-            for (
-                let index1 = this.sectors.length - 1 * this.resolution;
-                index1 < (this.sectors.length - 1 + diff) * this.resolution;
-                index1 += this.resolution
-            ) {
+            for (let index1 = start; index1 < diff + this.resolution; index1 += this.resolution) {
                 if (typeof this.sectors[index][index1] === 'undefined') {
                     this.sectors[index][index1] = [];
                 }
 
                 for (
-                    let index2 = this.sectors.length - 1 * this.resolution;
-                    index2 < (this.sectors.length - 1 + diff) * this.resolution;
+                    let index2 = start;
+                    index2 < diff + this.resolution;
                     index2 += this.resolution
                 ) {
                     if (typeof this.sectors[index][index1][index2] === 'undefined') {
-                        this.sectors[index2] = [];
+                        this.sectors[index][index1][index2] = [];
                     }
                 }
             }
@@ -169,16 +159,18 @@ export class CollisionManager extends Observer {
 
     public configure({ resolution = 100 }: ICollisionManagerConfig): void {
         this._resolution = resolution;
-        this.initialize();
+        this.game.on(EntityEvent.Transform, this.onGameTransformChange.bind(this));
+        this.resize(this.game.width, this.game.height, this.game.depth);
     }
 
+    // TODO: fix collisions being emitted on every frame
     public update(): void {
         const collisions: string[] = [];
         const entitiesByCollision: { [key: string]: Entity[] } = {};
 
-        for (let x = 0; x <= this.size * this.resolution; x += this.resolution) {
-            for (let y = 0; y <= this.size * this.resolution; y += this.resolution) {
-                for (let z = 0; z <= this.size * this.resolution; z += this.resolution) {
+        for (let x = 0; x < this.size; x += this.resolution) {
+            for (let y = 0; y < this.size; y += this.resolution) {
+                for (let z = 0; z < this.size; z += this.resolution) {
                     const entities = this.sectors[x][y][z];
                     entities.forEach((entity: Entity) => {
                         entities.forEach((comparer: Entity) => {
@@ -227,11 +219,7 @@ export class CollisionManager extends Observer {
     }
 
     public get size(): number {
-        return (
-            Math.floor(
-                Math.max(this.game.width, this.game.height, this.game.depth) / this.resolution
-            ) + 1
-        );
+        return this.sectors.length;
     }
     // #endregion
 

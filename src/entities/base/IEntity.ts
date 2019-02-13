@@ -47,6 +47,7 @@ export interface IEntityConfig {
     postupdate?: Function;
     start?: Function;
     destroy?: Function;
+    collision?: Function;
 }
 
 export enum Direction {

@@ -23,10 +23,11 @@ export class Entity extends Observer implements IEntity {
     protected _layer: number = 0;
     protected components: ComponentManager = new ComponentManager();
 
-    public constructor() {
+    public constructor(game?: Game) {
         super();
-        this.components.on(ComponentManagerEvent.Add, this.onComponentAdd.bind(this));
-        this.components.on(ComponentManagerEvent.Remove, this.onComponentRemove.bind(this));
+        if (typeof game !== 'undefined') {
+            this.game = game;
+        }
     }
 
     public configure({
@@ -50,7 +51,8 @@ export class Entity extends Observer implements IEntity {
         update,
         postupdate,
         start,
-        destroy
+        destroy,
+        collision
     }: IEntityConfig): void {
         this.x = x;
         this.y = y;
@@ -69,7 +71,7 @@ export class Entity extends Observer implements IEntity {
         this.alpha = alpha;
         this.id = Util.Random.id(12);
         this.type = type;
-        this.initialize({ update, preupdate, postupdate, start, destroy });
+        this.initialize({ update, preupdate, postupdate, start, destroy, collision });
     }
 
     public addComponent(type: Component | ComponentType): boolean {
@@ -100,12 +102,15 @@ export class Entity extends Observer implements IEntity {
         return this.components.has(type);
     }
 
-    protected initialize({ update, preupdate, postupdate, start, destroy }): void {
+    protected initialize({ update, preupdate, postupdate, start, destroy, collision }): void {
         this.bind('update', update);
         this.bind('preupdate', preupdate);
         this.bind('postupdate', postupdate);
         this.bind('start', start);
         this.bind('destroy', destroy);
+        this.bind('collision', collision);
+        this.components.on(ComponentManagerEvent.Add, this.onComponentAdd.bind(this));
+        this.components.on(ComponentManagerEvent.Remove, this.onComponentRemove.bind(this));
     }
 
     protected bind(key, fn): void {
@@ -561,14 +566,14 @@ export class Entity extends Observer implements IEntity {
             return;
         }
 
-        console.log(
-            Util.String.leftpad('', this.layer, '\t'),
-            `c: ${EntityType[this.type]} (${this.id.slice(0, 3)})`,
-            `o: ${origin.id.slice(0, 3)}`,
-            `e: ${id.slice(0, 3)}`,
-            changed,
-            Direction[direction]
-        );
+        // console.log(
+        //     Util.String.leftpad('', this.layer, '\t'),
+        //     `c: ${EntityType[this.type]} (${this.id.slice(0, 3)})`,
+        //     `o: ${origin.id.slice(0, 3)}`,
+        //     `e: ${id.slice(0, 3)}`,
+        //     changed,
+        //     Direction[direction]
+        // );
         if (direction === Direction.Down) {
             switch (changed) {
                 case Transform3Event.X:

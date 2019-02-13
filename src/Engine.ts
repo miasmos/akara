@@ -26,7 +26,6 @@ export enum EngineEvent {
 }
 
 export interface IEngineConfig {
-    game: Game;
     width?: number;
     height?: number;
     backgroundColor?: string | Color;
@@ -34,7 +33,7 @@ export interface IEngineConfig {
 }
 
 export class Engine extends Observer {
-    public readonly fps: number = 60;
+    public fps: number = 60;
     public started: boolean = false;
     public canvas: Canvas;
     private entities: EntityManager = new EntityManager();
@@ -46,18 +45,17 @@ export class Engine extends Observer {
         frame: undefined as number | undefined
     };
 
-    public constructor({
-        game,
+    public constructor(game: Game) {
+        super();
+        this.game = game;
+    }
+
+    public configure({
         width = 400,
         height = 400,
         backgroundColor = HexCode.Black,
         fps = 60
-    }: IEngineConfig) {
-        super();
-        this.game = game;
-        this.collisions = new CollisionManager(this.game);
-        this.collisions.configure({});
-        this.collisions.on(CollisionEvent.Collision, this.collide.bind(this));
+    }: IEngineConfig): void {
         this.canvas = new Canvas({
             width,
             height,
@@ -66,6 +64,9 @@ export class Engine extends Observer {
         this.fps = fps;
         this.registry = new Registry(this);
         this.canvas.mount();
+        this.collisions = new CollisionManager(this.game);
+        this.collisions.configure({});
+        this.collisions.on(CollisionEvent.Collision, this.collide.bind(this));
     }
 
     public start(): void {
@@ -93,7 +94,11 @@ export class Engine extends Observer {
             return false;
         }
 
-        this.collisions.addEntity(entity);
+        // TODO: attach listener to entity.onColliderAdd/onColliderRemove
+        // and add/remove to/from CollisionManager
+        if (entity.collider) {
+            this.collisions.addEntity(entity);
+        }
         this.entities.add(entity);
         this.registry.add(entity);
 

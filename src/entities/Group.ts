@@ -61,7 +61,8 @@ export class Group extends Entity {
         update,
         postupdate,
         start,
-        destroy
+        destroy,
+        collision
     }: IGroupConfig): void {
         super.configure({
             type,
@@ -85,7 +86,8 @@ export class Group extends Entity {
             update,
             postupdate,
             start,
-            destroy
+            destroy,
+            collision
         });
 
         this.sizing = sizing;

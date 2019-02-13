@@ -36,7 +36,8 @@ export class Text extends Entity {
         update,
         postupdate,
         start,
-        destroy
+        destroy,
+        collision
     }: ITextConfig): void {
         super.configure({
             type: EntityType.Text,
@@ -60,7 +61,8 @@ export class Text extends Entity {
             update,
             postupdate,
             start,
-            destroy
+            destroy,
+            collision
         });
         this.text = text;
         this.color = color;

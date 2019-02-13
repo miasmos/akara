@@ -42,6 +42,11 @@ export class Game extends Entity {
         sizing: Sizing.Auto
     };
 
+    public constructor() {
+        super();
+        this.game = this;
+    }
+
     public debug: IDebugConfig = {
         outline: false,
         grid: false,
@@ -112,10 +117,10 @@ export class Game extends Entity {
         this.settings = {
             sizing
         };
+        this.engine = new Engine(this);
         this.entity.configure({ game: this });
         this.component.configure({ game: this });
-        this.engine = new Engine({
-            game: this,
+        this.engine.configure({
             width,
             height,
             backgroundColor,

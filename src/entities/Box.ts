@@ -33,7 +33,8 @@ export class Box extends Entity {
         update,
         postupdate,
         start,
-        destroy
+        destroy,
+        collision
     }: IBoxConfig): void {
         super.configure({
             type: EntityType.Box,
@@ -56,7 +57,8 @@ export class Box extends Entity {
             update,
             postupdate,
             start,
-            destroy
+            destroy,
+            collision
         });
         this.backgroundColor =
             typeof backgroundColor === 'string' ? new Color(backgroundColor) : backgroundColor;

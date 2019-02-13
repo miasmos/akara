@@ -35,7 +35,8 @@ export class Sprite extends AssetEntity {
         update,
         postupdate,
         start,
-        destroy
+        destroy,
+        collision
     }: ISpriteConfig): void {
         super.configure({
             assetType: AssetType.Image,
@@ -62,7 +63,8 @@ export class Sprite extends AssetEntity {
             update,
             postupdate,
             start,
-            destroy
+            destroy,
+            collision
         });
     }
 
