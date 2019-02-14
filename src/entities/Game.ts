@@ -247,6 +247,12 @@ export class Game extends Entity {
         this.engine.stop();
     }
 
+    // #region properties
+    public get fps(): number {
+        return this.engine.fps;
+    }
+    // #endregion
+
     // #region events
     private onSceneManagerLoaded(): void {
         if (this.started) {

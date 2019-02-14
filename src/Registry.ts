@@ -81,7 +81,7 @@ export class Registry {
                     const entity = this.entities[id];
 
                     if (method in entity && typeof entity[method] === 'function') {
-                        entity[method].call(entity, ...params);
+                        entity[method](...params);
                     }
                 });
             }

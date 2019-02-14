@@ -475,7 +475,6 @@ export class Entity extends Observer implements IEntity {
 
         const { x, y, z, width, height } = this.transform.world;
         const camera = game.camera.active;
-
         if (game) {
             if (camera) {
                 return !(
@@ -483,7 +482,7 @@ export class Entity extends Observer implements IEntity {
                     x + width < camera.x ||
                     y > camera.y + camera.height ||
                     y + height < camera.y ||
-                    z < camera.z
+                    z > camera.z
                 );
             }
 

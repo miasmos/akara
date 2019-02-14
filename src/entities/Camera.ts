@@ -16,10 +16,10 @@ export class Camera extends Entity {
     public configure({
         x = 0,
         y = 0,
-        z = 1,
+        z = 100,
         width = 0,
         height = 0,
-        depth = 10,
+        depth = 1,
         scaleX = 1,
         scaleY = 1,
         scaleZ = 1,

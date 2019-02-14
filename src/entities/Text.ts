@@ -5,7 +5,7 @@ import { IGroupConfig } from './Group';
 
 export interface ITextConfig extends IGroupConfig {
     text?: string;
-    color?: Color;
+    color?: string | Color;
 }
 
 export class Text extends Entity {
@@ -65,7 +65,11 @@ export class Text extends Entity {
             collision
         });
         this.text = text;
-        this.color = color;
+        if (typeof color === 'string') {
+            this.color = new Color(color);
+        } else {
+            this.color = color;
+        }
     }
 
     public set text(value: string) {
