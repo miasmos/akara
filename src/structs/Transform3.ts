@@ -369,7 +369,7 @@ export class Transform3 extends Observer {
 
     public static equals(a: Transform3, b: Transform3): boolean {
         return (
-            a._rawOrigin === b._rawOrigin &&
+            a._rawOrigin.equals(b._rawOrigin) &&
             a.width === b.width &&
             a.height === b.height &&
             a.depth === b.depth

@@ -566,7 +566,7 @@ export class Entity extends Observer implements IEntity {
         }
 
         // console.log(
-        //     Util.String.leftpad('', this.layer, '\t'),
+        //     ''.padStart(this.layer, '\t'),
         //     `c: ${EntityType[this.type]} (${this.id.slice(0, 3)})`,
         //     `o: ${origin.id.slice(0, 3)}`,
         //     `e: ${id.slice(0, 3)}`,

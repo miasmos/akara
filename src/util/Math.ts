@@ -10,6 +10,9 @@ export class Math2 {
         max: number = Number.MAX_SAFE_INTEGER
     ): number {
         let result: number = source;
+        if (min > max || max < min) {
+            return source;
+        }
         if (result < min) {
             result = min;
         }

@@ -3,11 +3,11 @@ import { Environment as EnvironmentEnum } from '../enum/Environment';
 const env: string | undefined = process.env.NODE_ENV;
 
 export class Environment {
-    public static isDevelopment(): boolean {
+    public static get isDevelopment(): boolean {
         return env === EnvironmentEnum.Development;
     }
 
-    public static isProduction(): boolean {
+    public static get isProduction(): boolean {
         return env === EnvironmentEnum.Production;
     }
 

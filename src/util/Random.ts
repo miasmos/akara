@@ -3,7 +3,7 @@ export class Random {
         return Math.random() * (max - min) + min;
     }
 
-    public static id(length: number, prefix: string = ''): string {
+    public static id(length: number = 1, prefix: string = ''): string {
         if (length < 1) {
             length = 1;
         }
@@ -16,6 +16,6 @@ export class Random {
         }
 
         const id = prefix + seed;
-        return id.substring(0, length - 1);
+        return id.substring(0, length);
     }
 }

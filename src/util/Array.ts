@@ -2,17 +2,13 @@ import { SortOrder } from '../enum/SortOrder';
 
 export class Array {
     public static sortByKey<T>(arr: T[], key: string, sortOrder: SortOrder = SortOrder.Asc): T[] {
-        let allObjectsHadProperty = true;
+        const allObjectsHadProperty = arr.every(value => typeof value === 'object' && key in value);
 
-        return arr.sort((a, b) => {
-            if (!allObjectsHadProperty) {
-                return 0;
-            }
-            if (typeof a !== 'object' || typeof b !== 'object' || !(key in a) || !(key in b)) {
-                allObjectsHadProperty = false;
-                return 0;
-            }
+        if (!allObjectsHadProperty) {
+            return arr;
+        }
 
+        return arr.slice().sort((a, b) => {
             switch (sortOrder) {
                 case SortOrder.Asc:
                     return a[key] - b[key];

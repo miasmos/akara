@@ -5,16 +5,22 @@ export class Rotation3 extends Point3 {
         if (typeof x !== 'undefined') {
             if (Math.abs(x) > 360) {
                 this.x = x % 360;
+            } else {
+                this.x = x;
             }
         }
         if (typeof y !== 'undefined') {
             if (Math.abs(y) > 360) {
                 this.y = y % 360;
+            } else {
+                this.y = y;
             }
         }
         if (typeof z !== 'undefined') {
             if (Math.abs(z) > 360) {
                 this.z = z % 360;
+            } else {
+                this.z = z;
             }
         }
     }

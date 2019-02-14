@@ -27,9 +27,6 @@ export class Color {
                     .split('')
                     .reduce((previous, char) => previous + char + char, '');
             }
-            if (lowercase.length !== 6) {
-                return;
-            }
             this._hex = lowercase;
         }
     }
