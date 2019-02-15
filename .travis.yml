@@ -12,6 +12,9 @@ deploy:
         tags: true
         branch: master
 script:
+    - npm install codecov -g
     - npm install
     - npm test
     - npm start
+after_success:
+    - nyc report --reporter=json > coverage/coverage.json && codecov --token=7dfa0e8a-8bc7-4e18-83a9-cd081d6b54c7
