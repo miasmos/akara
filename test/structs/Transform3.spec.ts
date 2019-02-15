@@ -181,7 +181,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.X, previous => {
+            result.on(Transform3Event.X, (previous: number) => {
                 expect(previous).to.equal(0);
                 done();
             });
@@ -198,7 +198,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.Y, previous => {
+            result.on(Transform3Event.Y, (previous: number) => {
                 expect(previous).to.equal(0);
                 done();
             });
@@ -215,7 +215,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.Z, previous => {
+            result.on(Transform3Event.Z, (previous: number) => {
                 expect(previous).to.equal(0);
                 done();
             });
@@ -232,7 +232,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.Width, previous => {
+            result.on(Transform3Event.Width, (previous: number) => {
                 expect(previous).to.equal(0);
                 done();
             });
@@ -249,7 +249,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.Height, previous => {
+            result.on(Transform3Event.Height, (previous: number) => {
                 expect(previous).to.equal(0);
                 done();
             });
@@ -266,7 +266,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.Depth, previous => {
+            result.on(Transform3Event.Depth, (previous: number) => {
                 expect(previous).to.equal(0);
                 done();
             });
@@ -283,7 +283,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.ScaleX, previous => {
+            result.on(Transform3Event.ScaleX, (previous: number) => {
                 expect(previous).to.equal(1);
                 done();
             });
@@ -300,7 +300,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.ScaleY, previous => {
+            result.on(Transform3Event.ScaleY, (previous: number) => {
                 expect(previous).to.equal(1);
                 done();
             });
@@ -317,7 +317,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.ScaleZ, previous => {
+            result.on(Transform3Event.ScaleZ, (previous: number) => {
                 expect(previous).to.equal(1);
                 done();
             });
@@ -334,7 +334,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.PivotX, previous => {
+            result.on(Transform3Event.PivotX, (previous: number) => {
                 expect(previous).to.equal(0);
                 done();
             });
@@ -351,7 +351,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.PivotY, previous => {
+            result.on(Transform3Event.PivotY, (previous: number) => {
                 expect(previous).to.equal(0);
                 done();
             });
@@ -368,7 +368,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.RotateX, previous => {
+            result.on(Transform3Event.RotateX, (previous: number) => {
                 expect(previous).to.equal(0);
                 done();
             });
@@ -385,7 +385,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.RotateY, previous => {
+            result.on(Transform3Event.RotateY, (previous: number) => {
                 expect(previous).to.equal(0);
                 done();
             });
@@ -402,7 +402,7 @@ describe('Transform3', () => {
 
         it('should emit an event', done => {
             const result = new Transform3({});
-            result.on(Transform3Event.RotateZ, previous => {
+            result.on(Transform3Event.RotateZ, (previous: number) => {
                 expect(previous).to.equal(0);
                 done();
             });

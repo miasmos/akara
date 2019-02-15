@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export { Environment } from './Environment';
 export { ErrorMessage } from './ErrorMessage';
 export { HexCode } from './HexCode';

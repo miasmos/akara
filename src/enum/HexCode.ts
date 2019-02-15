@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export enum HexCode {
     Black = '000',
     White = 'FFF',

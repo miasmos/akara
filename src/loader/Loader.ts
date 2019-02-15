@@ -1,14 +1,10 @@
 import { Observer } from '../Observer';
 import { Random } from '../util/Util';
+import { Asset, AssetType } from './assets/Asset';
 import { AudioAsset } from './assets/AudioAsset';
 import { ImageAsset } from './assets/ImageAsset';
-import { Asset, AssetType } from './assets/Asset';
 import { EmptyAsset } from './assets/EmptyAsset';
-
-export enum LoaderEvents {
-    Load = 'LoaderEvents.Load',
-    Add = 'LoaderEvents.Add'
-}
+import { LoaderEvents } from '../enum/LoaderEvents';
 
 interface IAssetCategory {
     [key: string]: Asset;

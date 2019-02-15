@@ -4,8 +4,8 @@ export class EmptyAsset extends Asset {
     protected ref: undefined;
     public readonly type: AssetType = AssetType.Empty;
 
-    public constructor() {
-        super('', '', '');
+    public constructor(name: string = '', path: string = '', event: string = '') {
+        super(name, path, event);
     }
 
     protected getLoader(): undefined {

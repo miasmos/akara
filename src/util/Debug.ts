@@ -4,6 +4,7 @@ export class Debug {
     public static isDebug: boolean = Environment.isDevelopment;
 
     public static log<T>(...args: T[]): boolean {
+        /* istanbul ignore if */
         if (Debug.isDebug) {
             window.console.log(...args);
             return true;
@@ -12,6 +13,7 @@ export class Debug {
     }
 
     public static warn<T>(...args: T[]): boolean {
+        /* istanbul ignore if */
         if (Debug.isDebug) {
             window.console.warn(...args);
             return true;
@@ -20,6 +22,7 @@ export class Debug {
     }
 
     public static error<T>(...args: T[]): boolean {
+        /* istanbul ignore if */
         if (Debug.isDebug) {
             window.console.error(...args);
             return true;
@@ -28,6 +31,7 @@ export class Debug {
     }
 
     public static throw(...args: (string | undefined)[]): boolean {
+        /* istanbul ignore if */
         if (Debug.isDebug) {
             throw new Error(...args);
         }

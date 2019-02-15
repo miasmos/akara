@@ -1,6 +1,7 @@
 import { Observer } from '../../Observer';
-import { LoaderEvents } from '../Loader';
+import { LoaderEvents } from '../../enum/LoaderEvents';
 import { IEntityRegisters } from '../../entities/base/IEntity';
+import { Debug } from '../../util/Util';
 
 export enum AssetType {
     Image = 'AssetType.Image',
@@ -29,6 +30,7 @@ export abstract class Asset extends Observer implements IAsset {
     public readonly type: AssetType;
     public loaded: boolean = false;
     public loading: boolean = false;
+    public failed: boolean = false;
     protected abstract ref: HTMLImageElement | HTMLAudioElement | undefined;
     public name: string;
     public path: string;
@@ -47,9 +49,10 @@ export abstract class Asset extends Observer implements IAsset {
         if (!this.ref) {
             this.ref = this.getLoader();
             if (this.ref) {
-                this.ref.src = this.path;
-                this.loading = true;
                 this.ref.addEventListener(this.event, this.onLoaded.bind(this));
+                this.ref.addEventListener('onerror', this.onLoadError.bind(this));
+                this.loading = true;
+                this.ref.src = this.path;
             }
         }
     }
@@ -58,11 +61,20 @@ export abstract class Asset extends Observer implements IAsset {
         return this.name === asset.name && this.type === asset.type;
     }
 
+    public abstract getRef(): HTMLImageElement | HTMLAudioElement | undefined;
+
+    // #region events
     protected onLoaded(): void {
         this.loaded = true;
         this.loading = false;
         this.emit(LoaderEvents.Load, this);
     }
 
-    public abstract getRef(): HTMLImageElement | HTMLAudioElement | undefined;
+    protected onLoadError(error: Error): void {
+        this.loading = false;
+        this.failed = true;
+        Debug.error(error);
+        this.emit(LoaderEvents.LoadError, this);
+    }
+    // #endregion
 }

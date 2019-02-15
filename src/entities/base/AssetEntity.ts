@@ -1,7 +1,7 @@
 import { Entity } from './Entity';
 import { IEntityConfig, EntityEvent, IEntity } from './IEntity';
 import { Asset, AssetType, IAssetRegisters } from '../../loader/assets/Asset';
-import { LoaderEvents } from '../../loader/Loader';
+import { LoaderEvents } from '../../enum/LoaderEvents';
 import { EmptyAsset } from '../../loader/assets/EmptyAsset';
 import { Game } from '../Game';
 

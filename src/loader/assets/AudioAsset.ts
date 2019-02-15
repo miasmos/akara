@@ -9,7 +9,7 @@ export class AudioAsset extends Asset {
     }
 
     protected getLoader(): HTMLAudioElement {
-        return new Audio();
+        return document.createElement('audio') as HTMLAudioElement;
     }
 
     public getRef(): HTMLAudioElement {

@@ -9,7 +9,7 @@ export class ImageAsset extends Asset {
     }
 
     protected getLoader(): HTMLImageElement {
-        return new Image();
+        return document.createElement('img') as HTMLImageElement;
     }
 
     public getRef(): HTMLImageElement {
