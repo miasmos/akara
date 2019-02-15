@@ -1,5 +1,6 @@
+/* istanbul ignore file */
 export enum Mouse {
-    MouseDown,
-    MouseUp,
-    MouseMove
+    MouseDown = 'Mouse.MouseDown',
+    MouseUp = 'Mouse.MouseUp',
+    MouseMove = 'Mouse.MouseMove'
 }

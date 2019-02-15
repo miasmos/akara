@@ -3,6 +3,7 @@ import { Game } from '../Game';
 import { Group } from '../Group';
 import { Transform3, Transform3Event } from '../../structs/Transform3';
 import { Point3 } from '../../structs/Point3';
+import { Direction } from '../../enum/Direction';
 
 export enum EntityEvent {
     Rendered = 'EntityEvent.Rendered',
@@ -44,20 +45,16 @@ export interface IEntityConfig {
     rotateZ?: number;
     alpha?: number;
     tag?: string;
-    preupdate?: Function;
-    update?: Function;
-    postupdate?: Function;
-    start?: Function;
-    destroy?: Function;
-    collision?: Function;
-}
-
-export enum Direction {
-    Up,
-    Down
+    preupdate?: () => void;
+    update?: () => void;
+    postupdate?: () => void;
+    start?: () => void;
+    destroy?: () => void;
+    collision?: () => void;
 }
 
 export interface IEntity {
+    [key: string]: any;
     id: string;
     moveable: boolean;
     collidable: boolean;
@@ -101,4 +98,13 @@ export interface IEntity {
         direction?: Direction,
         id?: string
     ): void;
+}
+
+export interface IEntityRegisters {
+    update?(): void;
+    preupdate?(): void;
+    postupdate?(): void;
+    start?(): void;
+    destroy?(): void;
+    collision?(entity: Entity): void;
 }

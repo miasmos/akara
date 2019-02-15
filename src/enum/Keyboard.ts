@@ -1,4 +1,5 @@
+/* istanbul ignore file */
 export enum Keyboard {
-    KeyUp,
-    KeyDown
+    KeyUp = 'Keyboard.Up',
+    KeyDown = 'Keyboard.Down'
 }

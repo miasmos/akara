@@ -12,7 +12,7 @@ export class Observer {
     private subjects: ISubjects = {};
     public suppress: boolean = false;
 
-    public on(event: string | number, fn: Function): void {
+    public on(event: string, fn: Function): void {
         event = event.toString();
         if (!(event in this.subjects)) {
             this.subjects[event] = [];
@@ -20,7 +20,7 @@ export class Observer {
         this.subjects[event].push(new Subject(fn));
     }
 
-    public emit(event: string | number, ...params: unknown[]): void {
+    public emit(event: string, ...params: unknown[]): void {
         if (this.suppress) {
             return;
         }
@@ -33,7 +33,7 @@ export class Observer {
         }
     }
 
-    public off(event: string | number, fn?: Function): void {
+    public off(event: string, fn?: Function): void {
         event = event.toString();
         if (!(event in this.subjects)) {
             return;

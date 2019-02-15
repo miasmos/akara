@@ -1,5 +1,6 @@
 import * as Util from '../util/Util';
-import { EntityType, EntityEvent, Direction, IEntityConfig } from './base/IEntity';
+import { EntityType, EntityEvent, IEntityConfig } from './base/IEntity';
+import { Direction } from '../enum/Direction';
 import { Entity } from './base/Entity';
 import { Transform3Event, Transform3 } from '../structs/Transform3';
 import { SortOrder, ErrorMessage } from '../enum/Enum';
@@ -24,12 +25,12 @@ interface IBounds {
 export interface IGroupConfig extends IEntityConfig {
     moveable?: boolean;
     sizing?: Sizing;
-    load?: Function;
-    preupdate?: Function;
-    update?: Function;
-    postupdate?: Function;
-    start?: Function;
-    destroy?: Function;
+    load?: () => void;
+    preupdate?: () => void;
+    update?: () => void;
+    postupdate?: () => void;
+    start?: () => void;
+    destroy?: () => void;
 }
 
 export class Group extends Entity {
@@ -444,7 +445,7 @@ export class Group extends Entity {
     }
 
     private sort(): void {
-        this.children = Util.Array.sortByKey(this.children, 'z', SortOrder.Asc);
+        this.children = this.children.slice().sort((a, b) => a.z - b.z);
     }
 
     // #region events

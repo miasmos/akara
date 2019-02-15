@@ -9,7 +9,7 @@ import * as Util from './util/Util';
 import { ComponentType, Component } from './components/Component';
 
 export enum CollisionEvent {
-    Collision
+    Collision = 'CollisionEvent.Collision'
 }
 
 export interface ICollisionManagerConfig {

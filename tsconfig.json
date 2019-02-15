@@ -5,6 +5,7 @@
         "strictNullChecks": true,
         "forceConsistentCasingInFileNames": true,
         "noImplicitReturns": true,
+        "noImplicitAny": true,
         "noUnusedLocals": false,
         "module": "es6",
         "moduleResolution": "node",

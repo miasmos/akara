@@ -1,10 +1,11 @@
 import { Observer } from '../../Observer';
 import { LoaderEvents } from '../Loader';
+import { IEntityRegisters } from '../../entities/base/IEntity';
 
 export enum AssetType {
-    Image,
-    Audio,
-    Empty
+    Image = 'AssetType.Image',
+    Audio = 'AssetType.Audio',
+    Empty = 'AssetType.Empty'
 }
 
 export interface IAsset {
@@ -18,6 +19,10 @@ export interface IAsset {
     load(): void;
     equals(asset: Asset): boolean;
     getRef(): HTMLImageElement | HTMLAudioElement | undefined;
+}
+
+export interface IAssetRegisters extends IEntityRegisters {
+    load?(): void;
 }
 
 export abstract class Asset extends Observer implements IAsset {

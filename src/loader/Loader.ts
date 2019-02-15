@@ -6,15 +6,16 @@ import { Asset, AssetType } from './assets/Asset';
 import { EmptyAsset } from './assets/EmptyAsset';
 
 export enum LoaderEvents {
-    Load,
-    Add
+    Load = 'LoaderEvents.Load',
+    Add = 'LoaderEvents.Add'
+}
+
+interface IAssetCategory {
+    [key: string]: Asset;
 }
 
 interface IAssets {
-    [key: number]: IAssetCategory;
-}
-interface IAssetCategory {
-    [key: string]: Asset;
+    [key: string]: IAssetCategory;
 }
 
 export class Loader extends Observer {
@@ -48,8 +49,9 @@ export class Loader extends Observer {
     public start(): boolean {
         if (!this.started) {
             this.started = true;
-            Object.keys(this.assets).forEach(index => {
-                Object.values(this.assets[index]).forEach((asset: Asset) => asset.load());
+            Object.keys(this.assets).forEach((value: string) => {
+                const assetCategories: IAssetCategory = this.assets[value];
+                Object.values(assetCategories).forEach((asset: Asset) => asset.load());
             });
 
             return true;
@@ -60,7 +62,7 @@ export class Loader extends Observer {
     private instantiate(type: AssetType, path: string, name: string): Asset {
         let asset;
         if (this.has(type, name)) {
-            asset = this.get(type, name);
+            asset = this.get(type, name) as Asset;
         } else {
             asset = this.load(this.getAssetInstance(type, path, name));
             this.emit(LoaderEvents.Add, asset);

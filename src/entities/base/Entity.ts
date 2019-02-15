@@ -2,7 +2,8 @@ import { Observer } from '../../Observer';
 import { Game } from '../Game';
 import { Transform3, Transform3Event } from '../../structs/Transform3';
 import * as Util from '../../util/Util';
-import { IEntity, EntityType, IEntityConfig, EntityEvent, Direction } from './IEntity';
+import { IEntity, IEntityRegisters, EntityType, IEntityConfig, EntityEvent } from './IEntity';
+import { Direction } from '../../enum/Direction';
 import { Group } from '../Group';
 import { Point3 } from '../../structs/Point3';
 import { Size3 } from '../../structs/Size3';
@@ -13,6 +14,7 @@ import { ComponentType, Component } from '../../components/Component';
 import { Pivot2 } from '../../structs/Pivot2';
 
 export class Entity extends Observer implements IEntity {
+    [key: string]: any;
     public id: string = '';
     public type: EntityType;
     public parent: Group | undefined;
@@ -104,7 +106,14 @@ export class Entity extends Observer implements IEntity {
         return this.components.has(type);
     }
 
-    protected initialize({ update, preupdate, postupdate, start, destroy, collision }): void {
+    protected initialize({
+        update,
+        preupdate,
+        postupdate,
+        start,
+        destroy,
+        collision
+    }: IEntityRegisters): void {
         this.bind('update', update);
         this.bind('preupdate', preupdate);
         this.bind('postupdate', postupdate);
@@ -115,13 +124,13 @@ export class Entity extends Observer implements IEntity {
         this.components.on(ComponentManagerEvent.Remove, this.onComponentRemove.bind(this));
     }
 
-    protected bind(key, fn): void {
+    protected bind(key: string, fn: Function | undefined): void {
         if (!(key in this) && typeof fn === 'function') {
             this[key] = fn.bind(this);
         }
     }
 
-    protected call(key): void {
+    protected call(key: string): void {
         if (key in this && typeof this[key] === 'function') {
             this[key]();
         }

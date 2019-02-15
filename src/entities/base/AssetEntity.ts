@@ -1,18 +1,18 @@
 import { Entity } from './Entity';
 import { IEntityConfig, EntityEvent, IEntity } from './IEntity';
-import { Asset, AssetType } from '../../loader/assets/Asset';
+import { Asset, AssetType, IAssetRegisters } from '../../loader/assets/Asset';
 import { LoaderEvents } from '../../loader/Loader';
 import { EmptyAsset } from '../../loader/assets/EmptyAsset';
 import { Game } from '../Game';
 
 export interface IAssetEntity extends IEntity {
-    load?: Function;
+    load?: () => void;
 }
 
 export interface IAssetEntityConfig extends IEntityConfig {
     asset: string;
     assetType: AssetType;
-    load?: Function;
+    load?: () => void;
 }
 
 export class AssetEntity extends Entity implements IAssetEntity {
@@ -78,7 +78,15 @@ export class AssetEntity extends Entity implements IAssetEntity {
         this.bindAsset();
     }
 
-    protected initialize({ load, update, preupdate, postupdate, start, destroy, collision }): void {
+    protected initialize({
+        load,
+        update,
+        preupdate,
+        postupdate,
+        start,
+        destroy,
+        collision
+    }: IAssetRegisters): void {
         this.bind('load', load);
         this.bind('update', update);
         this.bind('preupdate', preupdate);
