@@ -135,6 +135,13 @@ describe('Transform3', () => {
             expect(result.y).to.equal(1);
             expect(result.z).to.equal(1);
         });
+
+        it('should return Point3 of x,y,z', () => {
+            const result = new Transform3({ x: 1, y: 1, z: 1 });
+            expect(result.origin.x).to.equal(1);
+            expect(result.origin.y).to.equal(1);
+            expect(result.origin.z).to.equal(1);
+        });
     });
 
     describe('size', () => {

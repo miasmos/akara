@@ -26,11 +26,9 @@ export class Collider extends Component {
             }
             return (
                 entity.world.x + entity.world.width >= this.parent.world.x &&
-                entity.world.x + entity.world.width <=
-                    this.parent.world.x + this.parent.world.width &&
+                entity.world.x <= this.parent.world.x + this.parent.world.width &&
                 entity.world.y + entity.world.height >= this.parent.world.y &&
-                entity.world.y + entity.world.height >=
-                    this.parent.world.y + this.parent.world.height
+                entity.world.y <= this.parent.world.y + this.parent.world.height
             );
         }
 

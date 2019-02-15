@@ -2,7 +2,7 @@ import { Entity } from './entities/base/Entity';
 import { Text } from './entities/Text';
 import { Box } from './entities/Box';
 import { Sprite } from './entities/Sprite';
-import { EntityType } from './entities/base/IEntity';
+import { EntityType, EntityEvent } from './entities/base/IEntity';
 import { Time } from './structs/Time';
 import { Canvas } from './Canvas';
 import { Observer } from './Observer';
@@ -15,6 +15,7 @@ import { ErrorMessage } from './enum/ErrorMessage';
 import { Color } from './structs/Color';
 import { HexCode } from './enum/HexCode';
 import { CollisionManager, CollisionEvent } from './CollisionManager';
+import { Transform3Event } from './structs/Transform3';
 
 export enum EngineEvent {
     Start = 'start',
@@ -37,6 +38,7 @@ export class Engine extends Observer {
     public started: boolean = false;
     public canvas: Canvas;
     private entities: EntityManager = new EntityManager();
+    private movedEntities: string[] = [];
     private collisions: CollisionManager;
     private registry: Registry;
     public game: Game;
@@ -101,6 +103,7 @@ export class Engine extends Observer {
         }
         this.entities.add(entity);
         this.registry.add(entity);
+        entity.on(EntityEvent.Transform, this.onEntityTransformChange.bind(this));
 
         if (entity.type === EntityType.Group) {
             (entity as Group).children.map(child => this.add(child));
@@ -122,6 +125,7 @@ export class Engine extends Observer {
         this.collisions.removeEntity(entity);
         this.entities.remove(entity);
         this.registry.remove(entity);
+        entity.off(EntityEvent.Transform, this.onEntityTransformChange.bind(this));
 
         if (entity.type === EntityType.Group) {
             (entity as Group).children.map(child => this.remove(child));
@@ -151,6 +155,7 @@ export class Engine extends Observer {
 
     private frame(): void {
         Time.next();
+        this.clearMovedEntities();
         this.preupdate();
         this.update();
         this.postupdate();
@@ -274,4 +279,43 @@ export class Engine extends Observer {
             this.canvas.drawLine(new Color(HexCode.Gray), x, 0, x, height, stroke);
         }
     }
+
+    public getMovedEntities(): string[] {
+        return this.movedEntities;
+    }
+
+    private addMovedEntity(entity: Entity): boolean {
+        if (!this.movedEntities.includes(entity.id)) {
+            this.movedEntities.push(entity.id);
+            return true;
+        }
+        return false;
+    }
+
+    private clearMovedEntities(): void {
+        this.movedEntities = [];
+    }
+
+    // #region events
+    protected onEntityTransformChange(
+        entity: Entity,
+        previous: number,
+        changed: Transform3Event
+    ): void {
+        switch (changed) {
+            case Transform3Event.X:
+            case Transform3Event.Y:
+            case Transform3Event.Z:
+            case Transform3Event.Width:
+            case Transform3Event.Height:
+            case Transform3Event.Depth:
+            case Transform3Event.ScaleX:
+            case Transform3Event.ScaleY:
+            case Transform3Event.ScaleZ:
+                this.addMovedEntity(entity);
+                break;
+            default:
+        }
+    }
+    // #endregion
 }
