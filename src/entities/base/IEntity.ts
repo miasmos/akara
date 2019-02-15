@@ -9,7 +9,9 @@ export enum EntityEvent {
     Tag = 'EntityEvent.Tag',
     Transform = 'EntityEvent.Transform',
     Scale = 'EntityEvent.Scale',
-    Loaded = 'EntityEvent.Loaded'
+    Loaded = 'EntityEvent.Loaded',
+    ComponentAdd = 'EntityEvent.ComponentAdd',
+    ComponentRemove = 'EntityEvent.ComponentRemove'
 }
 
 export enum EntityType {

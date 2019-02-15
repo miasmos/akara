@@ -78,6 +78,7 @@ export class Entity extends Observer implements IEntity {
         const added: Component | boolean = this.components.add(type);
         if (typeof added !== 'boolean') {
             added.attach(this);
+            this.emit(EntityEvent.ComponentAdd, this, added);
             return true;
         }
 
@@ -88,6 +89,7 @@ export class Entity extends Observer implements IEntity {
         const removed: Component | boolean = this.components.remove(type);
         if (typeof removed !== 'boolean') {
             removed.detach();
+            this.emit(EntityEvent.ComponentRemove, this, removed);
             return true;
         }
 
@@ -136,11 +138,11 @@ export class Entity extends Observer implements IEntity {
     }
 
     public get transform(): Transform | undefined {
-        return this.components.get(ComponentType.Transform) as Transform;
+        return this.components.get(ComponentType.Transform) as Transform | undefined;
     }
 
     public get collider(): Collider | undefined {
-        return this.components.get(ComponentType.Collider) as Collider;
+        return this.components.get(ComponentType.Collider) as Collider | undefined;
     }
 
     public get moveable(): boolean {
@@ -532,6 +534,13 @@ export class Entity extends Observer implements IEntity {
         }
     }
 
+    public get moved(): boolean {
+        if (!this.game) {
+            return false;
+        }
+        return this.game.engine.hasMovedEntity(this);
+    }
+
     public get isGroup(): boolean {
         return this.type === EntityType.Group || this.type === EntityType.Scene;
     }
@@ -543,6 +552,14 @@ export class Entity extends Observer implements IEntity {
 
     public equals(entity: Entity): boolean {
         return entity.id === this.id && entity.type === this.type;
+    }
+
+    public colliding(entity: Entity): boolean {
+        if (!entity.collider || !this.collider) {
+            return false;
+        }
+
+        return this.collider.hasCollision(entity);
     }
 
     public reconcile(

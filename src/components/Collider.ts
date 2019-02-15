@@ -19,6 +19,34 @@ export class Collider extends Component {
         super.configure({ type: ComponentType.Collider });
     }
 
+    public addCollision(entity: Entity): boolean {
+        if (!this.parent || entity.id === this.parent.id) {
+            return false;
+        }
+        if (!(entity.id in this.intersectionsById)) {
+            this.intersections.push(entity);
+            this.intersectionsById[entity.id] = entity;
+            return true;
+        }
+        return false;
+    }
+
+    public removeCollision(entity: Entity): boolean {
+        if (this.parent && entity.id === this.parent.id) {
+            return false;
+        }
+        if (entity.id in this.intersectionsById) {
+            this.intersections.splice(this.intersections.indexOf(entity), 1);
+            delete this.intersectionsById[entity.id];
+            return true;
+        }
+        return false;
+    }
+
+    public hasCollision(entity: Entity): boolean {
+        return entity.id in this.intersectionsById;
+    }
+
     public test2(entity: Entity): boolean {
         if (this.parent) {
             if (!this.parent.collidable || !entity.collidable) {

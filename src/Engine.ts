@@ -96,11 +96,7 @@ export class Engine extends Observer {
             return false;
         }
 
-        // TODO: attach listener to entity.onColliderAdd/onColliderRemove
-        // and add/remove to/from CollisionManager
-        if (entity.collider) {
-            this.collisions.addEntity(entity);
-        }
+        this.collisions.addEntity(entity);
         this.entities.add(entity);
         this.registry.add(entity);
         entity.on(EntityEvent.Transform, this.onEntityTransformChange.bind(this));
@@ -284,8 +280,12 @@ export class Engine extends Observer {
         return this.movedEntities;
     }
 
+    public hasMovedEntity(entity: Entity): boolean {
+        return this.movedEntities.includes(entity.id);
+    }
+
     private addMovedEntity(entity: Entity): boolean {
-        if (!this.movedEntities.includes(entity.id)) {
+        if (!this.hasMovedEntity(entity)) {
             this.movedEntities.push(entity.id);
             return true;
         }

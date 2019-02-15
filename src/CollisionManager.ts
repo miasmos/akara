@@ -6,6 +6,7 @@ import { Point3 } from './structs/Point3';
 import { Game } from './entities/Game';
 import { Observer } from './Observer';
 import * as Util from './util/Util';
+import { ComponentType, Component } from './components/Component';
 
 export enum CollisionEvent {
     Collision
@@ -33,19 +34,32 @@ export class CollisionManager extends Observer {
     }
 
     public addEntity(entity: Entity): boolean {
-        const added = this.entities.add(entity);
-        if (added) {
-            this.sectorsByEntity[entity.id] = [];
-            this.resize(entity.x + entity.width, entity.y + entity.height, entity.z + entity.depth);
-            this.updateEntity(entity);
+        if (entity.collider && entity.transform) {
+            const added = this.entities.add(entity);
+
+            if (added) {
+                this.sectorsByEntity[entity.id] = [];
+                entity.on(EntityEvent.ComponentRemove, this.onEntityComponentRemove.bind(this));
+                entity.off(EntityEvent.ComponentAdd, this.onEntityComponentAdd.bind(this));
+                this.resize(
+                    entity.x + entity.width,
+                    entity.y + entity.height,
+                    entity.z + entity.depth
+                );
+                this.updateEntity(entity);
+            }
+            return added;
         }
 
-        return added;
+        entity.on(EntityEvent.ComponentAdd, this.onEntityComponentAdd.bind(this));
+        return false;
     }
 
     public removeEntity(entity: Entity): boolean {
         const removed = this.entities.remove(entity);
         if (removed) {
+            entity.off(EntityEvent.ComponentAdd, this.onEntityComponentAdd.bind(this));
+            entity.off(EntityEvent.ComponentRemove, this.onEntityComponentRemove.bind(this));
             this.sectorsByEntity[entity.id].forEach((origin: Point3) => {
                 this.removeEntityFromSector(entity, origin.x, origin.y, origin.z);
             });
@@ -239,6 +253,8 @@ export class CollisionManager extends Observer {
             }
         }
 
+        // if collision exists already in master list, discard it
+        // if not, add it to the master list
         const removals = this.collisions.filter(id => !collisions.includes(id));
         collisions.forEach((id: string) => {
             if (this.collisions.includes(id)) {
@@ -247,10 +263,41 @@ export class CollisionManager extends Observer {
                 this.collisions.push(id);
             }
         });
-        this.collisions = this.collisions.filter(id => !removals.includes(id));
+
+        // remove collisions that no longer exist from master list / entities
+        this.collisions = this.collisions.filter(id => {
+            const shouldRemove = !removals.includes(id);
+
+            if (id in entitiesByCollision) {
+                const [entity, comparer] = entitiesByCollision[id];
+                let { collider } = entity;
+                if (collider) {
+                    collider.removeCollision(comparer);
+                }
+                ({ collider } = comparer);
+                if (collider) {
+                    collider.removeCollision(entity);
+                }
+            }
+
+            return shouldRemove;
+        });
+
+        // add new collisions to master list / entities
         collisions.forEach((id: string) => {
-            const [entity, comparer] = entitiesByCollision[id];
-            this.emit(CollisionEvent.Collision, entity, comparer);
+            if (id in entitiesByCollision) {
+                const [entity, comparer] = entitiesByCollision[id];
+                let { collider } = entity;
+                if (collider) {
+                    collider.addCollision(comparer);
+                }
+                ({ collider } = comparer);
+                if (collider) {
+                    collider.addCollision(entity);
+                }
+
+                this.emit(CollisionEvent.Collision, entity, comparer);
+            }
         });
     }
 
@@ -279,6 +326,26 @@ export class CollisionManager extends Observer {
                     entity.y + entity.height,
                     entity.z + entity.depth
                 );
+                break;
+            default:
+        }
+    }
+
+    protected onEntityComponentAdd(entity: Entity, component: Component): void {
+        switch (component.type) {
+            case ComponentType.Collider:
+            case ComponentType.Transform:
+                this.addEntity(entity);
+                break;
+            default:
+        }
+    }
+
+    protected onEntityComponentRemove(entity: Entity, component: Component): void {
+        switch (component.type) {
+            case ComponentType.Collider:
+            case ComponentType.Transform:
+                this.removeEntity(entity);
                 break;
             default:
         }
