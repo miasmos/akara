@@ -19,7 +19,7 @@ export enum ComponentType {
 }
 
 export class Component extends Observer {
-    public type: ComponentType;
+    public type: ComponentType = ComponentType.Component;
     public id: string = Util.Random.id(12);
     public game: Game;
     public parent: Entity | undefined;

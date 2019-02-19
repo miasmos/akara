@@ -23,7 +23,7 @@ interface IBounds {
 }
 
 export interface IGroupConfig extends IEntityConfig {
-    moveable?: boolean;
+    movable?: boolean;
     sizing?: Sizing;
     load?: () => void;
     preupdate?: () => void;
@@ -55,6 +55,8 @@ export class Group extends Entity {
         rotateY = 0,
         rotateZ = 0,
         alpha = 1,
+        movable = true,
+        collidable = true,
         sizing = Sizing.Auto,
         tag,
         type = EntityType.Group,

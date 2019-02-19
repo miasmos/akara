@@ -48,6 +48,8 @@ export class Entity extends Observer implements IEntity {
         rotateY = 0,
         rotateZ = 0,
         alpha = 1,
+        movable = true,
+        collidable = true,
         tag,
         preupdate,
         update,
@@ -71,6 +73,8 @@ export class Entity extends Observer implements IEntity {
         this.rotateY = rotateY;
         this.rotateZ = rotateZ;
         this.tag = tag;
+        this.movable = movable;
+        this.collidable = collidable;
         this.alpha = alpha;
         this.id = Util.Random.id(12);
         this.type = type;
@@ -155,17 +159,17 @@ export class Entity extends Observer implements IEntity {
         return this.components.get(ComponentType.Collider) as Collider | undefined;
     }
 
-    public get moveable(): boolean {
+    public get movable(): boolean {
         if (this.transform) {
-            return this.transform.moveable;
+            return this.transform.movable;
         }
 
         return false;
     }
 
-    public set moveable(value: boolean) {
+    public set movable(value: boolean) {
         if (this.transform) {
-            this.transform.moveable = value;
+            this.transform.movable = value;
         }
     }
 
@@ -657,9 +661,6 @@ export class Entity extends Observer implements IEntity {
         switch (type) {
             case TransformEvent.Transform:
                 this.onTransformChange(previous, changed);
-                break;
-            case TransformEvent.Scale:
-                this.onScaleChange(previous);
                 break;
             default:
         }

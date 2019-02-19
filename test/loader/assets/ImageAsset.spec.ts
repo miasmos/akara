@@ -2,7 +2,7 @@ import { ImageAsset } from '../../../src/loader/assets/ImageAsset';
 import { EmptyAsset } from '../../../src/loader/assets/EmptyAsset';
 import { expect } from 'chai';
 import 'mocha';
-import { LoaderEvents } from '../../../src/enum/LoaderEvents';
+import { LoaderEvent } from '../../../src/enum/LoaderEvent';
 import { Asset } from '../../../src/loader/assets/Asset';
 
 describe('ImageAsset', () => {
@@ -24,7 +24,7 @@ describe('ImageAsset', () => {
     describe('load event', () => {
         it('should emit an event when loading is complete', done => {
             const result = new ImageAsset('test', 'test1');
-            result.on(LoaderEvents.Load, (asset: Asset) => {
+            result.on(LoaderEvent.Load, (asset: Asset) => {
                 done();
             });
             result.load();
@@ -33,7 +33,7 @@ describe('ImageAsset', () => {
 
         it('should set the loading property to false', done => {
             const result = new ImageAsset('test', 'test1');
-            result.on(LoaderEvents.Load, (asset: Asset) => {
+            result.on(LoaderEvent.Load, (asset: Asset) => {
                 expect(result.loading).to.equal(false);
                 done();
             });
@@ -43,7 +43,7 @@ describe('ImageAsset', () => {
 
         it('should set the loaded property to true', done => {
             const result = new ImageAsset('test', 'test1');
-            result.on(LoaderEvents.Load, (asset: Asset) => {
+            result.on(LoaderEvent.Load, (asset: Asset) => {
                 expect(result.loaded).to.equal(true);
                 done();
             });
@@ -55,7 +55,7 @@ describe('ImageAsset', () => {
     describe('load event error', () => {
         it('should emit an event when loading fails', done => {
             const result = new ImageAsset('test', 'test1');
-            result.on(LoaderEvents.LoadError, (asset: Asset) => {
+            result.on(LoaderEvent.LoadError, (asset: Asset) => {
                 done();
             });
             result.load();
@@ -64,7 +64,7 @@ describe('ImageAsset', () => {
 
         it('should set the loading property to false', done => {
             const result = new ImageAsset('test', 'test1');
-            result.on(LoaderEvents.LoadError, (asset: Asset) => {
+            result.on(LoaderEvent.LoadError, (asset: Asset) => {
                 expect(result.loading).to.equal(false);
                 done();
             });
@@ -74,7 +74,7 @@ describe('ImageAsset', () => {
 
         it('should set the failed property to true', done => {
             const result = new ImageAsset('test', 'test1');
-            result.on(LoaderEvents.LoadError, (asset: Asset) => {
+            result.on(LoaderEvent.LoadError, (asset: Asset) => {
                 expect(result.failed).to.equal(true);
                 done();
             });

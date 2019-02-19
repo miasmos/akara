@@ -47,6 +47,8 @@ export interface IEntityConfig {
     rotateZ?: number;
     alpha?: number;
     tag?: string;
+    movable?: boolean;
+    collidable?: boolean;
     preupdate?: () => void;
     update?: () => void;
     postupdate?: () => void;
@@ -59,7 +61,7 @@ export interface IEntityConfig {
 export interface IEntity {
     [key: string]: any;
     id: string;
-    moveable: boolean;
+    movable: boolean;
     collidable: boolean;
     world: Transform3;
     readonly type: EntityType;

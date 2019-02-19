@@ -115,7 +115,6 @@ export class CollisionManager extends Observer {
     }
 
     protected removeEntityFromSector(entity: Entity, origin: Point3): boolean {
-        debugger;
         const sector = this.getSector(origin);
         const count = sector.length;
         sector.splice(sector.indexOf(entity), 1);
@@ -318,7 +317,6 @@ export class CollisionManager extends Observer {
     }
 
     public getTopmostEntity(origin: Point3): Entity | undefined {
-        debugger;
         const sector = this.getSector(origin);
         if (sector && sector.length) {
             return sector.sort((a: Entity, b: Entity) => a.z - b.z)[0];

@@ -26,6 +26,8 @@ export class Box extends Entity {
         rotateX = 0,
         rotateY = 0,
         rotateZ = 0,
+        movable = true,
+        collidable = true,
         alpha = 1,
         tag,
         backgroundColor = HexCode.White,

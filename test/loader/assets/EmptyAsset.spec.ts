@@ -1,7 +1,7 @@
 import { EmptyAsset } from '../../../src/loader/assets/EmptyAsset';
 import { expect } from 'chai';
 import 'mocha';
-import { LoaderEvents } from '../../../src/enum/LoaderEvents';
+import { LoaderEvent } from '../../../src/enum/LoaderEvent';
 import { Asset } from '../../../src/loader/assets/Asset';
 
 describe('EmptyAsset', () => {

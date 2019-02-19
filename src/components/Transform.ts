@@ -2,6 +2,7 @@ import { Component, ComponentEvent, ComponentType, IComponentConfig } from './Co
 import { Point3 } from '../structs/Point3';
 import { Transform3, Transform3Event } from '../structs/Transform3';
 import { Entity } from '../entities/base/Entity';
+import { Point2 } from '../structs/Point2';
 
 export interface ITransformConfig extends IComponentConfig {
     x?: number;
@@ -18,19 +19,17 @@ export interface ITransformConfig extends IComponentConfig {
     rotateX?: number;
     rotateY?: number;
     rotateZ?: number;
-    moveable?: boolean;
+    movable?: boolean;
 }
 
 export enum TransformEvent {
-    Transform = 'TransformEvent.Transform',
-    Scale = 'TransformEvent.Scale'
+    Transform = 'TransformEvent.Transform'
 }
 
 export class Transform extends Component {
     protected _world: Transform3 = new Transform3({});
     protected _local: Transform3 = new Transform3({});
-    protected _scale: Point3 = new Point3();
-    public moveable: boolean = true;
+    public movable: boolean = true;
 
     public configure({
         x = 0,
@@ -47,7 +46,7 @@ export class Transform extends Component {
         rotateX = 0,
         rotateY = 0,
         rotateZ = 0,
-        moveable = true
+        movable = true
     }: ITransformConfig): void {
         this._local = new Transform3({
             x,
@@ -66,7 +65,7 @@ export class Transform extends Component {
             rotateZ
         });
         this.world = Transform3.add(this.local, this.world);
-        this.moveable = moveable;
+        this.movable = movable;
 
         this.local.on(Transform3Event.X, (previous: number) =>
             this.onTransformChange(previous, Transform3Event.X)
@@ -121,6 +120,17 @@ export class Transform extends Component {
         this.world.x = value.x;
         this.world.y = value.y;
         this.world.z = value.z;
+        this.world.width = value.width;
+        this.world.height = value.height;
+        this.world.depth = value.depth;
+        this.world.scaleX = value.scaleX;
+        this.world.scaleY = value.scaleY;
+        this.world.scaleZ = value.scaleZ;
+        this.world.pivotX = value.pivotX;
+        this.world.pivotY = value.pivotY;
+        this.world.rotateX = value.rotateX;
+        this.world.rotateY = value.rotateY;
+        this.world.rotateZ = value.rotateZ;
     }
 
     public get local(): Transform3 {
@@ -131,16 +141,49 @@ export class Transform extends Component {
         this.local.x = value.x;
         this.local.y = value.y;
         this.local.z = value.z;
+        this.local.width = value.width;
+        this.local.height = value.height;
+        this.local.depth = value.depth;
+        this.local.scaleX = value.scaleX;
+        this.local.scaleY = value.scaleY;
+        this.local.scaleZ = value.scaleZ;
+        this.local.pivotX = value.pivotX;
+        this.local.pivotY = value.pivotY;
+        this.local.rotateX = value.rotateX;
+        this.local.rotateY = value.rotateY;
+        this.local.rotateZ = value.rotateZ;
     }
 
     public get scale(): Point3 {
-        return this._scale;
+        const { scaleX, scaleY, scaleZ } = this.local;
+        return new Point3(scaleX, scaleY, scaleZ);
     }
 
     public set scale(value: Point3) {
-        this.scale.x = value.x;
-        this.scale.y = value.y;
-        this.scale.z = value.z;
+        this.local.scaleX = value.x;
+        this.local.scaleY = value.y;
+        this.local.scaleZ = value.z;
+    }
+
+    public get rotation(): Point3 {
+        const { rotateX, rotateY, rotateZ } = this.local;
+        return new Point3(rotateX, rotateY, rotateZ);
+    }
+
+    public set rotation(value: Point3) {
+        this.local.rotateX = value.x;
+        this.local.rotateY = value.y;
+        this.local.rotateZ = value.z;
+    }
+
+    public get pivot(): Point2 {
+        const { pivotX, pivotY } = this.local;
+        return new Point2(pivotX, pivotY);
+    }
+
+    public set pivot(value: Point2) {
+        this.local.pivotX = value.x;
+        this.local.pivotY = value.y;
     }
 
     public attach(entity: Entity): void {
@@ -195,10 +238,6 @@ export class Transform extends Component {
         }
 
         this.emit(ComponentEvent.Transform, TransformEvent.Transform, this, previous, changed);
-    }
-
-    protected onScaleChange(previous: number): void {
-        this.emit(ComponentEvent.Transform, TransformEvent.Scale, this, previous);
     }
     // #endregion
 }

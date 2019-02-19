@@ -28,6 +28,10 @@ export class Loader extends Observer {
         return this.instantiate(AssetType.Audio, path, name);
     }
 
+    public empty(name: string): Asset {
+        return this.instantiate(AssetType.Empty, '', name);
+    }
+
     public get(type: AssetType, name: string): Asset | undefined {
         if (type in this.assets) {
             if (name in this.assets[type]) {
@@ -93,16 +97,6 @@ export class Loader extends Observer {
             asset.load();
         }
         return asset;
-    }
-
-    private nextId(): string {
-        const id = Random.id(12);
-
-        if (id in this.assets) {
-            return this.nextId();
-        }
-
-        return id;
     }
 
     private onAssetLoaded(asset: Asset): void {

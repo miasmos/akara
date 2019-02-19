@@ -29,6 +29,8 @@ export class Camera extends Entity {
         rotateY = 0,
         rotateZ = 0,
         alpha = 1,
+        movable = true,
+        collidable = true,
         sizing = Sizing.Auto,
         tag,
         preupdate,

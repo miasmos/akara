@@ -321,9 +321,14 @@ export class Transform3 extends Observer {
             width: a.width + b.width,
             height: a.height + b.height,
             depth: a.depth + b.depth,
+            pivotX: a.pivotX,
+            pivotY: a.pivotY,
             scaleX: a.scale.x,
             scaleY: a.scale.y,
-            scaleZ: a.scale.z
+            scaleZ: a.scale.z,
+            rotateX: a.rotateX + b.rotateX,
+            rotateY: a.rotateY + b.rotateY,
+            rotateZ: a.rotateZ + b.rotateZ
         });
     }
 
@@ -339,9 +344,14 @@ export class Transform3 extends Observer {
             width: a.width - b.width,
             height: a.height - b.height,
             depth: a.depth - b.depth,
+            pivotX: a.pivotX,
+            pivotY: a.pivotY,
             scaleX: a.scale.x,
             scaleY: a.scale.y,
-            scaleZ: a.scale.z
+            scaleZ: a.scale.z,
+            rotateX: a.rotateX - b.rotateX,
+            rotateY: a.rotateY - b.rotateY,
+            rotateZ: a.rotateZ - b.rotateZ
         });
     }
 
@@ -357,9 +367,14 @@ export class Transform3 extends Observer {
             width: Util.Math.distance(a.width, b.width),
             height: Util.Math.distance(a.height, b.height),
             depth: Util.Math.distance(a.depth, b.depth),
+            pivotX: a.pivotX,
+            pivotY: a.pivotY,
             scaleX: a.scale.x,
             scaleY: a.scale.y,
-            scaleZ: a.scale.z
+            scaleZ: a.scale.z,
+            rotateX: a.rotateX - b.rotateX,
+            rotateY: a.rotateY - b.rotateY,
+            rotateZ: a.rotateZ - b.rotateZ
         });
     }
 

@@ -97,6 +97,8 @@ export class Game extends Entity {
             rotateX,
             rotateY,
             rotateZ,
+            collidable: false,
+            movable: false,
             alpha,
             tag
         });
