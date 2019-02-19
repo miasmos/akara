@@ -1,9 +1,10 @@
 import { Observer } from '../Observer';
-import { Mouse as MouseEnum } from '../enum/Mouse';
+import { MouseEvent as CustomMouseEvent } from '../enum/Mouse';
+import { Point2 } from '../structs/Point2';
 
 export class Mouse extends Observer {
     private target: HTMLCanvasElement;
-    private state: MouseEnum;
+    private state: CustomMouseEvent;
 
     public constructor(target: HTMLCanvasElement) {
         super();
@@ -14,26 +15,31 @@ export class Mouse extends Observer {
     }
 
     public onMouseDown(event: MouseEvent): void {
-        this.state = MouseEnum.MouseDown;
-        const button = event.button;
-        this.emit(MouseEnum.MouseDown, button);
+        event.preventDefault();
+        this.state = CustomMouseEvent.MouseDown;
+        const { button, offsetX, offsetY } = event;
+        const origin: Point2 = new Point2(offsetX, offsetY);
+        this.emit(CustomMouseEvent.MouseDown, origin, button);
     }
 
     public onMouseUp(event: MouseEvent): void {
-        this.state = MouseEnum.MouseUp;
-        const button = event.button;
-        this.emit(MouseEnum.MouseUp, button);
+        event.preventDefault();
+        this.state = CustomMouseEvent.MouseUp;
+        const { button, offsetX, offsetY } = event;
+        const origin: Point2 = new Point2(offsetX, offsetY);
+        this.emit(CustomMouseEvent.MouseUp, origin, button);
     }
 
     public onMouseMove(event: MouseEvent): void {
-        this.emit(MouseEnum.MouseMove);
+        event.preventDefault();
+        this.emit(CustomMouseEvent.MouseMove);
     }
 
     public isDown(key: number): boolean {
-        return this.state === MouseEnum.MouseDown;
+        return this.state === CustomMouseEvent.MouseDown;
     }
 
     public isUp(key: number): boolean {
-        return this.state === MouseEnum.MouseUp;
+        return this.state === CustomMouseEvent.MouseUp;
     }
 }

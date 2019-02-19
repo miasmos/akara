@@ -1,7 +1,7 @@
 import { Entity } from './Entity';
 import { IEntityConfig, EntityEvent, IEntity } from './IEntity';
 import { Asset, AssetType, IAssetRegisters } from '../../loader/assets/Asset';
-import { LoaderEvents } from '../../enum/LoaderEvents';
+import { LoaderEvent } from '../../enum/LoaderEvent';
 import { EmptyAsset } from '../../loader/assets/EmptyAsset';
 import { Game } from '../Game';
 
@@ -45,7 +45,8 @@ export class AssetEntity extends Entity implements IAssetEntity {
         postupdate,
         start,
         destroy,
-        collision
+        collision,
+        click
     }: IAssetEntityConfig): void {
         super.configure({
             type,
@@ -69,12 +70,13 @@ export class AssetEntity extends Entity implements IAssetEntity {
             postupdate,
             start,
             destroy,
-            collision
+            collision,
+            click
         });
 
         this.assetType = assetType;
         this.assetName = asset;
-        this.initialize({ load, update, preupdate, postupdate, start, destroy, collision });
+        this.initialize({ load, update, preupdate, postupdate, start, destroy, collision, click });
         this.bindAsset();
     }
 
@@ -85,7 +87,8 @@ export class AssetEntity extends Entity implements IAssetEntity {
         postupdate,
         start,
         destroy,
-        collision
+        collision,
+        click
     }: IAssetRegisters): void {
         this.bind('load', load);
         this.bind('update', update);
@@ -94,6 +97,7 @@ export class AssetEntity extends Entity implements IAssetEntity {
         this.bind('start', start);
         this.bind('destroy', destroy);
         this.bind('collision', collision);
+        this.bind('click', click);
     }
 
     private bindAsset(): void {
@@ -106,7 +110,7 @@ export class AssetEntity extends Entity implements IAssetEntity {
             if (asset.loaded) {
                 this.onAssetLoaded(this.asset);
             } else {
-                loader.on(LoaderEvents.Load, this.onAssetLoaded.bind(this));
+                loader.on(LoaderEvent.Load, this.onAssetLoaded.bind(this));
 
                 if (engine.started) {
                     this.asset.load();
@@ -114,7 +118,7 @@ export class AssetEntity extends Entity implements IAssetEntity {
             }
         } else {
             this.asset = new EmptyAsset();
-            loader.on(LoaderEvents.Add, this.onAssetAdded.bind(this));
+            loader.on(LoaderEvent.Add, this.onAssetAdded.bind(this));
         }
     }
 
@@ -131,19 +135,19 @@ export class AssetEntity extends Entity implements IAssetEntity {
         if (asset.equals(this.asset)) {
             this.call('load');
             this.emit(EntityEvent.Loaded, this);
-            this.game.load.off(LoaderEvents.Load, this.onAssetLoaded.bind(this));
+            this.game.load.off(LoaderEvent.Load, this.onAssetLoaded.bind(this));
         }
     }
 
     protected onAssetAdded(asset: Asset): void {
         if (asset.type === this.assetType && asset.name === this.assetName) {
             this.asset = asset;
-            this.game.load.off(LoaderEvents.Add, this.onAssetAdded.bind(this));
+            this.game.load.off(LoaderEvent.Add, this.onAssetAdded.bind(this));
 
             if (asset.loaded) {
                 this.emit(EntityEvent.Loaded, this);
             } else {
-                this.game.load.on(LoaderEvents.Load, this.onAssetLoaded.bind(this));
+                this.game.load.on(LoaderEvent.Load, this.onAssetLoaded.bind(this));
             }
         }
     }

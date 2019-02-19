@@ -10,5 +10,6 @@ export enum ErrorMessage {
     NoActiveScene = 'There is no active scene.',
     CannotAddEntitySelf = 'Cannot add entity. An entity cannot add itself.',
     CannotAddEntityContains = 'Cannot add entity. Already exists in tree.',
-    CannotAddTopLevel = 'Cannot add top-level entities to a group.'
+    CannotAddTopLevel = 'Cannot add top-level entities to a group.',
+    InputInstantiationError = 'Canvas not found.'
 }

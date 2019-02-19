@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-export enum Keyboard {
+export enum KeyboardEvent {
     KeyUp = 'Keyboard.Up',
     KeyDown = 'Keyboard.Down'
 }

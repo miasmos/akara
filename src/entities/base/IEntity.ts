@@ -4,6 +4,8 @@ import { Group } from '../Group';
 import { Transform3, Transform3Event } from '../../structs/Transform3';
 import { Point3 } from '../../structs/Point3';
 import { Direction } from '../../enum/Direction';
+import { Point2 } from '../../structs/Point2';
+import { MouseButton } from '../../enum/Mouse';
 
 export enum EntityEvent {
     Rendered = 'EntityEvent.Rendered',
@@ -51,6 +53,7 @@ export interface IEntityConfig {
     start?: () => void;
     destroy?: () => void;
     collision?: () => void;
+    click?: () => void;
 }
 
 export interface IEntity {
@@ -90,6 +93,7 @@ export interface IEntity {
     postupdate?(): void;
     destroy?(): void;
     collision?(entity: Entity): void;
+    click?(origin: Point2, button: MouseButton): void;
     reconcile(
         transform: Transform3,
         origin: Entity,
@@ -107,4 +111,5 @@ export interface IEntityRegisters {
     start?(): void;
     destroy?(): void;
     collision?(entity: Entity): void;
+    click?(origin: Point2, button: MouseButton): void;
 }

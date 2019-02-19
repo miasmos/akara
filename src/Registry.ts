@@ -1,6 +1,8 @@
 import { Entity } from './entities/base/Entity';
 import { IEntities } from './EntityManager';
 import { Engine, EngineEvent } from './Engine';
+import { Point2 } from './structs/Point2';
+import { MouseButton } from './enum/Mouse';
 
 interface IRegisters {
     [key: string]: string[];
@@ -27,6 +29,7 @@ export class Registry {
         this.engine.on(EngineEvent.Postupdate, this.onPostupdate.bind(this));
         this.engine.on(EngineEvent.Destroy, this.onDestroy.bind(this));
         this.engine.on(EngineEvent.Collision, this.onCollision.bind(this));
+        this.engine.on(EngineEvent.Click, this.onClick.bind(this));
     }
 
     public add(entity: Entity): boolean {
@@ -139,6 +142,10 @@ export class Registry {
 
     private onCollision(source: Entity, collided: Entity): void {
         this.call(EngineEvent.Collision, source.id, collided);
+    }
+
+    private onClick(source: Entity, origin: Point2, button: MouseButton): void {
+        this.call(EngineEvent.Click, source.id, origin, button);
     }
     // #endregion events
 }

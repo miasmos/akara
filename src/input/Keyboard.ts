@@ -1,4 +1,4 @@
-import { Keyboard as KeyboardEnum } from '../enum/Keyboard';
+import { KeyboardEvent as KeyboardEnum } from '../enum/Keyboard';
 import { Observer } from '../Observer';
 
 export class Keyboard extends Observer {

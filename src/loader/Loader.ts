@@ -4,7 +4,7 @@ import { Asset, AssetType } from './assets/Asset';
 import { AudioAsset } from './assets/AudioAsset';
 import { ImageAsset } from './assets/ImageAsset';
 import { EmptyAsset } from './assets/EmptyAsset';
-import { LoaderEvents } from '../enum/LoaderEvents';
+import { LoaderEvent } from '../enum/LoaderEvent';
 
 interface IAssetCategory {
     [key: string]: Asset;
@@ -61,7 +61,7 @@ export class Loader extends Observer {
             asset = this.get(type, name) as Asset;
         } else {
             asset = this.load(this.getAssetInstance(type, path, name));
-            this.emit(LoaderEvents.Add, asset);
+            this.emit(LoaderEvent.Add, asset);
         }
         return asset;
     }
@@ -86,7 +86,7 @@ export class Loader extends Observer {
             this.assets[asset.type] = {};
         }
         this.assets[asset.type][asset.name] = asset;
-        asset.on(LoaderEvents.Load, this.onAssetLoaded.bind(this));
+        asset.on(LoaderEvent.Load, this.onAssetLoaded.bind(this));
         this.count += 1;
 
         if (this.started) {
@@ -107,6 +107,6 @@ export class Loader extends Observer {
 
     private onAssetLoaded(asset: Asset): void {
         this.assetsLoaded += 1;
-        this.emit(LoaderEvents.Load, asset);
+        this.emit(LoaderEvent.Load, asset);
     }
 }

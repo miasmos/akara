@@ -1,5 +1,5 @@
 import { Observer } from '../../Observer';
-import { LoaderEvents } from '../../enum/LoaderEvents';
+import { LoaderEvent } from '../../enum/LoaderEvent';
 import { IEntityRegisters } from '../../entities/base/IEntity';
 import { Debug } from '../../util/Util';
 
@@ -67,14 +67,14 @@ export abstract class Asset extends Observer implements IAsset {
     protected onLoaded(): void {
         this.loaded = true;
         this.loading = false;
-        this.emit(LoaderEvents.Load, this);
+        this.emit(LoaderEvent.Load, this);
     }
 
     protected onLoadError(error: Error): void {
         this.loading = false;
         this.failed = true;
         Debug.error(error);
-        this.emit(LoaderEvents.LoadError, this);
+        this.emit(LoaderEvent.LoadError, this);
     }
     // #endregion
 }

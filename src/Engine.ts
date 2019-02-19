@@ -16,6 +16,8 @@ import { Color } from './structs/Color';
 import { HexCode } from './enum/HexCode';
 import { CollisionManager, CollisionEvent } from './CollisionManager';
 import { Transform3Event } from './structs/Transform3';
+import { Point2 } from './structs/Point2';
+import { MouseButton, MouseEvent } from './enum/Mouse';
 
 export enum EngineEvent {
     Start = 'start',
@@ -23,7 +25,8 @@ export enum EngineEvent {
     Update = 'update',
     Postupdate = 'postupdate',
     Destroy = 'destroy',
-    Collision = 'collision'
+    Collision = 'collision',
+    Click = 'click'
 }
 
 export interface IEngineConfig {
@@ -36,10 +39,10 @@ export interface IEngineConfig {
 export class Engine extends Observer {
     public fps: number = 60;
     public started: boolean = false;
+    public collision: CollisionManager;
     public canvas: Canvas;
     private entities: EntityManager = new EntityManager();
     private movedEntities: string[] = [];
-    private collisions: CollisionManager;
     private registry: Registry;
     public game: Game;
 
@@ -66,9 +69,9 @@ export class Engine extends Observer {
         this.fps = fps;
         this.registry = new Registry(this);
         this.canvas.mount();
-        this.collisions = new CollisionManager(this.game);
-        this.collisions.configure({});
-        this.collisions.on(CollisionEvent.Collision, this.collide.bind(this));
+        this.collision = new CollisionManager(this.game);
+        this.collision.configure({});
+        this.collision.on(CollisionEvent.Collision, this.collide.bind(this));
     }
 
     public start(): void {
@@ -96,7 +99,7 @@ export class Engine extends Observer {
             return false;
         }
 
-        this.collisions.addEntity(entity);
+        this.collision.addEntity(entity);
         this.entities.add(entity);
         this.registry.add(entity);
         entity.on(EntityEvent.Transform, this.onEntityTransformChange.bind(this));
@@ -118,7 +121,7 @@ export class Engine extends Observer {
             return false;
         }
 
-        this.collisions.removeEntity(entity);
+        this.collision.removeEntity(entity);
         this.entities.remove(entity);
         this.registry.remove(entity);
         entity.off(EntityEvent.Transform, this.onEntityTransformChange.bind(this));
@@ -139,6 +142,18 @@ export class Engine extends Observer {
 
     public getEntitiesByType(type: EntityType): Entity[] {
         return this.entities.getType(type);
+    }
+
+    public bindInput(): void {
+        const { input } = this.game;
+        if (input) {
+            input.on(
+                MouseEvent.MouseDown,
+                (entity: Entity, origin: Point2, button: MouseButton) => {
+                    this.click(entity, origin, button);
+                }
+            );
+        }
     }
 
     public clear(): void {
@@ -163,7 +178,7 @@ export class Engine extends Observer {
 
     private update(): void {
         this.registry.call(EngineEvent.Update);
-        this.collisions.update();
+        this.collision.update();
         this.draw();
     }
 
@@ -174,6 +189,10 @@ export class Engine extends Observer {
     private collide(source: Entity, collided: Entity): void {
         this.registry.call(EngineEvent.Collision, source.id, collided);
         this.registry.call(EngineEvent.Collision, collided.id, source);
+    }
+
+    private click(source: Entity, origin: Point2, button: MouseButton): void {
+        this.registry.call(EngineEvent.Click, source.id, origin, button);
     }
 
     private draw(): void {

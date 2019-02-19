@@ -13,6 +13,7 @@ import { Sizing } from '../enum/Sizing';
 import { EntityFactory } from '../EntityFactory';
 import { CameraManager } from '../CameraManager';
 import { ComponentFactory } from '../ComponentFactory';
+import { Input } from '../input/Input';
 
 export interface IDebugConfig {
     outline?: boolean;
@@ -32,6 +33,7 @@ export interface IGameConfig extends IGroupConfig {
 export class Game extends Entity {
     public type: EntityType = EntityType.Game;
     public engine: Engine;
+    public input: Input = new Input();
     public load: Loader = new Loader();
     public entity: EntityFactory = new EntityFactory();
     public component: ComponentFactory = new ComponentFactory();
@@ -126,6 +128,7 @@ export class Game extends Entity {
             backgroundColor,
             fps
         });
+        this.input.configure({ game: this });
         this.scene.add(
             this.entity.scene({
                 name: SceneName.Default,

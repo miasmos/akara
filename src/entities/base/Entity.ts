@@ -54,7 +54,8 @@ export class Entity extends Observer implements IEntity {
         postupdate,
         start,
         destroy,
-        collision
+        collision,
+        click
     }: IEntityConfig): void {
         this.x = x;
         this.y = y;
@@ -73,7 +74,7 @@ export class Entity extends Observer implements IEntity {
         this.alpha = alpha;
         this.id = Util.Random.id(12);
         this.type = type;
-        this.initialize({ update, preupdate, postupdate, start, destroy, collision });
+        this.initialize({ update, preupdate, postupdate, start, destroy, collision, click });
     }
 
     public addComponent(type: Component | ComponentType): boolean {

@@ -55,6 +55,22 @@ export class Canvas {
             }
         }
     }
+
+    public get y(): number {
+        if (this.element) {
+            this.transform.y = this.element.offsetTop;
+        }
+
+        return this.transform.y;
+    }
+
+    public get x(): number {
+        if (this.element) {
+            this.transform.x = this.element.offsetLeft;
+        }
+
+        return this.transform.x;
+    }
     // #endregion
 
     public mount(id?: string): CanvasRenderingContext2D | undefined {
@@ -126,6 +142,10 @@ export class Canvas {
         if (this.context) {
             this.context.rotate((degrees * Math.PI) / 180);
         }
+    }
+
+    public get(): HTMLCanvasElement | undefined {
+        return this.element;
     }
 
     public clear(): void {
