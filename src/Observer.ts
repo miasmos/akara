@@ -12,17 +12,18 @@ export class Observer {
     private subjects: ISubjects = {};
     public suppress: boolean = false;
 
-    public on(event: string, fn: Function): void {
+    public on(event: string, fn: Function): boolean {
         event = event.toString();
         if (!(event in this.subjects)) {
             this.subjects[event] = [];
         }
         this.subjects[event].push(new Subject(fn));
+        return true;
     }
 
-    public emit(event: string, ...params: unknown[]): void {
+    public emit(event: string, ...params: unknown[]): boolean {
         if (this.suppress) {
-            return;
+            return false;
         }
         event = event.toString();
 
@@ -31,23 +32,25 @@ export class Observer {
                 subject.fn.apply(this, params);
             });
         }
+        return true;
     }
 
-    public off(event: string, fn?: Function): void {
+    public off(event: string, fn?: Function): boolean {
         event = event.toString();
         if (!(event in this.subjects)) {
-            return;
+            return false;
         }
         if (typeof fn === 'function') {
             const namespace = Object.values(this.subjects[event]);
             for (let index = 0; index < namespace.length; index += 1) {
                 const subject: Subject = namespace[index];
                 if (subject.fn === fn) {
-                    this.subjects[event].splice(0, index);
+                    this.subjects[event].splice(index, 1);
                 }
             }
         } else {
             delete this.subjects[event];
         }
+        return true;
     }
 }

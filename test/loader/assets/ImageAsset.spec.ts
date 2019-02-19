@@ -114,7 +114,6 @@ describe('ImageAsset', () => {
     describe('getRef()', () => {
         it('should return the ref type', () => {
             const result = new ImageAsset('test', 'test1');
-            console.log(result.getRef());
             expect(result.getRef() instanceof HTMLImageElement).to.equal(true);
         });
     });

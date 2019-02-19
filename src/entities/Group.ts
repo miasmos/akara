@@ -125,7 +125,11 @@ export class Group extends Entity {
             Util.Debug.warn(ErrorMessage.CannotAddEntitySelf);
             return false;
         }
-        if (entity.type === EntityType.Game || entity.type === EntityType.Scene) {
+        if (
+            entity.type === EntityType.Game ||
+            entity.type === EntityType.Scene ||
+            entity.type === EntityType.Camera
+        ) {
             Util.Debug.warn(ErrorMessage.CannotAddTopLevel);
             return false;
         }

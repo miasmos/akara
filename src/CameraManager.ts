@@ -39,10 +39,6 @@ export class CameraManager extends EntityManager {
     // #endregion
 
     public add(camera: Camera): boolean {
-        if (!(camera instanceof Camera)) {
-            return false;
-        }
-
         return super.add(camera);
     }
 

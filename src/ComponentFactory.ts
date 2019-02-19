@@ -8,10 +8,10 @@ interface IComponentFactoryConfig {
 }
 
 export class ComponentFactory {
-    protected _game: Game;
+    public game: Game;
 
     public configure({ game }: IComponentFactoryConfig): void {
-        this._game = game;
+        this.game = game;
     }
 
     public static get(
@@ -34,7 +34,7 @@ export class ComponentFactory {
         type: ComponentType,
         config: IComponentConfig | IColliderConfig | ITransformConfig
     ): Component {
-        return ComponentFactory.get(this._game, type, config);
+        return ComponentFactory.get(this.game, type, config);
     }
 
     public static collider(game: Game, config: IColliderConfig): Collider {
@@ -45,7 +45,7 @@ export class ComponentFactory {
     }
 
     public collider(config: IColliderConfig): Collider {
-        return ComponentFactory.collider(this._game, config);
+        return ComponentFactory.collider(this.game, config);
     }
 
     public static transform(game: Game, config: ITransformConfig): Transform {
@@ -56,7 +56,7 @@ export class ComponentFactory {
     }
 
     public transform(config: ITransformConfig): Transform {
-        return ComponentFactory.transform(this._game, config);
+        return ComponentFactory.transform(this.game, config);
     }
 
     public static component(game: Game, config: IComponentConfig): Component {
@@ -67,6 +67,6 @@ export class ComponentFactory {
     }
 
     public component(config: IComponentConfig): Component {
-        return ComponentFactory.component(this._game, config);
+        return ComponentFactory.component(this.game, config);
     }
 }

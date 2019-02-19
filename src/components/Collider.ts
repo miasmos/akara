@@ -10,7 +10,7 @@ interface IIntersections {
 }
 
 export class Collider extends Component {
-    public collidable: boolean;
+    public collidable: boolean = true;
     protected intersections: Entity[] = [];
     protected intersectionsById: IIntersections = {};
 
