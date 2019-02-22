@@ -14,12 +14,18 @@ export class EntityManager {
     private entitiesByTag: IEntitiesByString = {};
     private entitiesByType: IEntitiesByString = {};
 
+    // #region properties
+    public get count(): number {
+        return Object.keys(this.entities).length;
+    }
+    // #endregion
+
     public add(entity: Entity): boolean {
         if (!(entity.id in this.entities)) {
             this.entities[entity.id] = entity;
             this.addEntityToTag(entity);
             this.addEntityToType(entity);
-            entity.on(EntityEvent.Tag, this.onTagChange.bind(this, entity));
+            entity.on(EntityEvent.Tag, this.onTagChange.bind(this));
             return true;
         }
 
@@ -29,7 +35,7 @@ export class EntityManager {
     public remove(entity: Entity): boolean {
         if (entity.id in this.entities) {
             delete this.entities[entity.id];
-            entity.off(EntityEvent.Tag, this.onTagChange.bind(this, entity));
+            entity.off(EntityEvent.Tag, this.onTagChange.bind(this));
             this.removeEntityFromType(entity);
             this.removeEntityFromTag(entity, entity.tag);
             return true;
@@ -55,7 +61,7 @@ export class EntityManager {
     public getTag(tag: string): Entity[] {
         if (tag in this.entitiesByTag) {
             const entities: Entity[] = [];
-            Object.keys(this.entitiesByTag[tag]).forEach((id: string) => {
+            Object.values(this.entitiesByTag[tag]).forEach((id: string) => {
                 const entity = this.get(id);
                 if (entity) {
                     entities.push(entity);
@@ -71,7 +77,7 @@ export class EntityManager {
         const key = type.toString();
         if (key in this.entitiesByType) {
             const entities: Entity[] = [];
-            Object.keys(this.entitiesByType[type]).forEach((id: string) => {
+            Object.values(this.entitiesByType[type]).forEach((id: string) => {
                 const entity = this.get(id);
                 if (entity) {
                     entities.push(entity);

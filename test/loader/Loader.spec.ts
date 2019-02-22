@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, assert } from 'chai';
 import 'mocha';
 import { Loader } from '../../src/loader/Loader';
 import { ImageAsset } from '../../src/loader/assets/ImageAsset';
@@ -19,8 +19,10 @@ describe('Loader', () => {
             const ref = result1.getRef();
             if (ref) {
                 ref.dispatchEvent(new Event('load'));
+            } else {
+                assert.fail();
             }
-        }).timeout(10);
+        });
     });
 
     describe('image()', () => {

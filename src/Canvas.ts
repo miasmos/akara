@@ -14,7 +14,7 @@ export class Canvas {
     public backgroundColor: Color = new Color();
     public mounted: boolean = false;
     private context: CanvasRenderingContext2D | undefined;
-    private element: HTMLCanvasElement | undefined;
+    private _element: HTMLCanvasElement | undefined;
     private transform: Transform3 = new Transform3({});
     private saved: boolean = false;
 
@@ -37,8 +37,8 @@ export class Canvas {
     public set width(value: number) {
         if (value !== this.transform.width) {
             this.transform.width = value;
-            if (this.element) {
-                this.element.width = value;
+            if (this._element) {
+                this._element.width = value;
             }
         }
     }
@@ -50,26 +50,44 @@ export class Canvas {
     public set height(value: number) {
         if (value !== this.transform.height) {
             this.transform.height = value;
-            if (this.element) {
-                this.element.height = value;
+            if (this._element) {
+                this._element.height = value;
             }
         }
     }
 
     public get y(): number {
-        if (this.element) {
-            this.transform.y = this.element.offsetTop;
+        if (this._element) {
+            this.transform.y = this._element.offsetTop;
         }
 
         return this.transform.y;
     }
 
     public get x(): number {
-        if (this.element) {
-            this.transform.x = this.element.offsetLeft;
+        if (this._element) {
+            this.transform.x = this._element.offsetLeft;
         }
 
         return this.transform.x;
+    }
+
+    public get element(): HTMLCanvasElement | undefined {
+        return this._element;
+    }
+
+    public get alpha(): number {
+        if (this.context) {
+            return this.context.globalAlpha;
+        }
+        return 1;
+    }
+
+    public set alpha(value: number) {
+        if (this.context) {
+            this.save();
+            this.context.globalAlpha = value;
+        }
     }
     // #endregion
 
@@ -87,20 +105,18 @@ export class Canvas {
             targetElement = elements[0];
         }
 
-        if (!targetElement) {
-            return undefined;
-        }
-        const element: HTMLCanvasElement = targetElement.appendChild(
-            document.createElement('canvas')
-        );
-        this.element = element;
+        const _element: HTMLCanvasElement = document.createElement('canvas');
+        targetElement.appendChild(_element);
+        this._element = _element;
 
-        const context: CanvasRenderingContext2D | null = element.getContext('2d', { alpha: false });
+        const context: CanvasRenderingContext2D | null = _element.getContext('2d', {
+            alpha: false
+        });
         if (context) {
             this.context = context;
             this.mounted = true;
-            this.element.width = this.width;
-            this.element.height = this.height;
+            this._element.width = this.width;
+            this._element.height = this.height;
             return context;
         }
 
@@ -113,52 +129,55 @@ export class Canvas {
         this.height = height;
     }
 
-    public translate(x: number, y: number): void {
+    public translate(x: number, y: number): boolean {
         if (this.context) {
             this.save();
             this.context.translate(x, y);
+            return true;
         }
+        return false;
     }
 
-    public save(): void {
+    public save(): boolean {
         if (!this.saved) {
             if (this.context) {
                 this.context.save();
                 this.saved = true;
+                return true;
             }
         }
+        return false;
     }
 
-    public restore(): void {
+    public restore(): boolean {
         if (this.saved) {
             if (this.context) {
                 this.context.restore();
                 this.saved = false;
+                return true;
             }
         }
+        return false;
     }
 
-    public rotate(degrees: number): void {
+    public rotate(degrees: number): boolean {
         if (this.context) {
             this.context.rotate((degrees * Math.PI) / 180);
+            return true;
         }
+        return false;
     }
 
     public get(): HTMLCanvasElement | undefined {
-        return this.element;
+        return this._element;
     }
 
-    public clear(): void {
-        if (this.context && this.element) {
-            this.context.clearRect(0, 0, this.element.width, this.element.height);
+    public clear(): boolean {
+        if (this.context && this._element) {
+            this.context.clearRect(0, 0, this._element.width, this._element.height);
+            return true;
         }
-    }
-
-    public set alpha(value: number) {
-        if (this.context) {
-            this.save();
-            this.context.globalAlpha = value;
-        }
+        return false;
     }
 
     public drawImage(
@@ -167,30 +186,38 @@ export class Canvas {
         y: number,
         width: number,
         height: number
-    ): void {
+    ): boolean {
         if (this.context) {
             this.context.drawImage(image, x, y, width, height);
+            return true;
         }
+        return false;
     }
 
-    public drawBuffer(data: ImageData, x: number, y: number): void {
+    public drawBuffer(data: ImageData, x: number, y: number): boolean {
         if (this.context) {
             this.context.putImageData(data, x, y);
+            return true;
         }
+        return false;
     }
 
-    public drawText(text: string, color: Color, x: number, y: number): void {
+    public drawText(text: string, color: Color, x: number, y: number): boolean {
         if (this.context) {
             this.context.fillStyle = color.toString();
             this.context.fillText(text, x, y);
+            return true;
         }
+        return false;
     }
 
-    public drawBox(color: Color, x: number, y: number, width: number, height: number): void {
+    public drawBox(color: Color, x: number, y: number, width: number, height: number): boolean {
         if (this.context) {
             this.context.fillStyle = color.toString();
             this.context.fillRect(x, y, width, height);
+            return true;
         }
+        return false;
     }
 
     public drawOutline(
@@ -201,14 +228,16 @@ export class Canvas {
         width: number,
         height: number,
         stroke: number = 1
-    ): void {
+    ): boolean {
         if (this.context) {
             this.context.fillStyle = color.toString();
             this.context.strokeStyle = outline.toString();
             this.context.lineWidth = stroke;
             this.context.strokeRect(x, y, width, height);
             this.context.restore();
+            return true;
         }
+        return false;
     }
 
     public drawLine(
@@ -218,7 +247,7 @@ export class Canvas {
         x2: number,
         y2: number,
         stroke: number = 1
-    ): void {
+    ): boolean {
         if (this.context) {
             this.context.lineWidth = stroke;
             this.context.strokeStyle = color.toString();
@@ -227,6 +256,8 @@ export class Canvas {
             this.context.lineTo(x2, y2);
             this.context.stroke();
             this.context.restore();
+            return true;
         }
+        return false;
     }
 }

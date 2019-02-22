@@ -3,6 +3,10 @@ import { Observer } from './Observer';
 import { ComponentFactory } from './ComponentFactory';
 import { Game } from './entities/Game';
 
+export interface IComponentManagerConfig {
+    game: Game;
+}
+
 export enum ComponentManagerEvent {
     Add = 'ComponentManagerEvent.Add',
     Remove = 'ComponentManagerEvent.Remove'
@@ -17,6 +21,10 @@ export class ComponentManager extends Observer {
     public game: Game;
     protected componentsById: IComponents = {};
     protected componentsByType: IComponents = {};
+
+    public configure({ game }: IComponentManagerConfig): void {
+        this.game = game;
+    }
 
     public get(type: ComponentType): Component | undefined {
         if (type in this.componentsByType) {

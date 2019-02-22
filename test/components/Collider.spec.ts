@@ -164,7 +164,7 @@ describe('Collider', () => {
                 const result1 = entity1.collider.test2(entity2);
                 expect(result1).to.equal(true);
             }
-        }).timeout(10);
+        });
     });
 
     describe('test3()', () => {
@@ -216,7 +216,7 @@ describe('Collider', () => {
                 const result1 = entity1.collider.test3(entity2);
                 expect(result1).to.equal(true);
             }
-        }).timeout(10);
+        });
     });
 
     describe('attach()', () => {
