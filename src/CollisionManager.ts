@@ -40,13 +40,12 @@ export class CollisionManager extends Observer {
             if (added) {
                 this.sectorsByEntity[entity.id] = [];
                 entity.on(EntityEvent.ComponentRemove, this.onEntityComponentRemove.bind(this));
-                entity.on(EntityEvent.Transform, this.onEntityTransformChange.bind(this));
                 entity.off(EntityEvent.ComponentAdd, this.onEntityComponentAdd.bind(this));
                 this.resize(
                     new Point3(
-                        entity.x + entity.width,
-                        entity.y + entity.height,
-                        entity.z + entity.depth
+                        entity.world.x + entity.world.width,
+                        entity.world.y + entity.world.height,
+                        entity.world.z + entity.world.depth
                     )
                 );
                 this.updateEntity(entity);
@@ -62,7 +61,6 @@ export class CollisionManager extends Observer {
         const removed = this.entities.remove(entity);
         if (removed) {
             entity.off(EntityEvent.ComponentAdd, this.onEntityComponentAdd.bind(this));
-            entity.off(EntityEvent.Transform, this.onEntityTransformChange.bind(this));
             entity.off(EntityEvent.ComponentRemove, this.onEntityComponentRemove.bind(this));
             this.sectorsByEntity[entity.id].forEach((origin: Point3) => {
                 this.removeEntityFromSector(entity, origin);
@@ -142,9 +140,10 @@ export class CollisionManager extends Observer {
     }
 
     protected resize(origin: Point3): void {
-        const x1 = origin.x - (origin.x % this.resolution);
-        const y1 = origin.y - (origin.y % this.resolution);
-        const z1 = origin.z - (origin.z % this.resolution);
+        const x1 = origin.x - (origin.x % this.resolution) + this.resolution;
+        const y1 = origin.y - (origin.y % this.resolution) + this.resolution;
+        const z1 = origin.z - (origin.z % this.resolution) + this.resolution;
+        debugger;
 
         if (typeof this.sectors === 'undefined') {
             this.sectors = [];
@@ -164,27 +163,23 @@ export class CollisionManager extends Observer {
             return;
         }
 
-        const diffX = Util.Math.clamp(x1 - this.sectors.length, 0);
-        const diffY = Util.Math.clamp(y1 - this.sectors[0].length, 0);
-        const diffZ = Util.Math.clamp(z1 - this.sectors[0][0].length, 0);
+        const diffX = Util.Math.clamp(x1 - this.sectors.length + 1, 0);
+        const diffY = Util.Math.clamp(y1 - this.sectors[0].length + 1, 0);
+        const diffZ = Util.Math.clamp(z1 - this.sectors[0][0].length + 1, 0);
         const diff = Math.max(diffX, diffY, diffZ);
         const start = this.sectors.length - 1;
 
-        for (let index = start; index < diff + this.resolution; index += this.resolution) {
+        for (let index = start; index < diff; index += this.resolution) {
             if (typeof this.sectors[index] === 'undefined') {
                 this.sectors[index] = [];
             }
 
-            for (let index1 = start; index1 < diff + this.resolution; index1 += this.resolution) {
+            for (let index1 = start; index1 < diff; index1 += this.resolution) {
                 if (typeof this.sectors[index][index1] === 'undefined') {
                     this.sectors[index][index1] = [];
                 }
 
-                for (
-                    let index2 = start;
-                    index2 < diff + this.resolution;
-                    index2 += this.resolution
-                ) {
+                for (let index2 = start; index2 < diff; index2 += this.resolution) {
                     if (typeof this.sectors[index][index1][index2] === 'undefined') {
                         this.sectors[index][index1][index2] = [];
                     }
@@ -209,20 +204,20 @@ export class CollisionManager extends Observer {
         movedEntities.forEach(id => {
             const entity = this.entities.get(id);
             if (entity) {
-                if (entity.x + entity.width > maxX) {
-                    maxX = entity.x + entity.width;
+                if (entity.world.x + entity.world.width > maxX) {
+                    maxX = entity.world.x + entity.world.width;
                 }
-                if (entity.y + entity.height > maxY) {
-                    maxY = entity.y + entity.height;
+                if (entity.world.y + entity.world.height > maxY) {
+                    maxY = entity.world.y + entity.world.height;
                 }
-                if (entity.z + entity.depth > maxZ) {
-                    maxZ = entity.z + entity.depth;
+                if (entity.world.z + entity.world.depth > maxZ) {
+                    maxZ = entity.world.z + entity.world.depth;
                 }
 
+                this.resize(new Point3(maxX, maxY, maxZ));
                 this.updateEntity(entity);
             }
         });
-        this.resize(new Point3(maxX, maxY, maxZ));
 
         // calculate collisions
         const collisions: string[] = [];
@@ -354,14 +349,6 @@ export class CollisionManager extends Observer {
                 break;
             default:
         }
-    }
-
-    protected onEntityTransformChange(
-        entity: Entity,
-        previous: number,
-        changed: Transform3Event
-    ): void {
-        this.updateEntity(entity);
     }
 
     protected onEntityComponentAdd(entity: Entity, component: Component): void {
